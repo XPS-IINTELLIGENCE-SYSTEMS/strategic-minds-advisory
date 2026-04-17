@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -27,7 +27,7 @@
     --ring: 0 0% 70%;
     --radius: 0.75rem;
 
-    --font-display: 'Playfair Display', Georgia, serif;
+    --font-display: 'Inter', sans-serif;
     --font-sans: 'Inter', system-ui, sans-serif;
   }
 }
