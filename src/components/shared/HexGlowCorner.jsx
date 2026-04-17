@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SIZE = 28;
+const SIZE = 32;
 const W = SIZE * 2;
 const H = Math.sqrt(3) * SIZE;
 
@@ -14,8 +14,8 @@ const HEX_POINTS = (() => {
 })();
 
 export default function HexGlowCorner() {
-  const cols = 24;
-  const rows = 3;
+  const cols = 28;
+  const rows = 2;
   const hexagons = [];
 
   for (let row = 0; row < rows; row++) {
@@ -23,18 +23,13 @@ export default function HexGlowCorner() {
       const x = col * W * 0.75 + (row % 2) * W * 0.375;
       const y = row * H * 0.75;
       
-      // Wavy taper: create the flowing cutout effect
-      let opacity = 0.5;
-      const distFromMiddle = Math.abs(col - cols / 2);
-      const waveAmount = Math.sin((col / cols) * Math.PI) * 1.5;
+      // Fade from edges and create wavy dip in middle
+      const centerDist = Math.abs(col - cols / 2) / (cols / 2);
+      const waveY = Math.sin((col / cols) * Math.PI) * 0.6;
       
-      // Different opacity per row
-      if (row === 0) {
-        opacity = 0.7 - (distFromMiddle / (cols / 2)) * 0.4;
-      } else if (row === 1) {
-        opacity = (0.3 - (distFromMiddle / (cols / 2)) * 0.25) * (1 - waveAmount * 0.3);
-      } else {
-        opacity = (0.1 - (distFromMiddle / (cols / 2)) * 0.08) * (1 - waveAmount * 0.4);
+      let opacity = 1 - centerDist;
+      if (row === 1) {
+        opacity *= 0.5 - waveY * 0.3;
       }
       
       hexagons.push({ x, y, opacity: Math.max(opacity, 0) });
@@ -51,30 +46,19 @@ export default function HexGlowCorner() {
         top: 0,
         left: 0,
         width: '100%',
-        height: viewBoxHeight + 40,
-        backgroundColor: '#000000',
+        height: viewBoxHeight + 100,
         zIndex: 0,
         pointerEvents: 'none',
         overflow: 'hidden',
+        background: `linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%)`,
       }}
     >
       <svg 
         width="100%" 
-        height={viewBoxHeight + 40}
-        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight + 40}`}
+        height={viewBoxHeight + 100}
+        viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight + 100}`}
         preserveAspectRatio="xMidYMid slice"
-        style={{
-          animation: 'hexPulse 6s ease-in-out infinite',
-        }}
       >
-        <defs>
-          <style>{`
-            @keyframes hexPulse {
-              0%, 100% { opacity: 1; }
-              50% { opacity: 0.85; }
-            }
-          `}</style>
-        </defs>
         {hexagons.map((h, i) => (
           <polygon
             key={i}
@@ -82,11 +66,9 @@ export default function HexGlowCorner() {
             transform={`translate(${h.x}, ${h.y})`}
             style={{
               fill: 'none',
-              stroke: 'rgb(200,140,60)',
-              strokeWidth: '0.8',
+              stroke: 'rgba(180, 140, 80, 0.6)',
+              strokeWidth: '0.7',
               opacity: h.opacity,
-              animation: `hexPulse 8s ease-in-out infinite`,
-              animationDelay: `${(i * 0.05).toFixed(2)}s`,
             }}
           />
         ))}
