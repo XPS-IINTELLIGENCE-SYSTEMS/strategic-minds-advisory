@@ -1,49 +1,43 @@
 import React from 'react';
 
-const S = 36;
-const W = S * 2;
-const H = Math.sqrt(3) * S;
+const SIZE = 32;
+const W = SIZE * 2;
+const H = Math.sqrt(3) * SIZE;
 
-// Flat-top hex points as plain string
+// Flat-top hexagon points
 const HEX_POINTS = (() => {
   const pts = [];
   for (let i = 0; i < 6; i++) {
     const angle = (Math.PI / 180) * (60 * i);
-    pts.push(`${S + Math.cos(angle) * (S - 1)},${S + Math.sin(angle) * (S - 1)}`);
+    pts.push(`${SIZE + Math.cos(angle) * (SIZE - 1)},${SIZE + Math.sin(angle) * (SIZE - 1)}`);
   }
   return pts.join(' ');
 })();
 
 export default function HexGlowCorner() {
-  const rows = 3;
-  const cols = 16;
+  const cols = 20;
+  const rows = 2;
   const hexagons = [];
 
-  // Create a grid of hexagons
+  // Create hexagon grid matching the reference image
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
       const x = col * W * 0.75 + (row % 2) * W * 0.375;
       const y = row * H * 0.75;
       
-      // Determine opacity: brightest in top-middle, fades to edges and down
-      let opacity = 0.15;
-      const fromTop = row;
-      const fromMiddle = Math.abs(col - cols / 2);
+      // Wavy taper effect: hexagons fade in middle
+      let opacity = 0.6;
+      const distFromMiddle = Math.abs(col - cols / 2);
       
-      if (fromTop === 0) {
-        opacity = 0.5 - (fromMiddle / cols) * 0.35;
-      } else if (fromTop === 1) {
-        opacity = 0.25 - (fromMiddle / cols) * 0.2;
+      if (row === 0) {
+        opacity = 0.6 - (distFromMiddle / (cols / 2)) * 0.3;
       } else {
-        opacity = 0.08 - (fromMiddle / cols) * 0.05;
+        opacity = 0.3 - (distFromMiddle / (cols / 2)) * 0.2;
       }
       
-      hexagons.push({ x, y, opacity });
+      hexagons.push({ x, y, opacity: Math.max(opacity, 0.05) });
     }
   }
-
-  const SVG_W = cols * W * 0.75 + W;
-  const SVG_H = rows * H * 0.75 + H;
 
   return (
     <div
@@ -52,16 +46,17 @@ export default function HexGlowCorner() {
         top: 0,
         left: 0,
         width: '100%',
-        height: SVG_H + 20,
+        height: H * 1.5 + 40,
+        backgroundColor: '#000000',
+        zIndex: 0,
         pointerEvents: 'none',
-        zIndex: 1,
         overflow: 'hidden',
       }}
     >
       <svg 
         width="100%" 
-        height={SVG_H + 20} 
-        viewBox={`0 0 ${SVG_W} ${SVG_H + 20}`}
+        height={H * 1.5 + 40}
+        viewBox={`0 0 ${cols * W * 0.75 + W} ${H * 1.5 + 40}`}
         preserveAspectRatio="xMidYMid slice"
       >
         {hexagons.map((h, i) => (
@@ -71,8 +66,8 @@ export default function HexGlowCorner() {
             transform={`translate(${h.x}, ${h.y})`}
             style={{
               fill: 'none',
-              stroke: 'rgb(180,110,20)',
-              strokeWidth: '0.7',
+              stroke: 'rgb(200,120,40)',
+              strokeWidth: '0.9',
               opacity: h.opacity,
             }}
           />
