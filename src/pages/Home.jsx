@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight, Brain, TrendingUp, Users, Clock, Quote } from 'lucide-react';
 import HexagonField from '@/components/shared/HexagonField';
 import HexGlowCorner from '@/components/shared/HexGlowCorner';
+import HexPattern from '@/components/shared/HexPattern';
 
 const LAPTOP_BG = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&h=900&fit=crop';
 
@@ -37,6 +38,7 @@ export default function Home() {
         </div>
         {/* dot grid */}
         <div className="absolute inset-0 opacity-20" style={{backgroundImage:'radial-gradient(circle, #ffffff22 1px, transparent 1px)', backgroundSize:'60px 60px'}} />
+        <HexPattern />
         <HexagonField />
         <HexGlowCorner />
 
