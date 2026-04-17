@@ -56,16 +56,16 @@ export default function HexGlowCorner() {
           {/* Keyframe glow animation per proximity group */}
           <style>{`
             @keyframes hexPulse0 {
-              0%, 100% { stroke-opacity: 0.9; filter: drop-shadow(0 0 6px rgba(210,120,20,0.9)); }
-              50%       { stroke-opacity: 0.5; filter: drop-shadow(0 0 2px rgba(210,120,20,0.4)); }
+              0%, 100% { stroke-opacity: 0.35; filter: drop-shadow(0 0 3px rgba(210,120,20,0.4)); }
+              50%       { stroke-opacity: 0.15; filter: drop-shadow(0 0 1px rgba(210,120,20,0.15)); }
             }
             @keyframes hexPulse1 {
-              0%, 100% { stroke-opacity: 0.55; filter: drop-shadow(0 0 4px rgba(180,90,10,0.6)); }
-              50%       { stroke-opacity: 0.25; filter: drop-shadow(0 0 1px rgba(180,90,10,0.2)); }
+              0%, 100% { stroke-opacity: 0.18; filter: drop-shadow(0 0 2px rgba(180,90,10,0.2)); }
+              50%       { stroke-opacity: 0.07; filter: drop-shadow(0 0 0px rgba(180,90,10,0.07)); }
             }
             @keyframes hexPulse2 {
-              0%, 100% { stroke-opacity: 0.28; }
-              50%       { stroke-opacity: 0.10; }
+              0%, 100% { stroke-opacity: 0.08; }
+              50%       { stroke-opacity: 0.02; }
             }
             .hex-bright  { animation: hexPulse0 3s ease-in-out infinite; }
             .hex-mid     { animation: hexPulse1 4s ease-in-out infinite; }
@@ -80,15 +80,15 @@ export default function HexGlowCorner() {
           if (proximity > 0.65) {
             cls = 'hex-bright';
             strokeColor = 'rgb(220,140,30)';
-            baseWidth = 2.2;
+            baseWidth = 0.7;
           } else if (proximity > 0.35) {
             cls = 'hex-mid';
             strokeColor = 'rgb(190,100,20)';
-            baseWidth = 1.5;
+            baseWidth = 0.5;
           } else {
             cls = 'hex-dim';
             strokeColor = 'rgb(140,60,10)';
-            baseWidth = 0.6;
+            baseWidth = 0.3;
           }
 
           // stagger each hex slightly using animationDelay
