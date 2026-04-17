@@ -33,9 +33,12 @@ export default function Home() {
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black" />
+        <div className="absolute inset-0 right-0 w-1/2">
+          <img src="https://media.base44.com/images/public/69e19e1ab78af2f5713c40be/defc4d1cf_1000_F_474034004_KxYl7oARrHdjJkRZULH7Ke7TGiCUNFIW.jpg" alt="" className="w-full h-full object-cover" />
+        </div>
         <HexGlowCorner />
 
-        <div className="relative text-center px-6 max-w-4xl mx-auto">
+        <div className="relative text-center px-6 max-w-4xl mx-auto z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-700 bg-zinc-900/60 backdrop-blur-sm mb-8">
             <Sparkles className="w-3.5 h-3.5 text-zinc-300" />
             <span className="text-sm text-zinc-300">AI-Powered Marketing Solutions</span>
