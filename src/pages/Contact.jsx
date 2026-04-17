@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Sparkles, Mail, Phone, MapPin, Clock, Send, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import HexagonField from '@/components/shared/HexagonField';
+import HexGlowCorner from '@/components/shared/HexGlowCorner';
 
 const budgets = ['Under $5,000', '$5,000 - $10,000', '$10,000 - $25,000', '$25,000 - $50,000', '$50,000+'];
 
@@ -39,6 +40,7 @@ export default function Contact() {
       <section className="relative pt-32 pb-20 text-center px-6 overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{backgroundImage:'radial-gradient(circle, #ffffff22 1px, transparent 1px)', backgroundSize:'60px 60px'}} />
         <HexagonField />
+        <HexGlowCorner />
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-700 bg-zinc-900/60 backdrop-blur-sm mb-8">
           <Sparkles className="w-3.5 h-3.5 text-zinc-300" />
           <span className="text-sm text-zinc-300">Contact Us</span>
