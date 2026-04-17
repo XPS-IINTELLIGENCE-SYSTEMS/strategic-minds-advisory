@@ -15,20 +15,21 @@ const HEX_POINTS = (() => {
 })();
 
 // Single wavy path of connected hexagons across top-right
+const OFFSET_Y = H * 0.8;
 const HEX_PATH = [
-  { x: 0, y: 0 },
-  { x: W * 0.75, y: -H * 0.5 },
-  { x: W * 1.5, y: 0 },
-  { x: W * 2.25, y: -H * 0.5 },
-  { x: W * 3, y: 0 },
-  { x: W * 3.75, y: -H * 0.5 },
-  { x: W * 4.5, y: 0 },
-  { x: W * 5.25, y: -H * 0.5 },
-  { x: W * 6, y: 0 },
+  { x: 0, y: OFFSET_Y },
+  { x: W * 0.75, y: OFFSET_Y - H * 0.5 },
+  { x: W * 1.5, y: OFFSET_Y },
+  { x: W * 2.25, y: OFFSET_Y - H * 0.5 },
+  { x: W * 3, y: OFFSET_Y },
+  { x: W * 3.75, y: OFFSET_Y - H * 0.5 },
+  { x: W * 4.5, y: OFFSET_Y },
+  { x: W * 5.25, y: OFFSET_Y - H * 0.5 },
+  { x: W * 6, y: OFFSET_Y },
 ];
 
-const SVG_W = W * 6.5;
-const SVG_H = H * 2;
+const SVG_W = W * 7;
+const SVG_H = H * 2.5;
 
 export default function HexGlowCorner() {
   return (
