@@ -26,7 +26,10 @@ export default function Navbar() {
   return (
     <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-black/80 backdrop-blur-md' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="font-display text-2xl font-bold text-white">MarketAI</Link>
+        <Link to="/" className="font-display text-2xl text-white tracking-tight">
+          <span className="font-black">Strategic Minds</span>
+          <span className="font-thin">&nbsp;&nbsp;Advisory</span>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-8">
           {links.map(l => (
