@@ -1,0 +1,46 @@
+{
+  "name": "ContactInquiry",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "company": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "budget": {
+      "type": "string",
+      "enum": [
+        "under_25k",
+        "25k_50k",
+        "50k_100k",
+        "100k_250k",
+        "250k_plus"
+      ]
+    },
+    "project_details": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "closed"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "full_name",
+    "email",
+    "project_details"
+  ]
+}
