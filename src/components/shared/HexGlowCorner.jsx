@@ -1,6 +1,6 @@
 import React from 'react';
 
-const S = 44;
+const S = 36;
 const W = S * 2;
 const H = Math.sqrt(3) * S;
 
@@ -14,58 +14,66 @@ const HEX_POINTS = (() => {
   return pts.join(' ');
 })();
 
-// Single wavy path of connected hexagons across top-right
-const OFFSET_Y = H * 0.8;
-const HEX_PATH = [
-  { x: 0, y: OFFSET_Y },
-  { x: W * 0.75, y: OFFSET_Y - H * 0.5 },
-  { x: W * 1.5, y: OFFSET_Y },
-  { x: W * 2.25, y: OFFSET_Y - H * 0.5 },
-  { x: W * 3, y: OFFSET_Y },
-  { x: W * 3.75, y: OFFSET_Y - H * 0.5 },
-  { x: W * 4.5, y: OFFSET_Y },
-  { x: W * 5.25, y: OFFSET_Y - H * 0.5 },
-  { x: W * 6, y: OFFSET_Y },
-];
-
-const SVG_W = W * 7;
-const SVG_H = H * 2.5;
-
 export default function HexGlowCorner() {
+  const rows = 3;
+  const cols = 16;
+  const hexagons = [];
+
+  // Create a grid of hexagons
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const x = col * W * 0.75 + (row % 2) * W * 0.375;
+      const y = row * H * 0.75;
+      
+      // Determine opacity: brightest in top-middle, fades to edges and down
+      let opacity = 0.15;
+      const fromTop = row;
+      const fromMiddle = Math.abs(col - cols / 2);
+      
+      if (fromTop === 0) {
+        opacity = 0.5 - (fromMiddle / cols) * 0.35;
+      } else if (fromTop === 1) {
+        opacity = 0.25 - (fromMiddle / cols) * 0.2;
+      } else {
+        opacity = 0.08 - (fromMiddle / cols) * 0.05;
+      }
+      
+      hexagons.push({ x, y, opacity });
+    }
+  }
+
+  const SVG_W = cols * W * 0.75 + W;
+  const SVG_H = rows * H * 0.75 + H;
+
   return (
     <div
       style={{
         position: 'absolute',
         top: 0,
-        right: 0,
-        width: SVG_W,
-        height: SVG_H,
+        left: 0,
+        width: '100%',
+        height: SVG_H + 20,
         pointerEvents: 'none',
         zIndex: 1,
+        overflow: 'hidden',
       }}
     >
-      <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}>
-        <defs>
-          <style>{`
-            @keyframes hexGlow {
-              0%, 100% { stroke-opacity: 0.25; filter: drop-shadow(0 0 2px rgba(210,120,20,0.3)); }
-              50%       { stroke-opacity: 0.08; filter: drop-shadow(0 0 0px rgba(210,120,20,0.1)); }
-            }
-            .hex-line { animation: hexGlow 4s ease-in-out infinite; }
-          `}</style>
-        </defs>
-
-        {HEX_PATH.map((h, i) => (
+      <svg 
+        width="100%" 
+        height={SVG_H + 20} 
+        viewBox={`0 0 ${SVG_W} ${SVG_H + 20}`}
+        preserveAspectRatio="xMidYMid slice"
+      >
+        {hexagons.map((h, i) => (
           <polygon
             key={i}
             points={HEX_POINTS}
             transform={`translate(${h.x}, ${h.y})`}
-            className="hex-line"
             style={{
               fill: 'none',
-              stroke: 'rgb(200,120,30)',
-              strokeWidth: '0.8',
-              animationDelay: `${(i * 0.15).toFixed(2)}s`,
+              stroke: 'rgb(180,110,20)',
+              strokeWidth: '0.7',
+              opacity: h.opacity,
             }}
           />
         ))}
