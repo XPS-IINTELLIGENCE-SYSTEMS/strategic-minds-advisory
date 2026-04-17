@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight, Brain, TrendingUp, Users, Clock, Quote } from 'lucide-react';
 import HexagonField from '@/components/shared/HexagonField';
-import HexGlowCorner from '@/components/shared/HexGlowCorner';
+
 import HexPattern from '@/components/shared/HexPattern';
 
 const LAPTOP_BG = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&h=900&fit=crop';
@@ -36,7 +36,7 @@ export default function Home() {
         <div className="absolute inset-0 right-0 w-1/2">
           <img src="https://media.base44.com/images/public/69e19e1ab78af2f5713c40be/1ea289e4a_generated_image.png" alt="" className="w-full h-full object-cover" />
         </div>
-        <HexGlowCorner />
+
 
         <div className="relative text-center px-6 max-w-4xl mx-auto z-10">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-700 bg-zinc-900/60 backdrop-blur-sm mb-8">
