@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight, Brain, TrendingUp, Users, Clock, Quote } from 'lucide-react';
 import HexagonField from '@/components/shared/HexagonField';
+import PageHexGlow from '@/components/shared/PageHexGlow';
 
 import HexPattern from '@/components/shared/HexPattern';
 
@@ -33,6 +34,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black" />
+        <PageHexGlow />
 
 
 
