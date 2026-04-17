@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight, Brain, TrendingUp, Users, Clock, Quote } from 'lucide-react';
+import HexagonField from '@/components/shared/HexagonField';
 
 const LAPTOP_BG = 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1600&h=900&fit=crop';
 
@@ -35,6 +36,7 @@ export default function Home() {
         </div>
         {/* dot grid */}
         <div className="absolute inset-0 opacity-20" style={{backgroundImage:'radial-gradient(circle, #ffffff22 1px, transparent 1px)', backgroundSize:'60px 60px'}} />
+        <HexagonField />
 
         <div className="relative text-center px-6 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-700 bg-zinc-900/60 backdrop-blur-sm mb-8">
