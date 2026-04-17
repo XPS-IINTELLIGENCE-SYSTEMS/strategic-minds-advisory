@@ -33,6 +33,7 @@ export default function Home() {
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black" />
+        <HexPattern />
         <HexagonField />
         <HexGlowCorner />
 
