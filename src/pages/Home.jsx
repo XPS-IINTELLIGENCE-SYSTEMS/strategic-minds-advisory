@@ -32,10 +32,7 @@ export default function Home() {
     <>
       {/* Hero */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img src={LAPTOP_BG} alt="" className="w-full h-full object-cover opacity-30" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black" />
-        </div>
+        <div className="absolute inset-0 bg-black" />
         {/* dot grid */}
         <div className="absolute inset-0 opacity-20" style={{backgroundImage:'radial-gradient(circle, #ffffff22 1px, transparent 1px)', backgroundSize:'60px 60px'}} />
         <HexPattern />
