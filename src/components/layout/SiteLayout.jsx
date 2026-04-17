@@ -5,15 +5,11 @@ import Footer from './Footer';
 
 export default function SiteLayout() {
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [pathname]);
-
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [pathname]);
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground relative overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Navbar />
-      <main className="flex-1 pt-20">
+      <main className="flex-1">
         <Outlet />
       </main>
       <Footer />
