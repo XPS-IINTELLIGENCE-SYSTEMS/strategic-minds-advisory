@@ -75,16 +75,20 @@ export default function HexGlowCorner() {
 
         {HEXES.map((h) => {
           const proximity = 1 - h.distFromGlow / MAX_DIST;
-          let cls, strokeColor;
+          let cls, strokeColor, baseWidth;
+          
           if (proximity > 0.65) {
             cls = 'hex-bright';
             strokeColor = 'rgb(220,140,30)';
+            baseWidth = 2.2;
           } else if (proximity > 0.35) {
             cls = 'hex-mid';
             strokeColor = 'rgb(190,100,20)';
+            baseWidth = 1.5;
           } else {
             cls = 'hex-dim';
-            strokeColor = 'rgb(160,75,15)';
+            strokeColor = 'rgb(140,60,10)';
+            baseWidth = 0.6;
           }
 
           // stagger each hex slightly using animationDelay
@@ -99,7 +103,7 @@ export default function HexGlowCorner() {
               style={{
                 fill: 'none',
                 stroke: strokeColor,
-                strokeWidth: '1',
+                strokeWidth: baseWidth,
                 animationDelay: delay,
               }}
             />
