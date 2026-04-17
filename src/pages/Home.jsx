@@ -35,6 +35,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black" />
         {/* dot grid */}
         <div className="absolute inset-0 opacity-20" style={{backgroundImage:'radial-gradient(circle, #ffffff22 1px, transparent 1px)', backgroundSize:'60px 60px'}} />
+        <HexPattern />
         <HexagonField />
         <HexGlowCorner />
 
