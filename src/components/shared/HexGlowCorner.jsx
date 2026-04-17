@@ -14,27 +14,21 @@ const HEX_POINTS = (() => {
   return pts.join(' ');
 })();
 
-const COLS = 8;
-const ROWS = 7;
+// Single wavy path of connected hexagons across top-right
+const HEX_PATH = [
+  { x: 0, y: 0 },
+  { x: W * 0.75, y: -H * 0.5 },
+  { x: W * 1.5, y: 0 },
+  { x: W * 2.25, y: -H * 0.5 },
+  { x: W * 3, y: 0 },
+  { x: W * 3.75, y: -H * 0.5 },
+  { x: W * 4.5, y: 0 },
+  { x: W * 5.25, y: -H * 0.5 },
+  { x: W * 6, y: 0 },
+];
 
-function buildGrid(cols, rows) {
-  const hexes = [];
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const x = col * (W * 0.75);
-      const y = row * H + (col % 2 === 1 ? H / 2 : 0);
-      // distance from top-right corner for glow intensity
-      const distFromGlow = Math.sqrt(Math.pow(col - (cols - 1), 2) + Math.pow(row, 2));
-      hexes.push({ x, y, distFromGlow, id: `${row}-${col}` });
-    }
-  }
-  return hexes;
-}
-
-const HEXES = buildGrid(COLS, ROWS);
-const SVG_W = COLS * W * 0.75 + W * 0.25;
-const SVG_H = ROWS * H + H / 2;
-const MAX_DIST = Math.sqrt((COLS - 1) ** 2 + (ROWS - 1) ** 2);
+const SVG_W = W * 6.5;
+const SVG_H = H * 2;
 
 export default function HexGlowCorner() {
   return (
@@ -47,68 +41,33 @@ export default function HexGlowCorner() {
         height: SVG_H,
         pointerEvents: 'none',
         zIndex: 1,
-        maskImage: 'radial-gradient(ellipse 90% 85% at 100% 0%, black 20%, transparent 100%)',
-        WebkitMaskImage: 'radial-gradient(ellipse 90% 85% at 100% 0%, black 20%, transparent 100%)',
       }}
     >
       <svg width={SVG_W} height={SVG_H} viewBox={`0 0 ${SVG_W} ${SVG_H}`}>
         <defs>
-          {/* Keyframe glow animation per proximity group */}
           <style>{`
-            @keyframes hexPulse0 {
-              0%, 100% { stroke-opacity: 0.35; filter: drop-shadow(0 0 3px rgba(210,120,20,0.4)); }
-              50%       { stroke-opacity: 0.15; filter: drop-shadow(0 0 1px rgba(210,120,20,0.15)); }
+            @keyframes hexGlow {
+              0%, 100% { stroke-opacity: 0.25; filter: drop-shadow(0 0 2px rgba(210,120,20,0.3)); }
+              50%       { stroke-opacity: 0.08; filter: drop-shadow(0 0 0px rgba(210,120,20,0.1)); }
             }
-            @keyframes hexPulse1 {
-              0%, 100% { stroke-opacity: 0.18; filter: drop-shadow(0 0 2px rgba(180,90,10,0.2)); }
-              50%       { stroke-opacity: 0.07; filter: drop-shadow(0 0 0px rgba(180,90,10,0.07)); }
-            }
-            @keyframes hexPulse2 {
-              0%, 100% { stroke-opacity: 0.08; }
-              50%       { stroke-opacity: 0.02; }
-            }
-            .hex-bright  { animation: hexPulse0 3s ease-in-out infinite; }
-            .hex-mid     { animation: hexPulse1 4s ease-in-out infinite; }
-            .hex-dim     { animation: hexPulse2 5s ease-in-out infinite; }
+            .hex-line { animation: hexGlow 4s ease-in-out infinite; }
           `}</style>
         </defs>
 
-        {HEXES.map((h) => {
-          const proximity = 1 - h.distFromGlow / MAX_DIST;
-          let cls, strokeColor, baseWidth;
-          
-          if (proximity > 0.65) {
-            cls = 'hex-bright';
-            strokeColor = 'rgb(220,140,30)';
-            baseWidth = 0.7;
-          } else if (proximity > 0.35) {
-            cls = 'hex-mid';
-            strokeColor = 'rgb(190,100,20)';
-            baseWidth = 0.5;
-          } else {
-            cls = 'hex-dim';
-            strokeColor = 'rgb(140,60,10)';
-            baseWidth = 0.3;
-          }
-
-          // stagger each hex slightly using animationDelay
-          const delay = `${((h.distFromGlow / MAX_DIST) * 2).toFixed(2)}s`;
-
-          return (
-            <polygon
-              key={h.id}
-              points={HEX_POINTS}
-              transform={`translate(${h.x}, ${h.y})`}
-              className={cls}
-              style={{
-                fill: 'none',
-                stroke: strokeColor,
-                strokeWidth: baseWidth,
-                animationDelay: delay,
-              }}
-            />
-          );
-        })}
+        {HEX_PATH.map((h, i) => (
+          <polygon
+            key={i}
+            points={HEX_POINTS}
+            transform={`translate(${h.x}, ${h.y})`}
+            className="hex-line"
+            style={{
+              fill: 'none',
+              stroke: 'rgb(200,120,30)',
+              strokeWidth: '0.8',
+              animationDelay: `${(i * 0.15).toFixed(2)}s`,
+            }}
+          />
+        ))}
       </svg>
     </div>
   );
