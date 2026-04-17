@@ -34,7 +34,7 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-black" />
         <div className="absolute inset-0 right-0 w-1/2">
-          <img src="https://media.base44.com/images/public/69e19e1ab78af2f5713c40be/defc4d1cf_1000_F_474034004_KxYl7oARrHdjJkRZULH7Ke7TGiCUNFIW.jpg" alt="" className="w-full h-full object-cover" />
+          <img src="https://media.base44.com/images/public/69e19e1ab78af2f5713c40be/1ea289e4a_generated_image.png" alt="" className="w-full h-full object-cover" />
         </div>
         <HexGlowCorner />
 
