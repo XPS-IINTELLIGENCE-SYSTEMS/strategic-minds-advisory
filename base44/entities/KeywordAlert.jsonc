@@ -1,0 +1,52 @@
+{
+  "name": "KeywordAlert",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "model_id": {
+      "type": "string",
+      "description": "Related SavedModel ID"
+    },
+    "model_name": {
+      "type": "string"
+    },
+    "keywords": {
+      "type": "string",
+      "description": "Comma-separated keywords to monitor"
+    },
+    "minimum_impact_score": {
+      "type": "number",
+      "description": "0-100 threshold for alerts",
+      "default": 70
+    },
+    "alert_method": {
+      "type": "string",
+      "enum": [
+        "email",
+        "both"
+      ],
+      "default": "email",
+      "description": "Email or SMS+Email"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_alert_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "alert_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Total alerts sent"
+    }
+  },
+  "required": [
+    "user_email",
+    "model_id",
+    "keywords"
+  ]
+}

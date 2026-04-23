@@ -67,6 +67,7 @@ const NAV_GROUPS = [
       { id: 'debate-history', icon: Zap, label: 'Debate History' },
       { id: 'integrations', icon: Zap, label: 'Integrations' },
       { id: 'playbooks', icon: Zap, label: 'Playbooks' },
+      { id: 'keywords', icon: Zap, label: 'Keyword Alerts' },
     ],
   },
 ];
