@@ -58,8 +58,8 @@ Deno.serve(async (req) => {
 });
 
 async function ingestLinkedInData(base44) {
-  // Try BrightData first; fall back to web scraping
-  const brightdataKey = Deno.env.get('BRIGHTDATA_API_KEY');
+  // Try BrightData first; fall back to Groq web scraping
+  const brightdataKey = Deno.env.get('BRIGHTDATA_API_KEY') || '';
 
   let linkedinInsights = [];
 
@@ -86,10 +86,8 @@ async function ingestLinkedInData(base44) {
     }
   } else {
     // Fallback: Use Groq to fetch + analyze LinkedIn-equivalent data (public news)
-    const fallbackRes = await base44.functions.invoke('groqChat', {
-      messages: [{
-        role: 'user',
-        content: `Scrape and summarize the TOP 10 recent AI startup funding announcements from news/press releases.
+    const fallbackRes = await base44.integrations.Core.InvokeLLM({
+      prompt: `Scrape and summarize the TOP 10 recent AI startup funding announcements from news/press releases.
 
 For each, extract:
 - Company name
@@ -98,7 +96,6 @@ For each, extract:
 - Strategic insight (why this matters)
 
 Format as JSON array.`,
-      }],
       add_context_from_internet: true,
       response_json_schema: {
         type: 'array',
@@ -114,7 +111,7 @@ Format as JSON array.`,
       },
     });
 
-    linkedinInsights = fallbackRes.data || [];
+    linkedinInsights = fallbackRes || [];
   }
 
   // Store in StrategicIntelligence
@@ -136,12 +133,13 @@ Format as JSON array.`,
 }
 
 async function ingestProductHuntData(base44) {
-  // ProductHunt public API + RSS
-  const phRes = await fetch('https://api.producthunt.com/v2/posts', {
+  // ProductHunt public API (optional key)
+  const phKey = Deno.env.get('PRODUCTHUNT_API_KEY') || '';
+  const phRes = phKey ? await fetch('https://api.producthunt.com/v2/posts', {
     headers: {
-      'Authorization': `Bearer ${Deno.env.get('PRODUCTHUNT_API_KEY') || ''}`,
+      'Authorization': `Bearer ${phKey}`,
     },
-  }).catch(() => null);
+  }).catch(() => null) : null;
 
   let products = [];
 
@@ -150,10 +148,8 @@ async function ingestProductHuntData(base44) {
     products = (data.data || []).slice(0, 20);
   } else {
     // Fallback: RSS feed or Groq web scrape
-    const fallbackRes = await base44.functions.invoke('groqChat', {
-      messages: [{
-        role: 'user',
-        content: `List the TOP 15 trending AI/ML tools from ProductHunt this week.
+    const fallbackRes = await base44.integrations.Core.InvokeLLM({
+      prompt: `List the TOP 15 trending AI/ML tools from ProductHunt this week.
 
 For each, extract:
 - Product name
@@ -162,7 +158,6 @@ For each, extract:
 - Competitive implications
 
 Format as JSON array.`,
-      }],
       add_context_from_internet: true,
       response_json_schema: {
         type: 'array',
@@ -178,7 +173,7 @@ Format as JSON array.`,
       },
     });
 
-    products = fallbackRes.data || [];
+    products = fallbackRes || [];
   }
 
   // Store in StrategicIntelligence
@@ -214,10 +209,8 @@ async function ingestSECEdgarData(base44) {
     ).slice(0, 20);
   } else {
     // Fallback: Groq scrape
-    const fallbackRes = await base44.functions.invoke('groqChat', {
-      messages: [{
-        role: 'user',
-        content: `Summarize the LATEST 10 SEC EDGAR filings (10-K, 10-Q) with significant AI/ML disclosures.
+    const fallbackRes = await base44.integrations.Core.InvokeLLM({
+      prompt: `Summarize the LATEST 10 SEC EDGAR filings (10-K, 10-Q) with significant AI/ML disclosures.
 
 For each, extract:
 - Company name
@@ -226,7 +219,6 @@ For each, extract:
 - Risk factors disclosed
 
 Format as JSON array.`,
-      }],
       add_context_from_internet: true,
       response_json_schema: {
         type: 'array',
@@ -242,7 +234,7 @@ Format as JSON array.`,
       },
     });
 
-    filings = fallbackRes.data || [];
+    filings = fallbackRes || [];
   }
 
   // Store in StrategicIntelligence

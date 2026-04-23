@@ -18,10 +18,8 @@ Deno.serve(async (req) => {
 
       // Round 1: Validator identifies risks
       if (roundNum === 1) {
-        const validatorRes = await base44.functions.invoke('groqChat', {
-          messages: [{
-            role: 'user',
-            content: `You are a Risk Validator. Analyze "${ideaTitle}" (${ideaDomain}) against this black swan: "${scenarioName}".
+        const validatorRes = await base44.integrations.Core.InvokeLLM({
+          prompt: `You are a Risk Validator. Analyze "${ideaTitle}" (${ideaDomain}) against this black swan: "${scenarioName}".
 
 Identify:
 1. Top 3 critical risks if this scenario occurs
@@ -29,26 +27,23 @@ Identify:
 3. What assumptions break first
 
 Be brutal and concise.`,
-          }],
-          systemPrompt: 'You are an elite risk validator. Be extremely critical and identify failure modes.',
+          model: 'gpt_5_mini',
         });
 
-        agentStates.validator.risks = validatorRes.data.content;
+        agentStates.validator.risks = validatorRes;
         agentResponses.push({
           id: 'validator',
           name: 'Validator',
           emoji: '✅',
           status: 'responded',
-          response: validatorRes.data.content,
+          response: validatorRes,
         });
       }
 
       // Round 2: Strategist proposes pivots
       if (roundNum === 2) {
-        const strategistRes = await base44.functions.invoke('groqChat', {
-          messages: [{
-            role: 'user',
-            content: `You are a Strategist. Given "${ideaTitle}" facing "${scenarioName}":
+        const strategistRes = await base44.integrations.Core.InvokeLLM({
+          prompt: `You are a Strategist. Given "${ideaTitle}" facing "${scenarioName}":
 
 Validator flagged these risks:
 ${agentStates.validator.risks}
@@ -59,26 +54,23 @@ Propose:
 3. What capabilities need to be built
 
 Be specific and actionable.`,
-          }],
-          systemPrompt: 'You are an elite strategist. Propose bold, specific pivots.',
+          model: 'gpt_5_mini',
         });
 
-        agentStates.strategist.pivots = strategistRes.data.content;
+        agentStates.strategist.pivots = strategistRes;
         agentResponses.push({
           id: 'strategist',
           name: 'Strategist',
           emoji: '♟️',
           status: 'responded',
-          response: strategistRes.data.content,
+          response: strategistRes,
         });
       }
 
       // Round 3: Analyzer models outcomes
       if (roundNum === 3) {
-        const analyzerRes = await base44.functions.invoke('groqChat', {
-          messages: [{
-            role: 'user',
-            content: `You are an Analyst. Model outcomes for "${ideaTitle}" under "${scenarioName}":
+        const analyzerRes = await base44.integrations.Core.InvokeLLM({
+          prompt: `You are an Analyst. Model outcomes for "${ideaTitle}" under "${scenarioName}":
 
 Validator's risks:
 ${agentStates.validator.risks}
@@ -92,17 +84,16 @@ Calculate:
 3. Success probability with pivots (0-100%)
 
 Use the current model baseline: ${JSON.stringify(modelData?.revenueModel || { year1: 100, year2: 300, year3: 800 })}`,
-          }],
-          systemPrompt: 'You are an elite quantitative analyst. Model specific financial outcomes.',
+          model: 'gpt_5_mini',
         });
 
-        agentStates.analyzer.outcomes = analyzerRes.data.content;
+        agentStates.analyzer.outcomes = analyzerRes;
         agentResponses.push({
           id: 'analyzer',
           name: 'Analyzer',
           emoji: '🔬',
           status: 'responded',
-          response: analyzerRes.data.content,
+          response: analyzerRes,
         });
       }
 
@@ -110,10 +101,8 @@ Use the current model baseline: ${JSON.stringify(modelData?.revenueModel || { ye
     }
 
     // Final verdict from agent consensus
-    const verdictRes = await base44.functions.invoke('groqChat', {
-      messages: [{
-        role: 'user',
-        content: `Three elite agents have stress-tested "${ideaTitle}" against "${scenarioName}".
+    const verdictRes = await base44.integrations.Core.InvokeLLM({
+      prompt: `Three elite agents have stress-tested "${ideaTitle}" against "${scenarioName}".
 
 Validator's assessment:
 ${agentStates.validator.risks}
@@ -130,8 +119,7 @@ Render a single VERDICT (survived: true/false) with:
 3. If not survived: 2-3 failure points that kill the business
 
 Format as JSON.`,
-      }],
-      systemPrompt: 'You render final verdicts on business model resilience.',
+      model: 'gpt_5_mini',
       response_json_schema: {
         type: 'object',
         properties: {
@@ -160,7 +148,7 @@ Format as JSON.`,
     return Response.json({
       success: true,
       rounds,
-      finalVerdict: verdictRes.data,
+      finalVerdict: verdictRes,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
