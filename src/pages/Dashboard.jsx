@@ -113,10 +113,9 @@ export default function Dashboard() {
 
       {/* Chat panel - slide in/out */}
       <motion.div
-        initial={{ x: -400 }}
-        animate={{ x: chatOpen ? 0 : -400 }}
+        animate={{ width: chatOpen ? 384 : 0 }}
         transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-        className="hidden xl:flex w-80 xl:w-96 flex-shrink-0 border-r border-border flex-col fixed xl:static h-screen xl:h-auto left-0 top-0 z-20 bg-background"
+        className="hidden xl:flex overflow-hidden border-r border-border flex-col bg-background"
       >
         <ChatPanel seed={chatSeed} onSeedConsumed={() => setChatSeed(null)} />
       </motion.div>
