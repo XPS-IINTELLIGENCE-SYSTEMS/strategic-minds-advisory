@@ -7,6 +7,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import SiteLayout from '@/components/layout/SiteLayout';
+import PWAInstaller from '@/lib/PWAInstaller';
 import Home from '@/pages/Home';
 import Services from '@/pages/Services';
 import About from '@/pages/About';
@@ -70,6 +71,7 @@ function App() {
           <AuthenticatedApp />
         </Router>
         <Toaster />
+        <PWAInstaller />
       </QueryClientProvider>
     </AuthProvider>
   )
