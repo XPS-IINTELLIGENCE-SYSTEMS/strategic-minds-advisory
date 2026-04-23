@@ -1,0 +1,59 @@
+{
+  "name": "DataIngestionSource",
+  "type": "object",
+  "properties": {
+    "source_name": {
+      "type": "string",
+      "enum": [
+        "linkedin",
+        "producthunt",
+        "sec_edgar",
+        "crunchbase",
+        "twitter",
+        "github"
+      ]
+    },
+    "api_type": {
+      "type": "string",
+      "enum": [
+        "brightdata",
+        "native_api",
+        "rss_feed",
+        "web_scrape"
+      ]
+    },
+    "endpoint": {
+      "type": "string",
+      "description": "API endpoint or RSS URL"
+    },
+    "auth_secret_name": {
+      "type": "string",
+      "description": "Name of secret for credentials (e.g., BRIGHTDATA_API_KEY)"
+    },
+    "refresh_interval_minutes": {
+      "type": "number",
+      "default": 60,
+      "description": "How often to refresh data"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "records_ingested_today": {
+      "type": "number",
+      "default": 0
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "target_entity": {
+      "type": "string",
+      "description": "Which entity to populate (StrategicIntelligence, etc.)"
+    }
+  },
+  "required": [
+    "source_name",
+    "api_type"
+  ]
+}

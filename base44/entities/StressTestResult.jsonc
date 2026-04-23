@@ -1,0 +1,46 @@
+{
+  "name": "StressTestResult",
+  "type": "object",
+  "properties": {
+    "idea_id": {
+      "type": "string",
+      "description": "Related VisionIdea ID"
+    },
+    "scenario_id": {
+      "type": "string",
+      "description": "Black swan scenario identifier"
+    },
+    "scenario_name": {
+      "type": "string",
+      "description": "Readable scenario name"
+    },
+    "survived": {
+      "type": "boolean",
+      "description": "Whether model survived the stress test"
+    },
+    "verdict": {
+      "type": "string",
+      "description": "One-line summary from agents"
+    },
+    "recommendations": {
+      "type": "string",
+      "description": "Agent recommendations (semicolon-separated)"
+    },
+    "failure_points": {
+      "type": "string",
+      "description": "Critical failure points if not survived"
+    },
+    "agent_states": {
+      "type": "string",
+      "description": "Raw JSON of validator/strategist/analyzer outputs"
+    },
+    "test_duration_ms": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "idea_id",
+    "scenario_id",
+    "survived"
+  ]
+}
