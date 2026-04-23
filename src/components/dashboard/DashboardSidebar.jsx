@@ -16,65 +16,30 @@ const NAV_GROUPS = [
   {
     label: 'Core AI',
     items: [
-      { id: 'chat', icon: MessageSquare, label: 'AI Chat' },
       { id: 'simulation', icon: Zap, label: 'Simulation' },
       { id: 'prediction', icon: TrendingUp, label: 'Prediction' },
       { id: 'insights', icon: BarChart3, label: 'Insights' },
     ],
   },
   {
-    label: 'Automation',
+    label: 'Strategy',
     items: [
-      { id: 'workflow', icon: Workflow, label: 'Workflows' },
-      { id: 'automation', icon: Bot, label: 'Automations' },
+      { id: 'intelligence', icon: Brain, label: 'Intelligence' },
+      { id: 'playbooks', icon: BookOpen, label: 'Playbooks' },
+      { id: 'alerts', icon: Zap, label: 'Alerts' },
     ],
   },
   {
-    label: 'Content',
+    label: 'Workspace',
     items: [
-      { id: 'content', icon: PenTool, label: 'Content Engine' },
-      { id: 'branding', icon: Video, label: 'Branding Studio' },
-      { id: 'social', icon: Globe, label: 'Social Intel' },
+      { id: 'workspace', icon: Users, label: 'Team' },
+      { id: 'investor-pipeline', icon: TrendingUp, label: 'Investors' },
     ],
   },
   {
-    label: 'Collaboration',
+    label: 'Settings',
     items: [
-      { id: 'workspace', icon: Users, label: 'Workspace' },
-      { id: 'pitch', icon: PenTool, label: 'Pitch Decks' },
-      { id: 'alerts', icon: Bot, label: 'Real-Time Alerts' },
-      { id: 'investor-pipeline', icon: Users, label: 'Investor Pipeline' },
-      { id: 'battlecard', icon: Zap, label: 'Battlecard' },
-      { id: 'intelligence', icon: Brain, label: 'Market Intelligence' },
-    ],
-  },
-  {
-    label: 'Tools',
-    items: [
-      { id: 'prompts', icon: BookOpen, label: 'Prompt Library' },
-      { id: 'templates', icon: Layout, label: 'Templates' },
-      { id: 'sync', icon: RefreshCw, label: 'Google Sync' },
-      { id: 'test', icon: TestTube, label: 'Test Module' },
-      { id: 'reports', icon: BookOpen, label: 'Reports & Alerts' },
-      { id: 'workflows', icon: Bot, label: 'Workflows' },
-      { id: 'predict', icon: TrendingUp, label: 'Predictions' },
-      { id: 'deploy', icon: Send, label: 'Deploy Tasks' },
-      { id: 'pitch', icon: Zap, label: 'Pitch Decks' },
-      { id: 'voice', icon: Zap, label: 'Voice Input' },
-      { id: 'whiteboard', icon: Zap, label: 'Whiteboard' },
-      { id: 'digest', icon: Zap, label: 'Daily Digest' },
-      { id: 'portfolio', icon: Zap, label: 'Portfolio' },
-      { id: 'debate-history', icon: Zap, label: 'Debate History' },
-      { id: 'integrations', icon: Zap, label: 'Integrations' },
-      { id: 'playbooks', icon: Zap, label: 'Playbooks' },
-      { id: 'keywords', icon: Zap, label: 'Keyword Alerts' },
-      { id: 'execution', icon: Zap, label: 'Decision → Tasks' },
-    ],
-  },
-  {
-    label: 'User',
-    items: [
-      { id: 'account', icon: Settings, label: 'Account Settings' },
+      { id: 'account', icon: Settings, label: 'Account' },
     ],
   },
 ];
@@ -111,6 +76,7 @@ export default function DashboardSidebar({ activeTool, setActiveTool }) {
                         ? 'bg-accent/15 text-accent'
                         : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60'
                     }`}
+                    title={label}
                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
                     <span className="hidden xl:block text-sm">{label}</span>
