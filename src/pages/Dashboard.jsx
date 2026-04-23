@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import ChatPanel from '@/components/dashboard/ChatPanel';
 import AccountSettings from '@/components/dashboard/AccountSettings';
+import VoiceInputButton from '@/components/mobile/VoiceInputButton';
 import SimulationTool from '@/components/dashboard/SimulationTool';
 import PredictionTool from '@/components/dashboard/PredictionTool';
 import PromptLibraryPanel from '@/components/dashboard/PromptLibraryPanel';
@@ -101,6 +102,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
+      <VoiceInputButton />
       {/* Left sidebar nav */}
       <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
 
