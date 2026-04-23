@@ -23,6 +23,7 @@ import MarketIntelligenceChat from '@/components/dashboard/MarketIntelligenceCha
 import CompetitorBattlecard from '@/components/dashboard/CompetitorBattlecard';
 import WorkflowEnginePanel from '@/components/dashboard/WorkflowEnginePanel';
 import PredictiveModelingDashboard from '@/components/dashboard/PredictiveModelingDashboard';
+import DeploymentPanel from '@/components/dashboard/DeploymentPanel';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -56,6 +57,7 @@ export default function Dashboard() {
       case 'intelligence': return <MarketIntelligenceChat />;
       case 'workflows': return <WorkflowEnginePanel />;
       case 'predict': return <PredictiveModelingDashboard />;
+      case 'deploy': return <DeploymentPanel />;
       default: return <SimulationTool />;
     }
   };
@@ -95,6 +97,7 @@ export default function Dashboard() {
                activeTool === 'battlecard' ? 'Competitor Battlecard' :
                activeTool === 'workflows' ? 'Trigger-Action Workflows' :
                activeTool === 'predict' ? 'Predictive Modeling' :
+               activeTool === 'deploy' ? 'Deploy to Google Tasks' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">

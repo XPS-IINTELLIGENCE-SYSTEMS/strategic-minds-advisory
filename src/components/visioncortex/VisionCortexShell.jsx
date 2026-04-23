@@ -17,6 +17,8 @@ import IntelligenceMatrixDashboard from './IntelligenceMatrixDashboard';
 import DebateArenaUI from './DebateArenaUI';
 import MultiAgentStressTest from './MultiAgentStressTest';
 import RiskScenarioMap from './RiskScenarioMap';
+import NetworkVisualizationDashboard from './NetworkVisualizationDashboard';
+import CustomAgentSimulator from './CustomAgentSimulator';
 import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu, CheckSquare, Library, Zap, TrendingDown } from 'lucide-react';
 
 const TABS = [
@@ -36,6 +38,8 @@ const TABS = [
   { id: 'debate',       icon: MessageSquare,  label: 'Debate' },
   { id: 'sandbox',      icon: Terminal,       label: 'Sandbox' },
   { id: 'deploy',       icon: Rocket,         label: 'Deploy' },
+  { id: 'network',      icon: Globe,          label: 'Network Map' },
+  { id: 'agent-custom', icon: Brain,          label: 'Agent Studio' },
   { id: 'logs',         icon: ScrollText,     label: 'Logs' },
 ];
 
@@ -150,6 +154,8 @@ export default function VisionCortexShell() {
         {activeTab === 'debate'       && <AgentDebateChat idea={selectedIdea} />}
         {activeTab === 'sandbox'      && <ActiveSandbox idea={selectedIdea} />}
         {activeTab === 'deploy'       && <DeploymentEngine />}
+        {activeTab === 'network'      && <NetworkVisualizationDashboard />}
+        {activeTab === 'agent-custom' && <CustomAgentSimulator model={selectedIdea} />}
         {activeTab === 'logs'         && <VisionLogs />}
       </div>
     </div>
