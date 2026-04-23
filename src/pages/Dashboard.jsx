@@ -80,6 +80,17 @@ export default function Dashboard() {
     }
   }, [activeTool]);
 
+  // Integrate saveScrollPosition into scroll event
+  const handleScroll = () => {
+    saveScrollPosition();
+    if (contentScrollRef.current && !tabStatesRef.current[activeTool]) {
+      tabStatesRef.current[activeTool] = {};
+    }
+    if (contentScrollRef.current) {
+      tabStatesRef.current[activeTool].scrollPosition = contentScrollRef.current.scrollTop;
+    }
+  };
+
   const renderTool = () => {
     switch (activeTool) {
       case 'simulation': return <SimulationTool />;
@@ -213,7 +224,7 @@ export default function Dashboard() {
           ref={contentScrollRef}
           className="flex-1 overflow-y-auto overflow-x-hidden" 
           data-tool-content
-          onScroll={saveScrollPosition}
+          onScroll={handleScroll}
         >
           {renderTool()}
         </div>

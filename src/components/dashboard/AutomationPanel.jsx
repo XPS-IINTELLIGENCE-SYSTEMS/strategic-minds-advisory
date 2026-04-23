@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Bot, Play, Loader2, Plus, Trash2, CheckCircle2, XCircle, Clock, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import MobileSelect from '@/components/common/MobileSelect';
 
 const AUTOMATION_TYPES = [
   'Content Generation', 'Market Research', 'Competitor Analysis',
@@ -153,10 +154,8 @@ export default function AutomationPanel() {
                 <input value={newTask.name} onChange={e => setNewTask(t => ({ ...t, name: e.target.value }))}
                   placeholder="Task name"
                   className="bg-background border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition" />
-                <select value={newTask.automation_type} onChange={e => setNewTask(t => ({ ...t, automation_type: e.target.value }))}
-                  className="bg-background border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition">
-                  {AUTOMATION_TYPES.map(t => <option key={t}>{t}</option>)}
-                </select>
+                <MobileSelect value={newTask.automation_type} onChange={v => setNewTask(t => ({ ...t, automation_type: v }))}
+                  options={AUTOMATION_TYPES.map(t => ({ value: t, label: t }))} placeholder="Select type" />
                 <input value={newTask.schedule} onChange={e => setNewTask(t => ({ ...t, schedule: e.target.value }))}
                   placeholder="Schedule (e.g. Daily 9AM, Weekly Monday)"
                   className="bg-background border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition" />

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Zap, Loader2, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2, Save } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
+import PullToRefresh from '@/components/common/PullToRefresh';
 
 const SIM_TYPES = [
   'Market Entry', 'Financial Model', 'Product Launch', 'Pricing Strategy',
@@ -78,9 +79,12 @@ export default function SimulationTool() {
   const trendIcon = result?.trend === 'up' ? TrendingUp : TrendingDown;
   const TrendIcon = trendIcon;
 
+  const contentRef = useRef(null);
+
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <PullToRefresh onRefresh={() => run()}>
+      <div ref={contentRef} className="h-full overflow-y-auto">
+        <div className="max-w-5xl mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -226,7 +230,8 @@ export default function SimulationTool() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </div>
-    </div>
+    </PullToRefresh>
   );
 }

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { TrendingUp, Loader2, AlertTriangle, CheckCircle2, Target, BarChart3 } from 'lucide-react';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { motion, AnimatePresence } from 'framer-motion';
+import PullToRefresh from '@/components/common/PullToRefresh';
 
 const PRED_TYPES = [
   'Market Trends', 'Revenue Forecast', 'Customer Behavior',
@@ -34,9 +35,12 @@ export default function PredictionTool() {
     setLoading(false);
   };
 
+  const contentRef = useRef(null);
+
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <PullToRefresh onRefresh={() => run()}>
+      <div ref={contentRef} className="h-full overflow-y-auto">
+        <div className="max-w-5xl mx-auto p-6 space-y-6">
         <div>
           <h2 className="font-display text-2xl text-gradient-ivory">Prediction Engine</h2>
           <p className="text-sm text-muted-foreground mt-1">AI-powered forecasting with scenario analysis</p>
@@ -195,7 +199,8 @@ export default function PredictionTool() {
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </div>
-    </div>
+    </PullToRefresh>
   );
 }

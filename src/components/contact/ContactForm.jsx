@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Send, CheckCircle2, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import MobileSelect from '@/components/common/MobileSelect';
 
 const budgets = [
   { v: 'under_25k', l: 'Under $25,000' },
@@ -71,16 +72,12 @@ export default function ContactForm() {
         <label className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2 block">
           Engagement Budget
         </label>
-        <select
+        <MobileSelect
           value={form.budget}
-          onChange={(e) => set('budget', e.target.value)}
-          className="w-full bg-background border border-border rounded-xl px-4 py-3.5 text-sm outline-none focus:border-accent transition"
-        >
-          <option value="">Select a range</option>
-          {budgets.map((b) => (
-            <option key={b.v} value={b.v}>{b.l}</option>
-          ))}
-        </select>
+          onChange={(v) => set('budget', v)}
+          options={[{ value: '', label: 'Select a range' }, ...budgets.map(b => ({ value: b.v, label: b.l }))]}
+          placeholder="Select a range"
+        />
       </div>
 
       <div>

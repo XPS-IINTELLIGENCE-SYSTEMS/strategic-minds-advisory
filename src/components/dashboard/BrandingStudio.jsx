@@ -5,6 +5,7 @@ import {
   Download, Copy, CheckCircle2, Play, Volume2, Layers
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import MobileSelect from '@/components/common/MobileSelect';
 
 const VIDEO_STYLES = [
   { id: 'corporate', label: 'Corporate', desc: 'Professional, clean, trustworthy' },
@@ -310,26 +311,20 @@ Include:
 
               <div className="grid md:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-muted-foreground mb-2 block">Voiceover Tone</label>
-                  <select value={videoForm.voiceoverTone} onChange={e => setVideoForm(f => ({ ...f, voiceoverTone: e.target.value }))}
-                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition">
-                    {VOICEOVER_TONES.map(t => <option key={t}>{t}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-2 block">Duration (seconds)</label>
-                  <select value={videoForm.duration} onChange={e => setVideoForm(f => ({ ...f, duration: e.target.value }))}
-                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition">
-                    {['30', '60', '90', '120', '180'].map(d => <option key={d}>{d}s</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-2 block">Aspect Ratio</label>
-                  <select value={videoForm.aspectRatio} onChange={e => setVideoForm(f => ({ ...f, aspectRatio: e.target.value }))}
-                    className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition">
-                    {ASPECT_RATIOS.map(r => <option key={r.id} value={r.id}>{r.label} — {r.desc}</option>)}
-                  </select>
-                </div>
+                    <label className="text-xs text-muted-foreground mb-2 block">Voiceover Tone</label>
+                    <MobileSelect value={videoForm.voiceoverTone} onChange={v => setVideoForm(f => ({ ...f, voiceoverTone: v }))}
+                      options={VOICEOVER_TONES.map(t => ({ value: t, label: t }))} placeholder="Select tone" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-2 block">Duration (seconds)</label>
+                    <MobileSelect value={videoForm.duration} onChange={v => setVideoForm(f => ({ ...f, duration: v }))}
+                      options={['30', '60', '90', '120', '180'].map(d => ({ value: d, label: `${d}s` }))} placeholder="Select duration" />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-2 block">Aspect Ratio</label>
+                    <MobileSelect value={videoForm.aspectRatio} onChange={v => setVideoForm(f => ({ ...f, aspectRatio: v }))}
+                      options={ASPECT_RATIOS.map(r => ({ value: r.id, label: `${r.label} — ${r.desc}` }))} placeholder="Select ratio" />
+                  </div>
               </div>
             </div>
           </div>
@@ -353,10 +348,8 @@ Include:
               </div>
               <div>
                 <label className="text-xs text-muted-foreground mb-2 block">Style Direction</label>
-                <select value={logoForm.style} onChange={e => setLogoForm(f => ({ ...f, style: e.target.value }))}
-                  className="w-full bg-background border border-border rounded-xl px-4 py-3 text-sm outline-none focus:border-accent transition">
-                  {['modern', 'classic', 'minimal', 'bold', 'tech', 'luxury'].map(s => <option key={s} className="capitalize">{s}</option>)}
-                </select>
+                <MobileSelect value={logoForm.style} onChange={v => setLogoForm(f => ({ ...f, style: v }))}
+                  options={['modern', 'classic', 'minimal', 'bold', 'tech', 'luxury'].map(s => ({ value: s, label: s.charAt(0).toUpperCase() + s.slice(1) }))} placeholder="Select style" />
               </div>
               <div>
                 <label className="text-xs text-muted-foreground mb-2 block">Core Brand Values</label>
