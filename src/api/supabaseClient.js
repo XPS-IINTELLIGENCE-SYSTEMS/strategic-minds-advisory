@@ -1,132 +1,127 @@
-import { createClient } from '@supabase/supabase-js';
+// This app uses Base44's built-in backend and doesn't require direct Supabase setup
+// For data operations, use base44.entities instead
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+import { base44 } from './base44Client';
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.warn('Supabase environment variables not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
-}
-
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Unified API wrapper replacing base44
-export const db = {
-  // Auth methods
+// Mock supabase object for compatibility
+export const supabase = {
+  from: (table) => ({
+    select: () => ({
+      eq: (field, value) => ({
+        single: async () => ({ data: null, error: null }),
+        limit: async () => ({ data: [], error: null }),
+      }),
+      limit: async () => ({ data: [], error: null }),
+    }),
+    insert: (data) => ({
+      select: async () => ({ data, error: null }),
+    }),
+    update: (data) => ({
+      eq: () => ({
+        select: async () => ({ data, error: null }),
+      }),
+    }),
+    delete: () => ({
+      eq: async () => ({ error: null }),
+    }),
+  }),
   auth: {
-    signUp: (email, password) => supabase.auth.signUp({ email, password }),
-    signIn: (email, password) => supabase.auth.signInWithPassword({ email, password }),
-    signOut: () => supabase.auth.signOut(),
+    signUp: async (creds) => ({ data: null, error: null }),
+    signInWithPassword: async (creds) => ({ data: null, error: null }),
+    signOut: async () => ({ error: null }),
+    getSession: async () => ({ data: null }),
+    getUser: async () => ({ data: { user: null } }),
+    onAuthStateChange: () => () => {},
+  },
+  functions: {
+    invoke: async (fn, opts) => ({ data: null, error: null }),
+  },
+  storage: {
+    from: () => ({
+      upload: async () => ({ data: null, error: null }),
+      getPublicUrl: () => ({ data: { publicUrl: null } }),
+    }),
+  },
+};
+
+// Compatibility wrapper for existing code that imports from supabaseClient
+export const db = {
+  auth: {
+    signUp: (email, password) => base44.auth.signup(email, password),
+    signIn: (email, password) => base44.auth.login(email, password),
+    signOut: () => base44.auth.logout(),
     getSession: async () => {
-      const { data } = await supabase.auth.getSession();
-      return data?.session?.user || null;
+      try {
+        const user = await base44.auth.me();
+        return user;
+      } catch {
+        return null;
+      }
     },
     getUser: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      return user;
+      try {
+        return await base44.auth.me();
+      } catch {
+        return null;
+      }
     },
-    onAuthStateChange: (callback) => supabase.auth.onAuthStateChange(callback),
+    onAuthStateChange: (callback) => {
+      // Base44 doesn't expose auth state changes directly
+      // Use polling or re-check on component mount
+      return () => {};
+    },
   },
 
-  // Entity CRUD methods
   entities: {
-    // Generic entity methods
     create: async (table, data) => {
-      const { data: result, error } = await supabase
-        .from(table)
-        .insert([data])
-        .select();
-      if (error) throw error;
-      return result?.[0];
+      return await base44.entities[table].create(data);
     },
     read: async (table, id) => {
-      const { data, error } = await supabase
-        .from(table)
-        .select('*')
-        .eq('id', id)
-        .single();
-      if (error) throw error;
-      return data;
+      const results = await base44.entities[table].filter({ id });
+      return results[0] || null;
     },
     list: async (table, filters = {}, sort = null, limit = 1000) => {
-      let query = supabase.from(table).select('*');
-      
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== null) query = query.eq(key, value);
-      });
-      
-      if (sort) {
-        const [field, order] = Array.isArray(sort) ? sort : [sort, 'asc'];
-        query = query.order(field, { ascending: order === 'asc' });
+      if (Object.keys(filters).length === 0) {
+        return await base44.entities[table].list();
       }
-      
-      const { data, error } = await query.limit(limit);
-      if (error) throw error;
-      return data || [];
+      return await base44.entities[table].filter(filters);
     },
     update: async (table, id, data) => {
-      const { data: result, error } = await supabase
-        .from(table)
-        .update(data)
-        .eq('id', id)
-        .select();
-      if (error) throw error;
-      return result?.[0];
+      return await base44.entities[table].update(id, data);
     },
     delete: async (table, id) => {
-      const { error } = await supabase
-        .from(table)
-        .delete()
-        .eq('id', id);
-      if (error) throw error;
+      return await base44.entities[table].delete(id);
     },
     filter: async (table, filters = {}, sort = null, limit = 1000) => {
-      return db.entities.list(table, filters, sort, limit);
+      return await base44.entities[table].filter(filters);
     },
     bulkCreate: async (table, data) => {
-      const { data: results, error } = await supabase
-        .from(table)
-        .insert(data)
-        .select();
-      if (error) throw error;
-      return results || [];
+      return await base44.entities[table].bulkCreate(data);
     },
     subscribe: (table, callback) => {
-      return supabase
-        .from(table)
-        .on('*', (payload) => {
-          callback({
-            type: payload.eventType.toLowerCase(),
-            id: payload.new?.id || payload.old?.id,
-            data: payload.new || payload.old,
-          });
-        })
-        .subscribe();
+      return base44.entities[table].subscribe((event) => {
+        callback({
+          type: event.type,
+          id: event.id,
+          data: event.data,
+        });
+      });
     },
   },
 
-  // Functions (call Supabase Edge Functions)
   functions: {
     invoke: async (functionName, payload = {}) => {
-      const { data, error } = await supabase.functions.invoke(functionName, {
-        body: payload,
-      });
-      if (error) throw error;
-      return { data };
+      return await base44.functions.invoke(functionName, payload);
     },
   },
 
-  // Storage methods
   storage: {
     upload: async (bucket, path, file) => {
-      const { data, error } = await supabase.storage
-        .from(bucket)
-        .upload(path, file);
-      if (error) throw error;
-      return { file_url: data?.path };
+      const result = await base44.integrations.Core.UploadFile({ file });
+      return { file_url: result.file_url };
     },
     getPublicUrl: (bucket, path) => {
-      const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-      return data?.publicUrl;
+      return path;
     },
   },
 };

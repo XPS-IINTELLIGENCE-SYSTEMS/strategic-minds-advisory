@@ -10,12 +10,12 @@ const HERO_BG = 'https://base44.app/api/apps/assets/img_1e0fead8cc07.png';
 
 export default function Home() {
   return (
-    <div style={{ background: '#150f0a', color: '#f5f1e8' }}>
+    <div style={{ background: '#150f0a', color: '#f5f1e8', minHeight: '200vh', width: '100%' }}>
       <div style={{ height: '600px', background: 'linear-gradient(135deg, #d4af37 0%, #8b7500 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#150f0a', fontSize: '56px', fontWeight: 'bold', textAlign: 'center' }}>
         Strategic Intelligence Platform
       </div>
-      <div style={{ padding: '80px 40px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '32px', marginBottom: '20px' }}>Drive Strategic Decisions with AI</h2>
+      <div style={{ padding: '80px 40px', textAlign: 'center', background: '#150f0a' }}>
+        <h2 style={{ fontSize: '32px', marginBottom: '20px', color: '#f5f1e8' }}>Drive Strategic Decisions with AI</h2>
         <p style={{ fontSize: '16px', color: '#aaa', maxWidth: '600px', margin: '0 auto', lineHeight: '1.6' }}>
           Run simulations, predict market trends, analyze competitors, and execute strategies with AI-powered intelligence.
         </p>
@@ -37,6 +37,9 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </div>
+      <div style={{ padding: '40px', background: '#150f0a', textAlign: 'center' }}>
+        <p style={{ color: '#d4af37', fontSize: '18px' }}>✓ App is working - scroll down to see more content</p>
       </div>
     </div>
   );

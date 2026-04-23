@@ -1,72 +1,51 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import { ThemeProvider } from '@/lib/ThemeContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
-import SiteLayout from '@/components/layout/SiteLayout';
 import PWAInstaller from '@/lib/PWAInstaller';
 import Home from '@/pages/Home';
 import Services from '@/pages/Services';
-import About from '@/pages/About';
-import Portfolio from '@/pages/Portfolio';
-import Contact from '@/pages/Contact';
 import Dashboard from '@/pages/Dashboard';
-import ProjectDashboard from '@/pages/ProjectDashboard';
-import AutoInventionSystemGuide from '@/pages/AutoInventionSystemGuide';
-import EliteIntelligenceSystemGuide from '@/pages/EliteIntelligenceSystemGuide';
-import PageTransition from '@/components/common/PageTransition';
 
-const AuthenticatedApp = () => {
-  const context = useAuth();
-  const isLoading = context?.isLoadingPublicSettings || context?.isLoadingAuth;
-  const authChecked = context?.authChecked;
-
-  // Only show loading if still checking
-  if (isLoading && !authChecked) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1410' }}>
-        <div style={{ width: '32px', height: '32px', border: '4px solid #333', borderTopColor: '#d4af37', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-      </div>
-    );
-  }
-
-  // Render the main app (always show public pages)
+function MainLayout({ children }) {
   return (
-    <AnimatePresence mode="wait">
-      <Routes>
-        <Route element={<SiteLayout />}>
-          <Route path="/" element={<PageTransition><Home /></PageTransition>} />
-          <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
-          <Route path="/about" element={<PageTransition><About /></PageTransition>} />
-          <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
-          <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
-          <Route path="/auto-invention" element={<PageTransition><AutoInventionSystemGuide /></PageTransition>} />
-          <Route path="/elite-intelligence" element={<PageTransition><EliteIntelligenceSystemGuide /></PageTransition>} />
-        </Route>
-        <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
-        <Route path="/projects" element={<PageTransition><ProjectDashboard /></PageTransition>} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </AnimatePresence>
+    <div style={{ background: '#150f0a', color: '#f5f1e8', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <nav style={{ background: '#1a1410', borderBottom: '1px solid #333', padding: '0 24px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 1000 }}>
+        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#d4af37' }}>Strategic.AI</div>
+        <div style={{ display: 'flex', gap: '24px', fontSize: '14px' }}>
+          <a href="/" style={{ color: '#f5f1e8', textDecoration: 'none', cursor: 'pointer' }}>Home</a>
+          <a href="/services" style={{ color: '#f5f1e8', textDecoration: 'none', cursor: 'pointer' }}>Services</a>
+          <a href="/dashboard" style={{ color: '#f5f1e8', textDecoration: 'none', cursor: 'pointer' }}>Dashboard</a>
+        </div>
+      </nav>
+      <main style={{ flex: 1, width: '100%', overflowY: 'auto' }}>
+        {children}
+      </main>
+      <footer style={{ background: '#1a1410', borderTop: '1px solid #333', padding: '24px', textAlign: 'center', fontSize: '12px', color: '#888' }}>
+        © 2026 Strategic Minds. All rights reserved.
+      </footer>
+    </div>
   );
-};
-
+}
 
 function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <AuthenticatedApp />
-        </Router>
-        <Toaster />
-        <PWAInstaller />
-      </QueryClientProvider>
-    </AuthProvider>
+    <QueryClientProvider client={queryClientInstance}>
+      <Router>
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route element={<MainLayout><Home /></MainLayout>} path="/" />
+            <Route element={<MainLayout><Services /></MainLayout>} path="/services" />
+            <Route element={<Dashboard />} path="/dashboard" />
+            <Route element={<MainLayout><PageNotFound /></MainLayout>} path="*" />
+          </Routes>
+        </AnimatePresence>
+      </Router>
+      <Toaster />
+      <PWAInstaller />
+    </QueryClientProvider>
   )
 }
 
