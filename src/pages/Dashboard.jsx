@@ -13,6 +13,7 @@ import ContentEngine from '@/components/dashboard/ContentEngine';
 import WorkflowOrchestrator from '@/components/dashboard/WorkflowOrchestrator';
 import BrandingStudio from '@/components/dashboard/BrandingStudio';
 import SocialIntelligencePanel from '@/components/dashboard/SocialIntelligencePanel';
+import VisionCortexShell from '@/components/visioncortex/VisionCortexShell';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -32,6 +33,7 @@ export default function Dashboard() {
       case 'insights': return <InsightsPanel />;
       case 'content': return <ContentEngine />;
       case 'sync': return <SyncPanel />;
+      case 'visioncortex': return <VisionCortexShell />;
       case 'workflow': return <WorkflowOrchestrator />;
       case 'branding': return <BrandingStudio />;
       case 'social': return <SocialIntelligencePanel />;
@@ -61,6 +63,7 @@ export default function Dashboard() {
                activeTool === 'insights' ? 'Insights' :
                activeTool === 'content' ? 'Content Engine' :
                activeTool === 'sync' ? 'Google Sync' :
+               activeTool === 'visioncortex' ? 'Vision Cortex' :
                activeTool === 'workflow' ? 'Workflow Orchestrator' :
                activeTool === 'branding' ? 'Branding Studio' :
                activeTool === 'social' ? 'Social Intelligence' :

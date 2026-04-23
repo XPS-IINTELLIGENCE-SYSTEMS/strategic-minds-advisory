@@ -1,0 +1,41 @@
+{
+  "name": "VisionLog",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "log_type": {
+      "type": "string",
+      "enum": [
+        "thought",
+        "debate",
+        "invention",
+        "validation",
+        "simulation",
+        "build",
+        "memory",
+        "source",
+        "error"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "idea_id": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id",
+    "agent",
+    "log_type",
+    "message"
+  ]
+}

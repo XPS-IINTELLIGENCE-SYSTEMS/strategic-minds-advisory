@@ -1,0 +1,65 @@
+{
+  "name": "VisionIdea",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "origin_agent": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "full_concept": {
+      "type": "string"
+    },
+    "debate_log": {
+      "type": "string"
+    },
+    "simulation_result": {
+      "type": "string"
+    },
+    "validation_score": {
+      "type": "number"
+    },
+    "iteration": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "seeded",
+        "debating",
+        "simulating",
+        "validated",
+        "building",
+        "documented",
+        "failed"
+      ],
+      "default": "seeded"
+    },
+    "revenue_potential": {
+      "type": "string"
+    },
+    "documentation": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "string"
+    },
+    "sources": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "origin_agent",
+    "domain",
+    "description"
+  ]
+}

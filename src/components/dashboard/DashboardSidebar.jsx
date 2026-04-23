@@ -3,10 +3,16 @@ import { Link } from 'react-router-dom';
 import { 
   MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
   Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool,
-  Workflow, Video, Globe
+  Workflow, Video, Globe, Brain
 } from 'lucide-react';
 
 const NAV_GROUPS = [
+  {
+    label: 'Vision Cortex',
+    items: [
+      { id: 'visioncortex', icon: Brain, label: 'Vision Cortex' },
+    ],
+  },
   {
     label: 'Core AI',
     items: [
