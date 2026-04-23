@@ -18,7 +18,7 @@ const STATUS_CONFIG = {
 
 const FILTERS = ['All', 'seeded', 'debating', 'simulating', 'validated', 'building', 'documented'];
 
-export default function VisionIdeaBoard({ onSelectIdea }) {
+export default function VisionIdeaBoard({ onSelectIdea, onSelectForDebate }) {
   const [ideas, setIdeas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [runningId, setRunningId] = useState(null);
@@ -88,8 +88,7 @@ export default function VisionIdeaBoard({ onSelectIdea }) {
               const sc = STATUS_CONFIG[idea.status] || STATUS_CONFIG.seeded;
               return (
                 <motion.div key={idea.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                  onClick={() => onSelectIdea(idea)}
-                  className={`p-5 rounded-2xl border ${sc.border} bg-card/60 hover:bg-card/90 cursor-pointer transition-all group`}>
+                  className={`p-5 rounded-2xl border ${sc.border} bg-card/60 hover:bg-card/90 transition-all group`}>
                   
                   {/* Header */}
                   <div className="flex items-start justify-between gap-2 mb-3">
@@ -136,7 +135,7 @@ export default function VisionIdeaBoard({ onSelectIdea }) {
                       </button>
                     )}
                     <button onClick={() => onSelectIdea(idea)}
-                      className="w-7 h-7 rounded-lg border border-border bg-background/40 hover:bg-secondary flex items-center justify-center transition flex-shrink-0">
+                      className="w-7 h-7 rounded-lg border border-border bg-background/40 hover:bg-secondary flex items-center justify-center transition flex-shrink-0" title="View Detail">
                       <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
