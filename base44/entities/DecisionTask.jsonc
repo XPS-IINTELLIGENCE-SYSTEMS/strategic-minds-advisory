@@ -1,0 +1,64 @@
+{
+  "name": "DecisionTask",
+  "type": "object",
+  "properties": {
+    "debate_id": {
+      "type": "string",
+      "description": "Related DebateHistory ID"
+    },
+    "idea_id": {
+      "type": "string",
+      "description": "Related VisionIdea ID"
+    },
+    "decision": {
+      "type": "string",
+      "description": "Strategic decision made"
+    },
+    "tasks": {
+      "type": "string",
+      "description": "JSON array of generated task objects"
+    },
+    "assigned_to": {
+      "type": "string",
+      "description": "Comma-separated team member emails"
+    },
+    "pm_tool": {
+      "type": "string",
+      "enum": [
+        "jira",
+        "linear",
+        "asana",
+        "trello",
+        "none"
+      ],
+      "default": "none"
+    },
+    "external_task_ids": {
+      "type": "string",
+      "description": "Comma-separated external tool task IDs"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "created",
+        "assigned",
+        "synced",
+        "completed"
+      ],
+      "default": "created"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "synced_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "debate_id",
+    "decision",
+    "tasks"
+  ]
+}

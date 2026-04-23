@@ -68,6 +68,7 @@ const NAV_GROUPS = [
       { id: 'integrations', icon: Zap, label: 'Integrations' },
       { id: 'playbooks', icon: Zap, label: 'Playbooks' },
       { id: 'keywords', icon: Zap, label: 'Keyword Alerts' },
+      { id: 'execution', icon: Zap, label: 'Decision → Tasks' },
     ],
   },
 ];

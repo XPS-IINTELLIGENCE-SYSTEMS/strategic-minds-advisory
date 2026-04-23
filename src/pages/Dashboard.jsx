@@ -33,6 +33,7 @@ import AgentDebateHistoryDashboard from '@/components/dashboard/AgentDebateHisto
 import ExternalIntelligenceIntegrator from '@/components/dashboard/ExternalIntelligenceIntegrator';
 import StrategyPlaybookLibrary from '@/components/dashboard/StrategyPlaybookLibrary';
 import MarketKeywordMonitor from '@/components/dashboard/MarketKeywordMonitor';
+import DecisionToTasksConverter from '@/components/dashboard/DecisionToTasksConverter';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -76,6 +77,7 @@ export default function Dashboard() {
       case 'integrations': return <ExternalIntelligenceIntegrator />;
       case 'playbooks': return <StrategyPlaybookLibrary />;
       case 'keywords': return <MarketKeywordMonitor />;
+      case 'execution': return <DecisionToTasksConverter />;
       default: return <SimulationTool />;
     }
   };
@@ -125,6 +127,7 @@ export default function Dashboard() {
                activeTool === 'integrations' ? 'External Intelligence Integrator' :
                activeTool === 'playbooks' ? 'Strategy Playbook Library' :
                activeTool === 'keywords' ? 'Market Keyword Monitor' :
+               activeTool === 'execution' ? 'Decision to Tasks Converter' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">
