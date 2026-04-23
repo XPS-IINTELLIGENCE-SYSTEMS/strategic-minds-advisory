@@ -1,28 +1,23 @@
-const CACHE_NAME = 'strategic-ai-v1';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'strategic-minds-v1';
+const URLS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
 ];
 
-// Install event - cache assets
-self.addEventListener('install', (event) => {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE).catch(err => {
-        console.log('Cache addAll error:', err);
-      });
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(URLS_TO_CACHE);
     })
   );
-  self.skipWaiting();
 });
 
-// Activate event - clean old caches
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
+        cacheNames.map(cacheName => {
           if (cacheName !== CACHE_NAME) {
             return caches.delete(cacheName);
           }
@@ -30,37 +25,25 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim();
 });
 
-// Fetch event - network first, fallback to cache
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
 
-  // Skip cross-origin requests
-  if (url.origin !== location.origin) {
-    return;
-  }
-
-  // Network first strategy
   event.respondWith(
-    fetch(request)
-      .then((response) => {
-        // Cache successful responses
-        if (response.status === 200) {
-          const clonedResponse = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, clonedResponse);
-          });
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request).then(response => {
+        if (!response || response.status !== 200 || response.type === 'basic') {
+          return response;
         }
-        return response;
-      })
-      .catch(() => {
-        // Fallback to cache on network error
-        return caches.match(request).then((cachedResponse) => {
-          return cachedResponse || new Response('Offline - Resource not cached', { status: 503 });
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseToCache);
         });
-      })
+        return response;
+      });
+    }).catch(() => {
+      return caches.match('/index.html');
+    })
   );
 });

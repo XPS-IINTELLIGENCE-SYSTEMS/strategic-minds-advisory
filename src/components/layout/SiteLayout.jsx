@@ -4,7 +4,6 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import BottomTabBar from '@/components/common/BottomTabBar';
 import MobileHeader from '@/components/common/MobileHeader';
-import FloatingAIChat from '@/components/services/FloatingAIChat';
 
 export default function SiteLayout() {
   const { pathname } = useLocation();
@@ -22,7 +21,6 @@ export default function SiteLayout() {
       </main>
       <Footer />
       <BottomTabBar />
-      <FloatingAIChat />
     </div>
   );
 }

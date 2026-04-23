@@ -1,74 +1,50 @@
 {
-  "name": "Strategic Minds",
-  "short_name": "Strategic.AI",
-  "description": "AI-driven strategic planning platform for founders and investors",
+  "name": "Strategic Minds Advisory",
+  "short_name": "Strategic.Minds",
+  "description": "AI-powered strategic planning platform",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
+  "background_color": "#1f1815",
+  "theme_color": "#d9a574",
+  "scope": "/",
   "orientation": "portrait-primary",
-  "background_color": "#1a1410",
-  "theme_color": "#f5e6d3",
   "icons": [
     {
-      "src": "https://base44.com/logo_v2.svg",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231f1815' width='192' height='192'/><text x='96' y='120' font-size='100' font-weight='700' text-anchor='middle' fill='%23d9a574' font-family='serif'>S</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "https://base44.com/logo_v2.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "https://base44.com/logo_v2.svg",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%231f1815' width='192' height='192'/><text x='96' y='120' font-size='100' font-weight='700' text-anchor='middle' fill='%23ffffff' font-family='serif'>S</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ],
-  "categories": ["business", "productivity"],
   "screenshots": [
     {
-      "src": "https://base44.com/logo_v2.svg",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%231f1815' width='540' height='720'/></svg>",
       "sizes": "540x720",
       "type": "image/svg+xml",
       "form_factor": "narrow"
-    },
-    {
-      "src": "https://base44.com/logo_v2.svg",
-      "sizes": "1280x720",
-      "type": "image/svg+xml",
-      "form_factor": "wide"
     }
   ],
   "shortcuts": [
     {
-      "name": "Vision Cortex",
-      "short_name": "Vision",
-      "description": "Access Vision Cortex AI system",
-      "url": "/dashboard?tool=visioncortex",
-      "icons": [
-        {
-          "src": "https://base44.com/logo_v2.svg",
-          "sizes": "192x192",
-          "type": "image/svg+xml"
-        }
-      ]
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Access your strategic planning dashboard",
+      "url": "/dashboard",
+      "icons": []
     },
     {
-      "name": "Simulation",
-      "short_name": "Sim",
-      "description": "Run business simulations",
-      "url": "/dashboard?tool=simulation",
-      "icons": [
-        {
-          "src": "https://base44.com/logo_v2.svg",
-          "sizes": "192x192",
-          "type": "image/svg+xml"
-        }
-      ]
+      "name": "Services",
+      "short_name": "Services",
+      "description": "View our services",
+      "url": "/services",
+      "icons": []
     }
-  ]
+  ],
+  "categories": ["business", "productivity"]
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const links = [
@@ -69,7 +69,7 @@ export default function Navbar() {
           </Link>
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden p-2 text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="p-2 text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Menu"
           >
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -101,7 +101,6 @@ export default function Navbar() {
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => {
-                    // Sign in logic
                     setOpen(false);
                   }}
                   className="flex-1 px-5 py-2.5 text-sm border border-border rounded-full hover:bg-secondary transition"
@@ -110,7 +109,6 @@ export default function Navbar() {
                 </button>
                 <button
                   onClick={() => {
-                    // Sign up logic
                     setOpen(false);
                   }}
                   className="flex-1 px-5 py-2.5 text-sm btn-ivory rounded-full hover:opacity-90 transition font-medium"
