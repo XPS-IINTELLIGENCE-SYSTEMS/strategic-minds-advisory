@@ -127,31 +127,29 @@ export default function VisionCortexShell() {
           </div>
         </div>
 
-        {/* Tab Navigation - Scrollable with gradient fade */}
-        <div className="relative">
-          <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
-            {TABS.map(t => {
-              const Icon = t.icon;
-              const needsIdea = (t.id === 'debate' || t.id === 'sandbox' || t.id === 'deploy') && !selectedIdea;
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setActiveTab(t.id)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all ${
-                    activeTab === t.id
-                      ? 'bg-accent/20 text-accent border border-accent/40 shadow-lg shadow-accent/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent'
-                  } ${needsIdea ? 'opacity-60 cursor-not-allowed' : ''}`}
-                  disabled={needsIdea}
-                  title={needsIdea ? 'Select an idea first' : t.label}
-                >
-                  <Icon className="w-4 h-4" />
-                  {t.label}
-                  {needsIdea && <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />}
-                </button>
-              );
-            })}
-          </div>
+        {/* Tab Navigation - Responsive Grid */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-2">
+          {TABS.map(t => {
+            const Icon = t.icon;
+            const needsIdea = (t.id === 'debate' || t.id === 'sandbox' || t.id === 'deploy') && !selectedIdea;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className={`flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium transition-all ${
+                  activeTab === t.id
+                    ? 'bg-accent/20 text-accent border border-accent/40 shadow-lg shadow-accent/10'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent'
+                } ${needsIdea ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={needsIdea}
+                title={needsIdea ? 'Select an idea first' : t.label}
+              >
+                <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                <span className="hidden lg:inline">{t.label}</span>
+                {needsIdea && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />}
+              </button>
+            );
+          })}
         </div>
       </div>
 
