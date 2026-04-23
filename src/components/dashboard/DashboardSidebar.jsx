@@ -64,6 +64,7 @@ const NAV_GROUPS = [
     label: 'Admin Tools',
     items: [
       { id: 'audit', icon: Activity, label: 'System Audit' },
+      { id: 'supabase', icon: Database, label: 'Supabase Status' },
     ],
   },
   {
