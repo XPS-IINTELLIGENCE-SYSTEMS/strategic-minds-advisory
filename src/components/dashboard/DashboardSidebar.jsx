@@ -102,6 +102,10 @@ export default function DashboardSidebar({ activeTool, setActiveTool }) {
                   <button
                     key={id}
                     onClick={() => setActiveTool(id)}
+                    onDoubleClick={() => {
+                      const element = document.querySelector('[data-tool-content]');
+                      if (element) element.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-all group ${
                       active
                         ? 'bg-accent/15 text-accent'

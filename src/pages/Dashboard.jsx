@@ -39,9 +39,24 @@ import DecisionToTasksConverter from '@/components/dashboard/DecisionToTasksConv
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
   const [chatSeed, setChatSeed] = useState(null);
+  const [lastClickedTool, setLastClickedTool] = useState(null);
 
   const handlePromptSelect = (prompt) => {
     setChatSeed(prompt);
+  };
+
+  const handleToolChange = (tool) => {
+    if (lastClickedTool === tool) {
+      // Reset the tool view to top
+      const element = document.querySelector('[data-tool-content]');
+      if (element) {
+        element.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      setLastClickedTool(null);
+    } else {
+      setActiveTool(tool);
+      setLastClickedTool(tool);
+    }
   };
 
   const renderTool = () => {
@@ -87,7 +102,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Left sidebar nav */}
-      <DashboardSidebar activeTool={activeTool} setActiveTool={setActiveTool} />
+      <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
 
       {/* Chat panel - always on left */}
       <div className="w-80 xl:w-96 flex-shrink-0 border-r border-border flex flex-col">
@@ -144,7 +159,7 @@ export default function Dashboard() {
         </div>
 
         {/* Tool content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden" data-tool-content>
           {renderTool()}
         </div>
       </div>
