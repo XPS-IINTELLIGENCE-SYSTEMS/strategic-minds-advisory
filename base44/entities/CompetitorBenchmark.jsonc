@@ -1,0 +1,66 @@
+{
+  "name": "CompetitorBenchmark",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "enum": [
+        "fintech",
+        "aitools",
+        "climate",
+        "biotech",
+        "consumer",
+        "enterprise",
+        "other"
+      ]
+    },
+    "business_model": {
+      "type": "string",
+      "description": "e.g. SaaS, Marketplace, Licensing"
+    },
+    "avg_cac": {
+      "type": "number",
+      "description": "Average customer acquisition cost in USD"
+    },
+    "avg_growth_rate": {
+      "type": "number",
+      "description": "Monthly growth rate %"
+    },
+    "avg_churn_rate": {
+      "type": "number",
+      "description": "Annual churn rate %"
+    },
+    "avg_ltv_cac_ratio": {
+      "type": "number"
+    },
+    "avg_gross_margin": {
+      "type": "number",
+      "description": "Gross margin %"
+    },
+    "market_size_usd": {
+      "type": "string",
+      "description": "TAM in billions"
+    },
+    "data_sources": {
+      "type": "string",
+      "description": "CSV of source URLs"
+    },
+    "sample_count": {
+      "type": "number",
+      "description": "Number of companies analyzed"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "confidence_score": {
+      "type": "number",
+      "description": "0-100 confidence in benchmark data"
+    }
+  },
+  "required": [
+    "domain",
+    "business_model",
+    "avg_cac"
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "name": "StrategicIntelligence",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string",
+      "description": "Extracted intelligence/insight"
+    },
+    "intelligence_type": {
+      "type": "string",
+      "enum": [
+        "competitive",
+        "market_trend",
+        "psychology",
+        "framework",
+        "opportunity",
+        "risk",
+        "technology",
+        "other"
+      ]
+    },
+    "domains": {
+      "type": "string",
+      "description": "Comma-separated applicable domains"
+    },
+    "source_ids": {
+      "type": "string",
+      "description": "Comma-separated IntelligenceSource IDs"
+    },
+    "value_score": {
+      "type": "number",
+      "description": "0-100 calculated value for premium tier"
+    },
+    "rarity_score": {
+      "type": "number",
+      "description": "0-100 how difficult to find this intelligence"
+    },
+    "extracted_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "tags": {
+      "type": "string"
+    },
+    "is_premium_only": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "title",
+    "content",
+    "intelligence_type"
+  ]
+}

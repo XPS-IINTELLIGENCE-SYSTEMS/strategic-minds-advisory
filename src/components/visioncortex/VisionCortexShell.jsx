@@ -10,19 +10,23 @@ import IdeaWhiteboard from './IdeaWhiteboard';
 import IdeaAnalytics from './IdeaAnalytics';
 import DeploymentEngine from './DeploymentEngine';
 import AutoGenerationMonitor from './AutoGenerationMonitor';
-import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu } from 'lucide-react';
+import TaskQueue from './TaskQueue';
+import IntelligenceLibraryBrowser from './IntelligenceLibraryBrowser';
+import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu, CheckSquare, Library } from 'lucide-react';
 
 const TABS = [
-  { id: 'autogen',    icon: Cpu,            label: '24/7 Auto-Gen' },
-  { id: 'feed',       icon: Rss,            label: 'Intelligence Feed' },
-  { id: 'map',        icon: Globe,          label: 'Global Trends' },
-  { id: 'board',      icon: Lightbulb,      label: 'Idea Board' },
-  { id: 'whiteboard', icon: StickyNote,     label: 'Whiteboard' },
-  { id: 'analytics',  icon: BarChart3,      label: 'Idea Analytics' },
-  { id: 'debate',     icon: MessageSquare,  label: 'Agent Debate' },
-  { id: 'sandbox',    icon: Terminal,       label: 'Active Sandbox' },
-  { id: 'deploy',     icon: Rocket,         label: 'Deploy' },
-  { id: 'logs',       icon: ScrollText,     label: 'Agent Logs' },
+  { id: 'autogen',      icon: Cpu,            label: '24/7 Auto-Gen' },
+  { id: 'feed',         icon: Rss,            label: 'Intelligence Feed' },
+  { id: 'library',      icon: Library,        label: 'Intelligence Lib' },
+  { id: 'map',          icon: Globe,          label: 'Global Trends' },
+  { id: 'board',        icon: Lightbulb,      label: 'Idea Board' },
+  { id: 'whiteboard',   icon: StickyNote,     label: 'Whiteboard' },
+  { id: 'analytics',    icon: BarChart3,      label: 'Analytics' },
+  { id: 'tasks',        icon: CheckSquare,    label: 'Task Queue' },
+  { id: 'debate',       icon: MessageSquare,  label: 'Debate' },
+  { id: 'sandbox',      icon: Terminal,       label: 'Sandbox' },
+  { id: 'deploy',       icon: Rocket,         label: 'Deploy' },
+  { id: 'logs',         icon: ScrollText,     label: 'Logs' },
 ];
 
 const AGENTS = [
@@ -120,16 +124,18 @@ export default function VisionCortexShell() {
 
       {/* Content */}
       <div className="flex-1 overflow-hidden">
-        {activeTab === 'autogen'    && <div className="h-full overflow-y-auto"><div className="max-w-5xl mx-auto p-6"><AutoGenerationMonitor /></div></div>}
-        {activeTab === 'feed'       && <VisionFeed />}
-        {activeTab === 'map'        && <GlobalTrendsMap />}
-        {activeTab === 'board'      && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
-        {activeTab === 'whiteboard' && <IdeaWhiteboard />}
-        {activeTab === 'analytics'  && <IdeaAnalytics />}
-        {activeTab === 'debate'     && <AgentDebateChat idea={selectedIdea} />}
-        {activeTab === 'sandbox'    && <ActiveSandbox idea={selectedIdea} />}
-        {activeTab === 'deploy'     && <DeploymentEngine />}
-        {activeTab === 'logs'       && <VisionLogs />}
+        {activeTab === 'autogen'      && <div className="h-full overflow-y-auto"><div className="max-w-5xl mx-auto p-6"><AutoGenerationMonitor /></div></div>}
+        {activeTab === 'feed'         && <VisionFeed />}
+        {activeTab === 'library'      && <IntelligenceLibraryBrowser />}
+        {activeTab === 'map'          && <GlobalTrendsMap />}
+        {activeTab === 'board'        && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
+        {activeTab === 'whiteboard'   && <IdeaWhiteboard />}
+        {activeTab === 'analytics'    && <IdeaAnalytics />}
+        {activeTab === 'tasks'        && <TaskQueue />}
+        {activeTab === 'debate'       && <AgentDebateChat idea={selectedIdea} />}
+        {activeTab === 'sandbox'      && <ActiveSandbox idea={selectedIdea} />}
+        {activeTab === 'deploy'       && <DeploymentEngine />}
+        {activeTab === 'logs'         && <VisionLogs />}
       </div>
     </div>
   );

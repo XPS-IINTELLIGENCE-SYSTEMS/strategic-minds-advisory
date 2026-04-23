@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Send, Loader2, Bot, User, Trash2, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import ChatAutoSuggestions from './ChatAutoSuggestions';
 
 const SYSTEM_PROMPT = `You are an elite AI consultant and strategist at Strategic Minds Advisory. 
 You have deep expertise in: market analysis, business strategy, AI systems, simulation & prediction modeling, 
@@ -147,6 +148,9 @@ export default function ChatPanel({ seed, onSeedConsumed, embedded }) {
         )}
         <div ref={bottomRef} />
       </div>
+
+      {/* Auto Suggestions */}
+      {messages.length === 0 && <ChatAutoSuggestions onSelectSuggestion={send} />}
 
       {/* Input */}
       <div className="p-3 border-t border-border flex-shrink-0">

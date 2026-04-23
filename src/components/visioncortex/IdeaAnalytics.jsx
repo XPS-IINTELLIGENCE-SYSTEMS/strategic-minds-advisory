@@ -5,6 +5,8 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine
 } from 'recharts';
 import { motion } from 'framer-motion';
+import CompetitorBenchmarkOverlay from './CompetitorBenchmarkOverlay';
+import PresentationGenerator from './PresentationGenerator';
 import { BarChart3, Loader2, RefreshCw, TrendingUp, TrendingDown, DollarSign, Users, Percent } from 'lucide-react';
 
 const SLIDER_CONFIG = [
@@ -97,6 +99,7 @@ export default function IdeaAnalytics() {
   const [loading, setLoading] = useState(true);
   const [params, setParams] = useState(() => Object.fromEntries(SLIDER_CONFIG.map(s => [s.key, s.default])));
   const [activeChart, setActiveChart] = useState('revenue');
+  const [showDeckGen, setShowDeckGen] = useState(false);
 
   useEffect(() => {
     base44.entities.VisionIdea.list('-validation_score', 50).then(data => {
@@ -267,7 +270,8 @@ export default function IdeaAnalytics() {
         </div>
 
         {/* Chart */}
-        <div className="flex-1 p-5 min-h-0">
+        <div className="flex-1 p-5 min-h-0 relative">
+          <CompetitorBenchmarkOverlay ideaDomain={selectedIdea?.domain} ideaModel={selectedIdea?.simulation_result ? JSON.parse(selectedIdea.simulation_result).revenueModel : null} />
           <motion.div key={activeChart + JSON.stringify(params)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full">
             <ResponsiveContainer width="100%" height="100%">
               {CHART_DEFS[activeChart]?.chart}
@@ -275,11 +279,11 @@ export default function IdeaAnalytics() {
           </motion.div>
         </div>
 
-        {/* 36-month summary strip */}
+        {/* Actions & summary */}
         {selectedIdea && (
-          <div className="flex-shrink-0 px-5 pb-4">
+          <div className="flex-shrink-0 px-5 pb-4 space-y-3">
             <div className="p-4 rounded-2xl border border-border bg-card/50">
-              <div className="grid grid-cols-3 gap-6 text-xs">
+              <div className="grid grid-cols-3 gap-6 text-xs mb-4">
                 <div>
                   <div className="text-muted-foreground mb-1">Break-even estimate</div>
                   <div className="font-medium">
@@ -295,7 +299,17 @@ export default function IdeaAnalytics() {
                   <div className="font-medium">{projection.reduce((s, d) => s + d.churn, 0).toLocaleString()} users</div>
                 </div>
               </div>
+              
+              <button onClick={() => setShowDeckGen(!showDeckGen)}
+                className="w-full px-4 py-2 rounded-xl border border-accent/30 bg-accent/10 text-accent text-xs hover:bg-accent/20 transition">
+                📊 Generate Investor Pitch Deck
+              </button>
             </div>
+
+            {/* Presentation Generator */}
+            {showDeckGen && (
+              <PresentationGenerator ideaId={selectedIdea.id} ideaTitle={selectedIdea.title} />
+            )}
           </div>
         )}
       </div>

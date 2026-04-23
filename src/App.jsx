@@ -13,6 +13,7 @@ import Portfolio from '@/pages/Portfolio';
 import Contact from '@/pages/Contact';
 import Dashboard from '@/pages/Dashboard';
 import AutoInventionSystemGuide from '@/pages/AutoInventionSystemGuide';
+import EliteIntelligenceSystemGuide from '@/pages/EliteIntelligenceSystemGuide';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -47,6 +48,7 @@ const AuthenticatedApp = () => {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/auto-invention" element={<AutoInventionSystemGuide />} />
+        <Route path="/elite-intelligence" element={<EliteIntelligenceSystemGuide />} />
       </Route>
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="*" element={<PageNotFound />} />

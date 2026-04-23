@@ -1,0 +1,82 @@
+{
+  "name": "AgentTask",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "assigned_agent": {
+      "type": "string",
+      "enum": [
+        "Analyzer",
+        "Visionary",
+        "Strategist",
+        "Inventor",
+        "Predictor",
+        "Coder",
+        "Marketer",
+        "Validator",
+        "Documentor"
+      ]
+    },
+    "idea_id": {
+      "type": "string",
+      "description": "Related VisionIdea ID"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "research",
+        "analysis",
+        "strategy",
+        "build",
+        "validation",
+        "documentation",
+        "custom"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "in_progress",
+        "completed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "depends_on": {
+      "type": "string",
+      "description": "Parent task ID (for chaining)"
+    },
+    "trigger_condition": {
+      "type": "string",
+      "description": "e.g. 'If Validator flags high_risk, then run Strategist pivot task'"
+    },
+    "result": {
+      "type": "string",
+      "description": "Async execution result"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title",
+    "assigned_agent",
+    "task_type"
+  ]
+}

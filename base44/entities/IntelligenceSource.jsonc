@@ -1,0 +1,66 @@
+{
+  "name": "IntelligenceSource",
+  "type": "object",
+  "properties": {
+    "source_name": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "api",
+        "web",
+        "news",
+        "social",
+        "research",
+        "patent",
+        "filing",
+        "custom"
+      ]
+    },
+    "url": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "competitive",
+        "market",
+        "trend",
+        "technology",
+        "funding",
+        "leadership",
+        "psychology",
+        "strategy",
+        "other"
+      ]
+    },
+    "api_key_name": {
+      "type": "string",
+      "description": "Secret name if API-based"
+    },
+    "priority_score": {
+      "type": "number",
+      "description": "0-100 (higher = more valuable)"
+    },
+    "refresh_interval_hours": {
+      "type": "number",
+      "default": 24
+    },
+    "last_scraped": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_name",
+    "source_type"
+  ]
+}
