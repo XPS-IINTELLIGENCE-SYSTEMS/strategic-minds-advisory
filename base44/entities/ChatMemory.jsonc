@@ -1,0 +1,31 @@
+{
+  "name": "ChatMemory",
+  "type": "object",
+  "properties": {
+    "session_id": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "assistant",
+        "system"
+      ]
+    },
+    "content": {
+      "type": "string"
+    },
+    "tool_used": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id",
+    "role",
+    "content"
+  ]
+}

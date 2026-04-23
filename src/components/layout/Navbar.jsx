@@ -67,6 +67,13 @@ export default function Navbar() {
           >
             Begin Engagement
           </Link>
+          <Link
+            to="/dashboard"
+            className="hidden md:inline-flex items-center gap-1.5 px-4 py-2.5 text-sm border border-border bg-secondary/40 rounded-full hover:bg-secondary transition text-muted-foreground hover:text-foreground"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+            Dashboard
+          </Link>
           <button
             onClick={() => setOpen(!open)}
             className="md:hidden p-2 text-foreground"

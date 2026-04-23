@@ -1,0 +1,29 @@
+{
+  "name": "SimulationResult",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "variables": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "title",
+    "type",
+    "result"
+  ]
+}

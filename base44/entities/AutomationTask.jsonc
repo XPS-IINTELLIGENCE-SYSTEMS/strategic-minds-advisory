@@ -1,0 +1,42 @@
+{
+  "name": "AutomationTask",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "automation_type": {
+      "type": "string"
+    },
+    "config": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "running",
+        "completed",
+        "failed"
+      ],
+      "default": "idle"
+    },
+    "schedule": {
+      "type": "string"
+    },
+    "last_run": {
+      "type": "string"
+    },
+    "result": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "automation_type"
+  ]
+}
