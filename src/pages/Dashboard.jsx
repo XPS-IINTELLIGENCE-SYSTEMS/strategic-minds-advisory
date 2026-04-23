@@ -14,6 +14,7 @@ import WorkflowOrchestrator from '@/components/dashboard/WorkflowOrchestrator';
 import BrandingStudio from '@/components/dashboard/BrandingStudio';
 import SocialIntelligencePanel from '@/components/dashboard/SocialIntelligencePanel';
 import VisionCortexShell from '@/components/visioncortex/VisionCortexShell';
+import ReportingAndAlerts from '@/components/dashboard/ReportingAndAlerts';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -38,6 +39,7 @@ export default function Dashboard() {
       case 'branding': return <BrandingStudio />;
       case 'social': return <SocialIntelligencePanel />;
       case 'test': return <TestModule />;
+      case 'reports': return <ReportingAndAlerts />;
       default: return <SimulationTool />;
     }
   };
@@ -67,6 +69,7 @@ export default function Dashboard() {
                activeTool === 'workflow' ? 'Workflow Orchestrator' :
                activeTool === 'branding' ? 'Branding Studio' :
                activeTool === 'social' ? 'Social Intelligence' :
+               activeTool === 'reports' ? 'Reports & Alerts' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">

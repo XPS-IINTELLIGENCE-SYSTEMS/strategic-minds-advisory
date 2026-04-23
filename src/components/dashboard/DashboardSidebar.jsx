@@ -44,6 +44,7 @@ const NAV_GROUPS = [
       { id: 'templates', icon: Layout, label: 'Templates' },
       { id: 'sync', icon: RefreshCw, label: 'Google Sync' },
       { id: 'test', icon: TestTube, label: 'Test Module' },
+      { id: 'reports', icon: BookOpen, label: 'Reports & Alerts' },
     ],
   },
 ];
