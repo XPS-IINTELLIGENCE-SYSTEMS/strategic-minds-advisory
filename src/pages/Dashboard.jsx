@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Menu } from 'lucide-react';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
+import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
 import ChatPanel from '@/components/dashboard/ChatPanel';
 import AccountSettings from '@/components/dashboard/AccountSettings';
 import VoiceInputButton from '@/components/mobile/VoiceInputButton';
@@ -41,6 +43,7 @@ import InteractivePlaybookGenerator from '@/components/dashboard/InteractivePlay
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
   const [chatSeed, setChatSeed] = useState(null);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
   const handlePromptSelect = (prompt) => {
     setChatSeed(prompt);
@@ -94,19 +97,34 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <VoiceInputButton />
-      {/* Left sidebar nav */}
-      <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
+      <MobileSidebarDrawer
+        isOpen={mobileDrawerOpen}
+        onClose={() => setMobileDrawerOpen(false)}
+        activeTool={activeTool}
+        setActiveTool={handleToolChange}
+      />
+
+      {/* Left sidebar nav - hidden on mobile */}
+      <div className="hidden md:flex">
+        <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
+      </div>
 
       {/* Chat panel - always on left */}
-      <div className="w-80 xl:w-96 flex-shrink-0 border-r border-border flex flex-col">
+      <div className="hidden xl:flex w-80 xl:w-96 flex-shrink-0 border-r border-border flex-col">
         <ChatPanel seed={chatSeed} onSeedConsumed={() => setChatSeed(null)} />
       </div>
 
       {/* Main tool panel */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <div className="h-14 border-b border-border flex items-center justify-between px-6 flex-shrink-0 bg-card/40 backdrop-blur-sm">
+        <div className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 flex-shrink-0 bg-card/40 backdrop-blur-sm">
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setMobileDrawerOpen(true)}
+              className="md:hidden p-1.5 rounded-lg hover:bg-secondary transition"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
             <h1 className="font-display text-lg capitalize text-gradient-ivory">
               {activeTool === 'prompts' ? 'Prompt Library' :
                activeTool === 'test' ? 'System Tests' :
