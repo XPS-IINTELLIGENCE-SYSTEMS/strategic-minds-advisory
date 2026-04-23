@@ -4,6 +4,9 @@ import PageHero from '@/components/shared/PageHero';
 import ServiceCard from '@/components/services/ServiceCard';
 import ProcessSteps from '@/components/services/ProcessSteps';
 import CTASection from '@/components/home/CTASection';
+import FloatingContactForm from '@/components/services/FloatingContactForm';
+import BookingFlow from '@/components/services/BookingFlow';
+import ServicePortfolioGrid from '@/components/services/ServicePortfolioGrid';
 
 const services = [
   {
@@ -104,12 +107,15 @@ export default function Services() {
         </div>
       </section>
 
+      <ServicePortfolioGrid />
       <ProcessSteps />
+      <BookingFlow />
       <CTASection
         title="Define your intelligence advantage."
         subtitle="Tell us about the problem worth solving. We'll tell you if it's a fit."
         cta="Schedule a Briefing"
       />
+      <FloatingContactForm />
     </>
   );
 }
