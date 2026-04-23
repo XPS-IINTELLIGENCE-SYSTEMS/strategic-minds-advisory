@@ -45,11 +45,11 @@ export default function Footer() {
 
           <div className="md:col-span-3">
             <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">Contact</div>
-            <a href="mailto:hello@strategicminds.ai" className="flex items-center gap-2 text-sm hover:text-accent transition">
-              hello@strategicminds.ai <ArrowUpRight className="w-3.5 h-3.5" />
+            <a href="mailto:strategicmindsadvisory@gmail.com" className="flex items-center gap-2 text-sm hover:text-accent transition">
+              strategicmindsadvisory@gmail.com <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
             <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
-              Atrium 42, Innovation Quarter<br />New York · London · Singapore
+              Pompano Beach<br />Florida
             </p>
           </div>
         </div>

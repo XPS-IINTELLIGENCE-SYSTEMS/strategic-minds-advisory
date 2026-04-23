@@ -2,9 +2,9 @@ import React from 'react';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 
 const items = [
-  { icon: Mail, label: 'Email', value: 'hello@strategicminds.ai' },
+  { icon: Mail, label: 'Email', value: 'strategicmindsadvisory@gmail.com' },
   { icon: Phone, label: 'Phone', value: '+1 (212) 555-0144' },
-  { icon: MapPin, label: 'Studios', value: 'New York · London · Singapore' },
+  { icon: MapPin, label: 'Location', value: 'Pompano Beach, Florida' },
   { icon: Clock, label: 'Hours', value: 'Mon – Fri · 9:00 – 18:00 (ET)' },
 ];
 
