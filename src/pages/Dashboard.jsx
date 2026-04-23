@@ -154,7 +154,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden" style={{ paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
       <VoiceInputButton />
       <MobileSidebarDrawer
         isOpen={mobileDrawerOpen}
@@ -249,11 +249,13 @@ export default function Dashboard() {
         {/* Tool content */}
         <div 
           ref={contentScrollRef}
-          className="flex-1 overflow-y-auto overflow-x-hidden" 
+          className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-secondary scrollbar-track-background" 
           data-tool-content
           onScroll={handleScroll}
         >
-          {renderTool()}
+          <div className="px-4 md:px-6">
+            {renderTool()}
+          </div>
         </div>
       </div>
     </div>
