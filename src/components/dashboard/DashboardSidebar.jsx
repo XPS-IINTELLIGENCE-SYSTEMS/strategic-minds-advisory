@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
   Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool,
-  Workflow, Video, Globe, Brain, Users, TrendingDown, Network, Send
+  Workflow, Video, Globe, Brain, Users, TrendingDown, Network, Send, Settings
 } from 'lucide-react';
 
 const NAV_GROUPS = [
@@ -69,6 +69,12 @@ const NAV_GROUPS = [
       { id: 'playbooks', icon: Zap, label: 'Playbooks' },
       { id: 'keywords', icon: Zap, label: 'Keyword Alerts' },
       { id: 'execution', icon: Zap, label: 'Decision → Tasks' },
+    ],
+  },
+  {
+    label: 'User',
+    items: [
+      { id: 'account', icon: Settings, label: 'Account Settings' },
     ],
   },
 ];

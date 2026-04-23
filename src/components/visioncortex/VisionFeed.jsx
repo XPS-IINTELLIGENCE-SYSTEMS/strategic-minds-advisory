@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Rss, Loader2, Zap, TrendingUp, AlertCircle, RefreshCw, Globe, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import PullToRefresh from '@/components/common/PullToRefresh';
 
 const SIGNAL_CATEGORIES = [
   'AI & LLM Research', 'Crypto & DeFi', 'Finance & Markets',
@@ -46,8 +47,9 @@ export default function VisionFeed() {
   };
 
   return (
-    <div className="h-full overflow-y-auto">
-      <div className="max-w-4xl mx-auto p-6 space-y-6">
+    <PullToRefresh onRefresh={loadFeed}>
+      <div className="h-full overflow-y-auto">
+        <div className="max-w-4xl mx-auto p-6 space-y-6">
 
         {/* Category selector */}
         <div className="p-5 rounded-2xl border border-border bg-card/50 space-y-3">
@@ -176,6 +178,7 @@ export default function VisionFeed() {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </PullToRefresh>
   );
 }

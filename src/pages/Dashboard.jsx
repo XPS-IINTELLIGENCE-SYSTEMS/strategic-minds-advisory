@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import ChatPanel from '@/components/dashboard/ChatPanel';
+import AccountSettings from '@/components/dashboard/AccountSettings';
 import SimulationTool from '@/components/dashboard/SimulationTool';
 import PredictionTool from '@/components/dashboard/PredictionTool';
 import PromptLibraryPanel from '@/components/dashboard/PromptLibraryPanel';
@@ -78,6 +79,7 @@ export default function Dashboard() {
       case 'playbooks': return <StrategyPlaybookLibrary />;
       case 'keywords': return <MarketKeywordMonitor />;
       case 'execution': return <DecisionToTasksConverter />;
+      case 'account': return <AccountSettings />;
       default: return <SimulationTool />;
     }
   };
@@ -128,6 +130,7 @@ export default function Dashboard() {
                activeTool === 'playbooks' ? 'Strategy Playbook Library' :
                activeTool === 'keywords' ? 'Market Keyword Monitor' :
                activeTool === 'execution' ? 'Decision to Tasks Converter' :
+               activeTool === 'account' ? 'Account Settings' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">

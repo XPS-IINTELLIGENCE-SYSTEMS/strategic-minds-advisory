@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import BottomTabBar from '@/components/common/BottomTabBar';
+import MobileHeader from '@/components/common/MobileHeader';
 
 export default function SiteLayout() {
   const { pathname } = useLocation();
@@ -11,12 +13,14 @@ export default function SiteLayout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground relative overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-background text-foreground relative overflow-x-hidden md:pb-0 pb-16">
       <Navbar />
-      <main className="flex-1 pt-20">
+      <MobileHeader />
+      <main className="flex-1 pt-20 md:pt-20">
         <Outlet />
       </main>
       <Footer />
+      <BottomTabBar />
     </div>
   );
 }

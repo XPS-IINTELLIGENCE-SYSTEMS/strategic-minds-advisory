@@ -63,20 +63,20 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             to="/contact"
-            className="hidden md:inline-flex btn-ivory rounded-full px-5 py-2.5 text-sm font-medium hover:opacity-90 transition"
+            className="hidden md:inline-flex btn-ivory rounded-full px-5 py-2.5 text-sm font-medium hover:opacity-90 transition min-h-[44px] min-w-[44px] justify-center"
           >
             Begin Engagement
           </Link>
           <Link
             to="/dashboard"
-            className="hidden md:inline-flex items-center gap-1.5 px-4 py-2.5 text-sm border border-border bg-secondary/40 rounded-full hover:bg-secondary transition text-muted-foreground hover:text-foreground"
+            className="hidden md:inline-flex items-center gap-1.5 px-4 py-2.5 text-sm border border-border bg-secondary/40 rounded-full hover:bg-secondary transition text-muted-foreground hover:text-foreground min-h-[44px] min-w-[44px] justify-center"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
             Dashboard
           </Link>
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden p-2 text-foreground"
+            className="md:hidden p-2 text-foreground min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Menu"
           >
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
