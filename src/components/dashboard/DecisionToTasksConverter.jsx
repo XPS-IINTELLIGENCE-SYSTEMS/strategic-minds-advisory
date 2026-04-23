@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { Loader2, Zap, CheckCircle2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MobileSelect from '@/components/common/MobileSelect';
@@ -25,10 +25,10 @@ export default function DecisionToTasksConverter() {
 
   const loadData = async () => {
     try {
-      const user = await base44.auth.me();
-      const [allDebates, allMembers] = await Promise.all([
-        base44.entities.DebateHistory.filter({ participants: { $exists: true } }),
-        base44.entities.TeamMember.list(),
+      const { data: { user } } = await supabase.auth.getUser();
+      const [{ data: allDebates }, { data: allMembers }] = await Promise.all([
+        supabase.from('debate_history').select('*').not('participants', 'is', null),
+        supabase.from('team_member').select('*'),
       ]);
 
       setDebates(allDebates.sort((a, b) => 
@@ -50,14 +50,17 @@ export default function DecisionToTasksConverter() {
 
     setGenerating(true);
     try {
-      const response = await base44.functions.invoke('transformDecisionToTasks', {
-        debateId: debate.id,
-        ideaId: debate.idea_id,
-        decision: debate.decision_made,
+      const { data: response, error } = await supabase.functions.invoke('transformDecisionToTasks', {
+        body: {
+          debateId: debate.id,
+          ideaId: debate.idea_id,
+          decision: debate.decision_made,
+        },
       });
+      if (error) throw error;
 
       setSelectedDebate(debate);
-      setTasks(response.data);
+      setTasks(response);
     } catch (error) {
       alert(`Error: ${error.message}`);
     } finally {
@@ -73,12 +76,15 @@ export default function DecisionToTasksConverter() {
 
     setSyncing(true);
     try {
-      const response = await base44.functions.invoke('syncTasksToProjectManagement', {
-        decisionTaskId: tasks.decision_task_id,
-        pmTool: syncConfig.pmTool,
-        projectKey: syncConfig.projectKey,
-        assignedMembers: syncConfig.assignedMembers,
+      const { data: response, error } = await supabase.functions.invoke('syncTasksToProjectManagement', {
+        body: {
+          decisionTaskId: tasks.decision_task_id,
+          pmTool: syncConfig.pmTool,
+          projectKey: syncConfig.projectKey,
+          assignedMembers: syncConfig.assignedMembers,
+        },
       });
+      if (error) throw error;
 
       alert(`✓ ${response.data.tasks_created} tasks synced to ${syncConfig.pmTool}`);
       setTasks(null);

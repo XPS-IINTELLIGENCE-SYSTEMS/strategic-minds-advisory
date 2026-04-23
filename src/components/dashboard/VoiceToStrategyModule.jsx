@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { Mic, StopCircle, Loader2, CheckCircle2, Copy } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -40,30 +40,34 @@ export default function VoiceToStrategyModule() {
     const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
 
     try {
-      // Upload audio
-      const uploadRes = await base44.integrations.Core.UploadFile({
-        file: audioBlob,
-      });
+      // Upload audio to Supabase storage
+      const fileName = `audio-${Date.now()}.webm`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('voice-inputs')
+        .upload(fileName, audioBlob);
+      if (uploadError) throw uploadError;
 
       // Transcribe and extract insights
-      const res = await base44.functions.invoke('voiceToInsight', {
-        audioUrl: uploadRes.file_url,
+      const { data: res, error: fnError } = await supabase.functions.invoke('voiceToInsight', {
+        audioUrl: uploadData.path,
       });
+      if (fnError) throw fnError;
 
-      setTranscript(res.data.transcript);
-      setInsights(res.data.insights);
+      setTranscript(res.transcript);
+      setInsights(res.insights);
 
       // Log to intelligence feed
-      const user = await base44.auth.me();
-      await base44.entities.StrategicIntelligence.create({
-        user_email: user.email,
-        title: res.data.insights?.category || 'Voice Note',
-        content: res.data.transcript,
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error: createError } = await supabase.from('strategic_intelligence').insert([{
+        user_email: user?.email,
+        title: res.insights?.category || 'Voice Note',
+        content: res.transcript,
         source_type: 'voice_note',
-        sentiment: res.data.insights?.sentiment || 'neutral',
-        impact_score: res.data.insights?.impact || 50,
-        tags: res.data.insights?.tags?.join(',') || '',
-      });
+        sentiment: res.insights?.sentiment || 'neutral',
+        impact_score: res.insights?.impact || 50,
+        tags: res.insights?.tags?.join(',') || '',
+      }]);
+      if (createError) throw createError;
 
       alert('✓ Insights logged to intelligence feed');
     } catch (error) {

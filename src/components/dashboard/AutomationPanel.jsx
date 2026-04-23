@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { Bot, Play, Loader2, Plus, Trash2, CheckCircle2, XCircle, Clock, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MobileSelect from '@/components/common/MobileSelect';
@@ -39,7 +39,11 @@ export default function AutomationPanel() {
   const [result, setResult] = useState(null);
 
   useEffect(() => {
-    base44.entities.AutomationTask.list().then(setTasks);
+    const loadTasks = async () => {
+      const { data, error } = await supabase.from('automation_task').select('*');
+      if (!error) setTasks(data || []);
+    };
+    loadTasks();
   }, []);
 
   const createTask = async (taskData) => {
@@ -49,13 +53,13 @@ export default function AutomationPanel() {
     setShowCreate(false);
     
     try {
-      const created = await base44.entities.AutomationTask.create({
-        ...taskData,
-        status: 'idle',
-        enabled: true,
-      });
+      const { data: created, error } = await supabase
+        .from('automation_task')
+        .insert([{ ...taskData, status: 'idle', enabled: true }])
+        .select();
+      if (error) throw error;
       // Replace optimistic task with real one
-      setTasks(prev => prev.map(t => t.id === optimisticTask.id ? created : t));
+      setTasks(prev => prev.map(t => t.id === optimisticTask.id ? created?.[0] : t));
     } catch (error) {
       console.error('Failed to create automation task:', error);
       // Rollback on error
@@ -69,19 +73,28 @@ export default function AutomationPanel() {
     setRunning(task.id);
     setResult(null);
 
-    await base44.entities.AutomationTask.update(task.id, { status: 'running', last_run: new Date().toISOString() });
+    await supabase
+      .from('automation_task')
+      .update({ status: 'running', last_run: new Date().toISOString() })
+      .eq('id', task.id);
     setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'running' } : t));
 
-    const res = await base44.functions.invoke('runAutomation', {
+    const { data: res, error: fnError } = await supabase.functions.invoke('runAutomation', {
       automationType: task.automation_type,
       config: task.config ? JSON.parse(task.config) : {},
       targetData: { taskName: task.name },
     });
+    if (fnError) throw fnError;
 
-    const updated = await base44.entities.AutomationTask.update(task.id, {
-      status: res.data.status === 'completed' ? 'completed' : 'failed',
-      result: JSON.stringify(res.data),
-    });
+    const { data: updated, error: updateError } = await supabase
+      .from('automation_task')
+      .update({
+        status: res.status === 'completed' ? 'completed' : 'failed',
+        result: JSON.stringify(res),
+      })
+      .eq('id', task.id)
+      .select();
+    if (updateError) throw updateError;
     setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: updated.status } : t));
     setResult({ task, data: res.data });
     setRunning(null);
@@ -92,11 +105,12 @@ export default function AutomationPanel() {
     setTasks(prev => prev.filter(t => t.id !== id));
     
     try {
-      await base44.entities.AutomationTask.delete(id);
+      await supabase.from('automation_task').delete().eq('id', id);
     } catch (error) {
       console.error('Failed to delete automation task:', error);
       // Reload tasks on error
-      base44.entities.AutomationTask.list().then(setTasks);
+      const { data } = await supabase.from('automation_task').select('*');
+      setTasks(data || []);
     }
   };
 
