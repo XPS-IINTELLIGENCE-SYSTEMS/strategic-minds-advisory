@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
   Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool,
-  Workflow, Video, Globe, Brain
+  Workflow, Video, Globe, Brain, Users
 } from 'lucide-react';
 
 const NAV_GROUPS = [
@@ -35,6 +35,14 @@ const NAV_GROUPS = [
       { id: 'content', icon: PenTool, label: 'Content Engine' },
       { id: 'branding', icon: Video, label: 'Branding Studio' },
       { id: 'social', icon: Globe, label: 'Social Intel' },
+    ],
+  },
+  {
+    label: 'Collaboration',
+    items: [
+      { id: 'workspace', icon: Users, label: 'Workspace' },
+      { id: 'pitch', icon: PenTool, label: 'Pitch Decks' },
+      { id: 'alerts', icon: Bot, label: 'Real-Time Alerts' },
     ],
   },
   {

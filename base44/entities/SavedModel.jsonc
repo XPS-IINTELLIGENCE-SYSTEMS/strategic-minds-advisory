@@ -1,0 +1,38 @@
+{
+  "name": "SavedModel",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Business model name"
+    },
+    "idea_id": {
+      "type": "string",
+      "description": "Related VisionIdea ID"
+    },
+    "workspace_id": {
+      "type": "string"
+    },
+    "financial_model": {
+      "type": "string",
+      "description": "JSON with revenue, growth, margins, etc."
+    },
+    "description": {
+      "type": "string"
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "watched_for_alerts": {
+      "type": "boolean",
+      "default": false,
+      "description": "Monitor intelligence for this model"
+    }
+  },
+  "required": [
+    "name",
+    "workspace_id",
+    "financial_model"
+  ]
+}

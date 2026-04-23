@@ -1,0 +1,32 @@
+{
+  "name": "Workspace",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Workspace name (e.g., 'Acme AI Strategy')"
+    },
+    "description": {
+      "type": "string"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "members_count": {
+      "type": "number",
+      "default": 1
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false
+    },
+    "settings": {
+      "type": "string",
+      "description": "JSON object with workspace settings (permissions, visibility, etc.)"
+    }
+  },
+  "required": [
+    "name",
+    "owner_email"
+  ]
+}

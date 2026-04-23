@@ -1,0 +1,29 @@
+{
+  "name": "InsightComment",
+  "type": "object",
+  "properties": {
+    "intelligence_id": {
+      "type": "string",
+      "description": "Related StrategicIntelligence ID"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "comment_text": {
+      "type": "string"
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "comment_date": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "intelligence_id",
+    "user_email",
+    "comment_text"
+  ]
+}

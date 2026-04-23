@@ -15,6 +15,9 @@ import BrandingStudio from '@/components/dashboard/BrandingStudio';
 import SocialIntelligencePanel from '@/components/dashboard/SocialIntelligencePanel';
 import VisionCortexShell from '@/components/visioncortex/VisionCortexShell';
 import ReportingAndAlerts from '@/components/dashboard/ReportingAndAlerts';
+import CollaborativeWorkspace from '@/components/dashboard/CollaborativeWorkspace';
+import PitchDeckGenerator from '@/components/dashboard/PitchDeckGenerator';
+import RealTimeAlertsDashboard from '@/components/dashboard/RealTimeAlertsDashboard';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -40,6 +43,9 @@ export default function Dashboard() {
       case 'social': return <SocialIntelligencePanel />;
       case 'test': return <TestModule />;
       case 'reports': return <ReportingAndAlerts />;
+      case 'workspace': return <CollaborativeWorkspace />;
+      case 'pitch': return <PitchDeckGenerator />;
+      case 'alerts': return <RealTimeAlertsDashboard />;
       default: return <SimulationTool />;
     }
   };
@@ -70,6 +76,9 @@ export default function Dashboard() {
                activeTool === 'branding' ? 'Branding Studio' :
                activeTool === 'social' ? 'Social Intelligence' :
                activeTool === 'reports' ? 'Reports & Alerts' :
+               activeTool === 'workspace' ? 'Team Workspace' :
+               activeTool === 'pitch' ? 'Pitch Deck Generator' :
+               activeTool === 'alerts' ? 'Real-Time Alerts' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">
