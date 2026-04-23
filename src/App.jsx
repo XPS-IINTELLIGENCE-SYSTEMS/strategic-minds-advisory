@@ -21,29 +21,20 @@ import EliteIntelligenceSystemGuide from '@/pages/EliteIntelligenceSystemGuide';
 import PageTransition from '@/components/common/PageTransition';
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const context = useAuth();
+  const isLoading = context?.isLoadingPublicSettings || context?.isLoadingAuth;
+  const authChecked = context?.authChecked;
 
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
+  // Only show loading if still checking
+  if (isLoading && !authChecked) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1410' }}>
+        <div style={{ width: '32px', height: '32px', border: '4px solid #333', borderTopColor: '#d4af37', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
       </div>
     );
   }
 
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
-  }
-
-  // Render the main app
+  // Render the main app (always show public pages)
   return (
     <AnimatePresence mode="wait">
       <Routes>
@@ -66,19 +57,16 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <QueryClientProvider client={queryClientInstance}>
-          <Router>
-            <AuthenticatedApp />
-          </Router>
-          <Toaster />
-          <PWAInstaller />
-        </QueryClientProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <QueryClientProvider client={queryClientInstance}>
+        <Router>
+          <AuthenticatedApp />
+        </Router>
+        <Toaster />
+        <PWAInstaller />
+      </QueryClientProvider>
+    </AuthProvider>
   )
 }
 

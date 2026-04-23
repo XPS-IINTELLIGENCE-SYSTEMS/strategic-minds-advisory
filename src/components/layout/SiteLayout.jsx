@@ -13,14 +13,21 @@ export default function SiteLayout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground relative overflow-x-hidden md:pb-0 pb-16">
-      <Navbar />
-      <MobileHeader />
-      <main className="flex-1 pt-20 md:pt-20">
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#150f0a', color: '#f5f1e8', position: 'relative', overflowX: 'hidden' }}>
+      <nav style={{ height: '64px', borderBottom: '1px solid #333', background: '#1a1410', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'fixed', top: 0, width: '100%', zIndex: 1000 }}>
+        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#d4af37' }}>Strategic.AI</div>
+        <div style={{ display: 'flex', gap: '24px', fontSize: '14px' }}>
+          <a href="/" style={{ color: '#f5f1e8', textDecoration: 'none' }}>Home</a>
+          <a href="/services" style={{ color: '#f5f1e8', textDecoration: 'none' }}>Services</a>
+          <a href="/dashboard" style={{ color: '#f5f1e8', textDecoration: 'none' }}>Dashboard</a>
+        </div>
+      </nav>
+      <main style={{ flex: 1, paddingTop: '64px', overflowY: 'auto' }}>
         <Outlet />
       </main>
-      <Footer />
-      <BottomTabBar />
+      <footer style={{ borderTop: '1px solid #333', background: '#1a1410', padding: '24px', textAlign: 'center', fontSize: '12px', color: '#888' }}>
+        © 2026 Strategic Minds. All rights reserved.
+      </footer>
     </div>
   );
 }

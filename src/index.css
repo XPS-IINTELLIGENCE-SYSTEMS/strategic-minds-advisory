@@ -89,9 +89,11 @@
   }
   html {
     scroll-behavior: smooth;
+    background: #150f0a;
   }
   body {
-    @apply bg-background text-foreground;
+    background: #150f0a !important;
+    color: #f5f1e8 !important;
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
@@ -100,6 +102,12 @@
     padding-right: env(safe-area-inset-right);
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
+    margin: 0;
+    padding: 0;
+  }
+  #root {
+    background: #150f0a;
+    color: #f5f1e8;
   }
   h1, h2, h3, h4, h5, .font-display {
     font-family: var(--font-display);
