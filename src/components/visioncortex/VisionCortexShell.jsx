@@ -12,6 +12,9 @@ import DeploymentEngine from './DeploymentEngine';
 import AutoGenerationMonitor from './AutoGenerationMonitor';
 import TaskQueue from './TaskQueue';
 import IntelligenceLibraryBrowser from './IntelligenceLibraryBrowser';
+import CustomStressTestBuilder from './CustomStressTestBuilder';
+import IntelligenceMatrixDashboard from './IntelligenceMatrixDashboard';
+import DebateArenaUI from './DebateArenaUI';
 import MultiAgentStressTest from './MultiAgentStressTest';
 import RiskScenarioMap from './RiskScenarioMap';
 import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu, CheckSquare, Library, Zap, TrendingDown } from 'lucide-react';
@@ -20,13 +23,16 @@ const TABS = [
   { id: 'autogen',      icon: Cpu,            label: '24/7 Auto-Gen' },
   { id: 'feed',         icon: Rss,            label: 'Intelligence Feed' },
   { id: 'library',      icon: Library,        label: 'Intelligence Lib' },
+  { id: 'intel-matrix', icon: Globe,          label: 'Intel Matrix' },
   { id: 'map',          icon: Globe,          label: 'Global Trends' },
   { id: 'board',        icon: Lightbulb,      label: 'Idea Board' },
   { id: 'whiteboard',   icon: StickyNote,     label: 'Whiteboard' },
   { id: 'analytics',    icon: BarChart3,      label: 'Analytics' },
+  { id: 'custom-stress',icon: Zap,            label: 'Custom Stress' },
   { id: 'stress',       icon: Zap,            label: 'Stress Test' },
   { id: 'risk-map',     icon: TrendingDown,   label: 'Risk Map' },
   { id: 'tasks',        icon: CheckSquare,    label: 'Task Queue' },
+  { id: 'debate-arena', icon: MessageSquare,  label: 'Debate Arena' },
   { id: 'debate',       icon: MessageSquare,  label: 'Debate' },
   { id: 'sandbox',      icon: Terminal,       label: 'Sandbox' },
   { id: 'deploy',       icon: Rocket,         label: 'Deploy' },
@@ -131,13 +137,16 @@ export default function VisionCortexShell() {
         {activeTab === 'autogen'      && <div className="h-full overflow-y-auto"><div className="max-w-5xl mx-auto p-6"><AutoGenerationMonitor /></div></div>}
         {activeTab === 'feed'         && <VisionFeed />}
         {activeTab === 'library'      && <IntelligenceLibraryBrowser />}
+        {activeTab === 'intel-matrix' && <IntelligenceMatrixDashboard />}
         {activeTab === 'map'          && <GlobalTrendsMap />}
         {activeTab === 'board'        && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
         {activeTab === 'whiteboard'   && <IdeaWhiteboard />}
         {activeTab === 'analytics'    && <IdeaAnalytics />}
+        {activeTab === 'custom-stress' && <CustomStressTestBuilder onTestStart={() => setActiveTab('debate-arena')} />}
         {activeTab === 'stress'       && <MultiAgentStressTest idea={selectedIdea} />}
         {activeTab === 'risk-map'     && <RiskScenarioMap />}
         {activeTab === 'tasks'        && <TaskQueue />}
+        {activeTab === 'debate-arena' && <DebateArenaUI idea={selectedIdea} />}
         {activeTab === 'debate'       && <AgentDebateChat idea={selectedIdea} />}
         {activeTab === 'sandbox'      && <ActiveSandbox idea={selectedIdea} />}
         {activeTab === 'deploy'       && <DeploymentEngine />}
