@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, MessageCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
 import ChatPanel from '@/components/dashboard/ChatPanel';
@@ -44,6 +45,7 @@ export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
   const [chatSeed, setChatSeed] = useState(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const handlePromptSelect = (prompt) => {
     setChatSeed(prompt);
@@ -109,10 +111,15 @@ export default function Dashboard() {
         <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
       </div>
 
-      {/* Chat panel - always on left */}
-      <div className="hidden xl:flex w-80 xl:w-96 flex-shrink-0 border-r border-border flex-col">
+      {/* Chat panel - slide in/out */}
+      <motion.div
+        initial={{ x: -400 }}
+        animate={{ x: chatOpen ? 0 : -400 }}
+        transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+        className="hidden xl:flex w-80 xl:w-96 flex-shrink-0 border-r border-border flex-col fixed xl:static h-screen xl:h-auto left-0 top-0 z-20 bg-background"
+      >
         <ChatPanel seed={chatSeed} onSeedConsumed={() => setChatSeed(null)} />
-      </div>
+      </motion.div>
 
       {/* Main tool panel */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -124,6 +131,13 @@ export default function Dashboard() {
               className="md:hidden p-1.5 rounded-lg hover:bg-secondary transition"
             >
               <Menu className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setChatOpen(!chatOpen)}
+              className="hidden xl:flex p-1.5 rounded-lg hover:bg-secondary transition"
+              title={chatOpen ? 'Close chat' : 'Open chat'}
+            >
+              <MessageCircle className="w-5 h-5" />
             </button>
             <h1 className="font-display text-lg capitalize text-gradient-ivory">
               {activeTool === 'prompts' ? 'Prompt Library' :
