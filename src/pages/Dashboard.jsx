@@ -41,24 +41,13 @@ import InteractivePlaybookGenerator from '@/components/dashboard/InteractivePlay
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
   const [chatSeed, setChatSeed] = useState(null);
-  const [lastClickedTool, setLastClickedTool] = useState(null);
 
   const handlePromptSelect = (prompt) => {
     setChatSeed(prompt);
   };
 
   const handleToolChange = (tool) => {
-    if (lastClickedTool === tool) {
-      // Reset the tool view to top
-      const element = document.querySelector('[data-tool-content]');
-      if (element) {
-        element.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-      setLastClickedTool(null);
-    } else {
-      setActiveTool(tool);
-      setLastClickedTool(tool);
-    }
+    setActiveTool(tool);
   };
 
   const renderTool = () => {
