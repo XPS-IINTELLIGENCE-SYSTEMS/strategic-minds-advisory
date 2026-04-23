@@ -1,0 +1,64 @@
+{
+  "name": "CodeOperation",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User who triggered the operation"
+    },
+    "operation_type": {
+      "type": "string",
+      "enum": [
+        "create_file",
+        "modify_file",
+        "delete_file",
+        "create_entity",
+        "create_function",
+        "deploy_project"
+      ],
+      "description": "Type of code operation"
+    },
+    "target_path": {
+      "type": "string",
+      "description": "File path, entity name, or function name"
+    },
+    "description": {
+      "type": "string",
+      "description": "What was created/modified"
+    },
+    "content": {
+      "type": "string",
+      "description": "File or entity content (if applicable)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if failed"
+    },
+    "vercel_deployment_url": {
+      "type": "string",
+      "description": "Live URL if project was deployed"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "natural_language_prompt": {
+      "type": "string",
+      "description": "Original user request that triggered this"
+    }
+  },
+  "required": [
+    "user_email",
+    "operation_type",
+    "target_path"
+  ]
+}

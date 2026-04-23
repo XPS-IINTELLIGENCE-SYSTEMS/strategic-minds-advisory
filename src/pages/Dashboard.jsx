@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useTabState } from '@/hooks/useTabState';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
-import ChatPanel from '@/components/dashboard/ChatPanel';
+import ChatPanel from '@/components/dashboard/EnhancedChatPanel';
 import AccountSettings from '@/components/dashboard/AccountSettings';
 import VoiceInputButton from '@/components/mobile/VoiceInputButton';
 import SimulationTool from '@/components/dashboard/SimulationTool';

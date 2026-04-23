@@ -1,0 +1,47 @@
+{
+  "name": "ProjectIndex",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string",
+      "description": "Vercel project name"
+    },
+    "file_structure": {
+      "type": "string",
+      "description": "JSON object of entire file tree with line counts"
+    },
+    "entity_schemas": {
+      "type": "string",
+      "description": "JSON array of all entity definitions"
+    },
+    "function_list": {
+      "type": "string",
+      "description": "JSON array of all backend functions with signatures"
+    },
+    "dependencies": {
+      "type": "string",
+      "description": "Installed npm packages"
+    },
+    "readme_content": {
+      "type": "string",
+      "description": "Project README for context"
+    },
+    "last_indexed": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "vercel_project_id": {
+      "type": "string"
+    },
+    "github_repo_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email",
+    "project_name"
+  ]
+}
