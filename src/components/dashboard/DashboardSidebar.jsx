@@ -2,13 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
-  Layout, TestTube, Home, ChevronRight
+  Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool
 } from 'lucide-react';
 
 const NAV = [
   { id: 'chat', icon: MessageSquare, label: 'AI Chat' },
   { id: 'simulation', icon: Zap, label: 'Simulation' },
   { id: 'prediction', icon: TrendingUp, label: 'Prediction' },
+  { id: 'insights', icon: BarChart3, label: 'Insights' },
+  { id: 'content', icon: PenTool, label: 'Content Engine' },
+  { id: 'sync', icon: RefreshCw, label: 'Google Sync' },
   { id: 'prompts', icon: BookOpen, label: 'Prompt Library' },
   { id: 'automation', icon: Bot, label: 'Automation' },
   { id: 'templates', icon: Layout, label: 'Templates' },

@@ -1,0 +1,44 @@
+{
+  "name": "ContentItem",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "blog_post",
+        "linkedin",
+        "newsletter",
+        "email_draft"
+      ]
+    },
+    "topic": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "archived"
+      ],
+      "default": "draft"
+    },
+    "word_count": {
+      "type": "number"
+    },
+    "tags": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "content_type",
+    "body"
+  ]
+}

@@ -7,6 +7,9 @@ import PromptLibraryPanel from '@/components/dashboard/PromptLibraryPanel';
 import AutomationPanel from '@/components/dashboard/AutomationPanel';
 import TemplateLibrary from '@/components/dashboard/TemplateLibrary';
 import TestModule from '@/components/dashboard/TestModule';
+import InsightsPanel from '@/components/dashboard/InsightsPanel';
+import SyncPanel from '@/components/dashboard/SyncPanel';
+import ContentEngine from '@/components/dashboard/ContentEngine';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -23,6 +26,9 @@ export default function Dashboard() {
       case 'prompts': return <PromptLibraryPanel onSelectPrompt={handlePromptSelect} />;
       case 'automation': return <AutomationPanel />;
       case 'templates': return <TemplateLibrary />;
+      case 'insights': return <InsightsPanel />;
+      case 'content': return <ContentEngine />;
+      case 'sync': return <SyncPanel />;
       case 'test': return <TestModule />;
       default: return <SimulationTool />;
     }
@@ -46,6 +52,9 @@ export default function Dashboard() {
             <h1 className="font-display text-lg capitalize text-gradient-ivory">
               {activeTool === 'prompts' ? 'Prompt Library' :
                activeTool === 'test' ? 'System Tests' :
+               activeTool === 'insights' ? 'Insights' :
+               activeTool === 'content' ? 'Content Engine' :
+               activeTool === 'sync' ? 'Google Sync' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">
