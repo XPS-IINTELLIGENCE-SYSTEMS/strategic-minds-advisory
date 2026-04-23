@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { 
   MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
   Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool,
-  Workflow, Video, Globe, Brain, Users, TrendingDown, Network, Send, Settings, Database, FileText, Mic
+  Workflow, Video, Globe, Brain, Users, TrendingDown, Network, Send, Settings, Database, FileText, Mic, Activity
 } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const NAV_GROUPS = [
   {
@@ -60,6 +61,12 @@ const NAV_GROUPS = [
     ],
   },
   {
+    label: 'Admin Tools',
+    items: [
+      { id: 'audit', icon: Activity, label: 'System Audit' },
+    ],
+  },
+  {
     label: 'Settings',
     items: [
       { id: 'account', icon: Settings, label: 'Account' },
@@ -109,7 +116,8 @@ export default function DashboardSidebar({ activeTool, setActiveTool }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-2 border-t border-border">
+      <div className="p-2 border-t border-border space-y-2">
+        <ThemeToggle />
         <Link
           to="/"
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition text-sm"

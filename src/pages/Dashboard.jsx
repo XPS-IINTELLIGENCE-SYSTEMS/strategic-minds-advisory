@@ -6,6 +6,7 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
 import ChatPanel from '@/components/dashboard/EnhancedChatPanel';
 import AccountSettings from '@/components/dashboard/AccountSettings';
+import SystemAuditDashboard from '@/components/dashboard/SystemAuditDashboard';
 import SchemaEditor from '@/components/dashboard/SchemaEditor';
 import VoiceInputButton from '@/components/mobile/VoiceInputButton';
 import SimulationTool from '@/components/dashboard/SimulationTool';
@@ -145,6 +146,7 @@ export default function Dashboard() {
       case 'voice': return <VoiceToStrategyModule />;
       case 'reports': return <ExecutiveSummaryModule />;
       case 'financials': return <FinancialModelingDashboard />;
+      case 'audit': return <SystemAuditDashboard />;
       default: return <SimulationTool />;
     }
   };
