@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, LogIn } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 export default function Hero({ bgImage }) {
   return (
@@ -64,12 +65,13 @@ export default function Hero({ bgImage }) {
             Begin Engagement
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
-          <Link
-            to="/services"
-            className="rounded-full px-7 py-3.5 text-sm font-medium border border-border bg-secondary/40 backdrop-blur-sm hover:bg-secondary transition"
+          <button
+            onClick={() => base44.auth.redirectToLogin()}
+            className="rounded-full px-7 py-3.5 text-sm font-medium border border-accent/50 bg-accent/10 text-accent hover:bg-accent/20 transition inline-flex items-center gap-2"
           >
-            Explore Practice
-          </Link>
+            <LogIn className="w-4 h-4" />
+            Sign In
+          </button>
         </motion.div>
 
         <motion.div
