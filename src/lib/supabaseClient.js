@@ -1,18 +1,37 @@
-import { createClient } from '@supabase/supabase-js';
+// This app uses Base44's built-in backend
+// Mock supabase object for backward compatibility
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+export const supabase = {
+  from: (table) => ({
+    select: () => ({
+      eq: (field, value) => ({
+        single: async () => ({ data: null, error: null }),
+        limit: async () => ({ data: [], error: null }),
+      }),
+      limit: async () => ({ data: [], error: null }),
+    }),
+    insert: (data) => ({
+      select: async () => ({ data, error: null }),
+    }),
+    update: (data) => ({
+      eq: () => ({
+        select: async () => ({ data, error: null }),
+      }),
+    }),
+    delete: () => ({
+      eq: async () => ({ error: null }),
+    }),
+  }),
+  auth: {
+    signUp: async (creds) => ({ data: null, error: null }),
+    signInWithPassword: async (creds) => ({ data: null, error: null }),
+    signOut: async () => ({ error: null }),
+    getSession: async () => ({ data: null }),
+    getUser: async () => ({ data: { user: null } }),
+    onAuthStateChange: () => () => {},
+  },
+};
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.warn('Supabase environment variables not configured');
-}
-
-export const supabase = createClient(
-  SUPABASE_URL || '',
-  SUPABASE_ANON_KEY || ''
-);
-
-// Auth helper
 export const supabaseAuth = {
   signUp: (email, password) => supabase.auth.signUp({ email, password }),
   signIn: (email, password) => supabase.auth.signInWithPassword({ email, password }),

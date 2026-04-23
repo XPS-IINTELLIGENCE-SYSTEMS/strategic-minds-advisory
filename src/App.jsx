@@ -1,12 +1,11 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import PageNotFound from './lib/PageNotFound';
 import PWAInstaller from '@/lib/PWAInstaller';
 import Home from '@/pages/Home';
-import Services from '@/pages/Services';
 import Dashboard from '@/pages/Dashboard';
 
 function MainLayout({ children }) {
@@ -16,7 +15,6 @@ function MainLayout({ children }) {
         <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#d4af37' }}>Strategic.AI</div>
         <div style={{ display: 'flex', gap: '24px', fontSize: '14px' }}>
           <a href="/" style={{ color: '#f5f1e8', textDecoration: 'none', cursor: 'pointer' }}>Home</a>
-          <a href="/services" style={{ color: '#f5f1e8', textDecoration: 'none', cursor: 'pointer' }}>Services</a>
           <a href="/dashboard" style={{ color: '#f5f1e8', textDecoration: 'none', cursor: 'pointer' }}>Dashboard</a>
         </div>
       </nav>
@@ -36,10 +34,9 @@ function App() {
       <Router>
         <AnimatePresence mode="wait">
           <Routes>
-            <Route element={<MainLayout><Home /></MainLayout>} path="/" />
-            <Route element={<MainLayout><Services /></MainLayout>} path="/services" />
-            <Route element={<Dashboard />} path="/dashboard" />
-            <Route element={<MainLayout><PageNotFound /></MainLayout>} path="*" />
+            <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="*" element={<MainLayout><PageNotFound /></MainLayout>} />
           </Routes>
         </AnimatePresence>
       </Router>
