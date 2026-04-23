@@ -91,7 +91,7 @@ export default function VoiceInputButton() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          className="md:hidden fixed bottom-28 left-4 right-4 z-40 bg-card/95 backdrop-blur-md border border-border rounded-2xl p-4 shadow-xl"
+          className="md:hidden fixed bottom-28 left-4 right-4 z-30 bg-card/95 backdrop-blur-md border border-border rounded-2xl p-4 shadow-xl"
         >
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -157,7 +157,7 @@ export default function VoiceInputButton() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={handleStartListening}
-          className="md:hidden fixed bottom-24 right-4 z-40 w-14 h-14 rounded-full bg-accent hover:bg-accent/90 text-primary-foreground shadow-lg flex items-center justify-center transition active:scale-95"
+          className="md:hidden fixed bottom-24 right-4 z-30 w-14 h-14 rounded-full bg-accent hover:bg-accent/90 text-primary-foreground shadow-lg flex items-center justify-center transition active:scale-95"
           title="Voice input"
         >
           <Mic className="w-6 h-6" />
