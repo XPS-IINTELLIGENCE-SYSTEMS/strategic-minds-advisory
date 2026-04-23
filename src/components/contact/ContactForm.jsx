@@ -27,8 +27,13 @@ export default function ContactForm() {
   const submit = async (e) => {
     e.preventDefault();
     setStatus('sending');
-    await base44.entities.ContactInquiry.create({ ...form, status: 'new' });
-    setStatus('sent');
+    try {
+      await base44.entities.ContactInquiry.create({ ...form, status: 'new' });
+      setStatus('sent');
+    } catch (error) {
+      console.error('Failed to submit contact form:', error);
+      setStatus('idle');
+    }
   };
 
   if (status === 'sent') {

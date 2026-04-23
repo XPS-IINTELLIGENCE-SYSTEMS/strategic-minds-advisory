@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Strategic Minds — light (kept minimal; app is dark-first) */
+    /* Light theme (fallback) */
     --background: 30 10% 97%;
     --foreground: 30 10% 10%;
     --card: 0 0% 100%;
@@ -33,9 +33,34 @@
     --radius: 1rem;
   }
 
-  .dark,
-  :root {
-    /* Dark-first editorial palette */
+  /* Respect system dark mode preference */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Dark-first editorial palette */
+      --background: 30 8% 5%;
+      --foreground: 40 25% 94%;
+      --card: 30 8% 8%;
+      --card-foreground: 40 25% 94%;
+      --popover: 30 8% 8%;
+      --popover-foreground: 40 25% 94%;
+      --primary: 40 30% 95%;
+      --primary-foreground: 30 10% 10%;
+      --secondary: 30 6% 12%;
+      --secondary-foreground: 40 25% 94%;
+      --muted: 30 6% 12%;
+      --muted-foreground: 30 10% 60%;
+      --accent: 36 55% 62%;
+      --accent-foreground: 30 10% 10%;
+      --destructive: 0 70% 50%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 30 6% 15%;
+      --input: 30 6% 15%;
+      --ring: 36 55% 55%;
+    }
+  }
+
+  /* Explicit .dark class override for manual theme switching */
+  .dark {
     --background: 30 8% 5%;
     --foreground: 40 25% 94%;
     --card: 30 8% 8%;

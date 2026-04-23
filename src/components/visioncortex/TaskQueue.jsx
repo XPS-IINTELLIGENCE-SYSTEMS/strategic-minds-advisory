@@ -43,8 +43,22 @@ export default function TaskQueue() {
 
   const createTask = async () => {
     if (!newTask.title.trim()) return;
-    const created = await base44.entities.AgentTask.create(newTask);
-    setTasks(prev => [created, ...prev]);
+    
+    // Optimistic update: add to UI immediately
+    const optimisticTask = { ...newTask, id: `temp-${Date.now()}`, status: 'pending' };
+    setTasks(prev => [optimisticTask, ...prev]);
+    setShowForm(false);
+    
+    try {
+      const created = await base44.entities.AgentTask.create(newTask);
+      // Replace optimistic task with real one
+      setTasks(prev => prev.map(t => t.id === optimisticTask.id ? created : t));
+    } catch (error) {
+      console.error('Failed to create task:', error);
+      // Rollback optimistic update on error
+      setTasks(prev => prev.filter(t => t.id !== optimisticTask.id));
+    }
+    
     setNewTask({
       title: '',
       description: '',
@@ -53,26 +67,45 @@ export default function TaskQueue() {
       priority: 'medium',
       trigger_condition: '',
     });
-    setShowForm(false);
   };
 
   const executeTask = async (task) => {
-    await base44.entities.AgentTask.update(task.id, { status: 'in_progress' });
+    // Optimistic: update UI immediately
     setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'in_progress' } : t));
     
-    // Simulate async execution
-    setTimeout(async () => {
-      await base44.entities.AgentTask.update(task.id, { 
-        status: 'completed',
-        result: `${task.assigned_agent} completed ${task.task_type} on "${task.title}"`
-      });
-      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'completed', result: `${task.assigned_agent} completed ${task.task_type}` } : t));
-    }, 2000);
+    try {
+      await base44.entities.AgentTask.update(task.id, { status: 'in_progress' });
+      
+      // Simulate async execution
+      setTimeout(async () => {
+        try {
+          await base44.entities.AgentTask.update(task.id, { 
+            status: 'completed',
+            result: `${task.assigned_agent} completed ${task.task_type} on "${task.title}"`
+          });
+          setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'completed', result: `${task.assigned_agent} completed ${task.task_type}` } : t));
+        } catch (error) {
+          console.error('Failed to complete task:', error);
+          setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'failed' } : t));
+        }
+      }, 2000);
+    } catch (error) {
+      console.error('Failed to execute task:', error);
+      setTasks(prev => prev.map(t => t.id === task.id ? { ...t, status: 'pending' } : t));
+    }
   };
 
   const deleteTask = async (id) => {
-    await base44.entities.AgentTask.delete(id);
+    // Optimistic: remove from UI immediately
     setTasks(prev => prev.filter(t => t.id !== id));
+    
+    try {
+      await base44.entities.AgentTask.delete(id);
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+      // On error, reload tasks
+      loadTasks();
+    }
   };
 
   const pendingCount = tasks.filter(t => t.status === 'pending').length;

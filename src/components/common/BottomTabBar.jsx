@@ -12,7 +12,7 @@ export default function BottomTabBar() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 bg-card/95 backdrop-blur-md border-t border-border z-40 safe-area-bottom safe-area-left safe-area-right">
+    <nav className="md:hidden fixed bottom-0 inset-x-0 bg-card/95 backdrop-blur-md border-t border-border z-40" style={{ paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
       <div className="flex justify-around items-center h-16">
         {TABS.map(tab => {
           const Icon = tab.icon;

@@ -12,7 +12,7 @@ export default function MobileHeader() {
   if (!showBack) return null;
 
   return (
-    <div className="md:hidden fixed top-0 inset-x-0 h-14 bg-card/95 backdrop-blur-md border-b border-border z-40 flex items-center px-4 safe-area-top safe-area-left safe-area-right">
+    <div className="md:hidden fixed top-0 inset-x-0 h-14 bg-card/95 backdrop-blur-md border-b border-border z-40 flex items-center px-4" style={{ paddingTop: 'env(safe-area-inset-top)', paddingLeft: 'calc(1rem + env(safe-area-inset-left))', paddingRight: 'calc(1rem + env(safe-area-inset-right))' }}>
       <button
         onClick={() => navigate(-1)}
         className="p-2 -ml-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg hover:bg-secondary transition"

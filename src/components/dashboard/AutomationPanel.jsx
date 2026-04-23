@@ -42,13 +42,25 @@ export default function AutomationPanel() {
   }, []);
 
   const createTask = async (taskData) => {
-    const created = await base44.entities.AutomationTask.create({
-      ...taskData,
-      status: 'idle',
-      enabled: true,
-    });
-    setTasks(prev => [created, ...prev]);
+    // Optimistic: add to UI immediately
+    const optimisticTask = { ...taskData, id: `temp-${Date.now()}`, status: 'idle', enabled: true };
+    setTasks(prev => [optimisticTask, ...prev]);
     setShowCreate(false);
+    
+    try {
+      const created = await base44.entities.AutomationTask.create({
+        ...taskData,
+        status: 'idle',
+        enabled: true,
+      });
+      // Replace optimistic task with real one
+      setTasks(prev => prev.map(t => t.id === optimisticTask.id ? created : t));
+    } catch (error) {
+      console.error('Failed to create automation task:', error);
+      // Rollback on error
+      setTasks(prev => prev.filter(t => t.id !== optimisticTask.id));
+    }
+    
     setNewTask({ name: '', automation_type: AUTOMATION_TYPES[0], config: '', schedule: '' });
   };
 
@@ -75,8 +87,16 @@ export default function AutomationPanel() {
   };
 
   const deleteTask = async (id) => {
-    await base44.entities.AutomationTask.delete(id);
+    // Optimistic: remove from UI immediately
     setTasks(prev => prev.filter(t => t.id !== id));
+    
+    try {
+      await base44.entities.AutomationTask.delete(id);
+    } catch (error) {
+      console.error('Failed to delete automation task:', error);
+      // Reload tasks on error
+      base44.entities.AutomationTask.list().then(setTasks);
+    }
   };
 
   const statusIcon = (status) => {

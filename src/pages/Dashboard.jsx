@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Menu, MessageCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTabState } from '@/hooks/useTabState';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
 import ChatPanel from '@/components/dashboard/ChatPanel';
@@ -47,13 +48,37 @@ export default function Dashboard() {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
 
+  // Tab state preservation: store scroll position and component state per tab
+  const tabStatesRef = useRef({});
+  const contentScrollRef = useRef(null);
+  const { saveScrollPosition } = useTabState(activeTool);
+
   const handlePromptSelect = (prompt) => {
     setChatSeed(prompt);
   };
 
   const handleToolChange = (tool) => {
+    // Save scroll position of current tool before switching
+    if (contentScrollRef.current) {
+      if (!tabStatesRef.current[activeTool]) {
+        tabStatesRef.current[activeTool] = {};
+      }
+      tabStatesRef.current[activeTool].scrollPosition = contentScrollRef.current.scrollTop;
+    }
+    
     setActiveTool(tool);
   };
+
+  // Restore scroll position when tab changes
+  useEffect(() => {
+    if (contentScrollRef.current && tabStatesRef.current[activeTool]?.scrollPosition !== undefined) {
+      setTimeout(() => {
+        if (contentScrollRef.current) {
+          contentScrollRef.current.scrollTop = tabStatesRef.current[activeTool].scrollPosition;
+        }
+      }, 0);
+    }
+  }, [activeTool]);
 
   const renderTool = () => {
     switch (activeTool) {
@@ -184,7 +209,12 @@ export default function Dashboard() {
         </div>
 
         {/* Tool content */}
-        <div className="flex-1 overflow-hidden" data-tool-content>
+        <div 
+          ref={contentScrollRef}
+          className="flex-1 overflow-y-auto overflow-x-hidden" 
+          data-tool-content
+          onScroll={saveScrollPosition}
+        >
           {renderTool()}
         </div>
       </div>
