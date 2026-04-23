@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Send, Loader2, Bot, User, Trash2, Sparkles } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
 import ChatAutoSuggestions from './ChatAutoSuggestions';
+import TypingMessage from './TypingMessage';
+import MessageSuggestions from './MessageSuggestions';
+import { motion } from 'framer-motion';
 
 const SYSTEM_PROMPT = `You are an elite AI consultant and strategist at Strategic Minds Advisory. 
 You have deep expertise in: market analysis, business strategy, AI systems, simulation & prediction modeling, 
@@ -22,6 +24,7 @@ export default function ChatPanel({ seed, onSeedConsumed, embedded }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [completedMessageIndex, setCompletedMessageIndex] = useState(null);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -43,16 +46,22 @@ export default function ChatPanel({ seed, onSeedConsumed, embedded }) {
     setInput('');
     setLoading(true);
 
-    const newMessages = [...messages, { role: 'user', content: userMsg }];
-    setMessages(newMessages);
+    const userMessages = [...messages, { role: 'user', content: userMsg }];
+    setMessages(userMessages);
 
     const res = await base44.functions.invoke('groqChat', {
-      messages: newMessages.map(m => ({ role: m.role, content: m.content })),
+      messages: userMessages.map(m => ({ role: m.role, content: m.content })),
       systemPrompt: SYSTEM_PROMPT,
     });
 
-    setMessages(prev => [...prev, { role: 'assistant', content: res.data.content }]);
+    const allMessages = [...userMessages, { role: 'assistant', content: res.data.content }];
+    setMessages(allMessages);
+    setCompletedMessageIndex(allMessages.length - 1);
     setLoading(false);
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    send(`${suggestion} about the last topic.`);
   };
 
   const clear = () => setMessages([]);
@@ -102,35 +111,46 @@ export default function ChatPanel({ seed, onSeedConsumed, embedded }) {
           </div>
         )}
 
-        {messages.map((m, i) => (
-          <div key={i} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            {m.role === 'assistant' && (
-              <div className="w-7 h-7 rounded-lg bg-accent/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Bot className="w-3.5 h-3.5 text-accent" />
-              </div>
-            )}
-            <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
-              m.role === 'user'
-                ? 'bg-accent/15 text-foreground border border-accent/20'
-                : 'bg-secondary/60 text-foreground border border-border'
-            }`}>
-              {m.role === 'assistant' ? (
-                <ReactMarkdown
-                  className="prose prose-sm prose-invert max-w-none text-sm [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_p]:text-sm [&_ul]:text-sm [&_ol]:text-sm [&_li]:text-sm [&_h1]:text-base [&_h2]:text-sm [&_h3]:text-sm"
-                >
-                  {m.content}
-                </ReactMarkdown>
-              ) : (
-                <p>{m.content}</p>
+        {messages.map((m, i) => {
+          const isLastMessage = i === messages.length - 1 && !loading;
+          const isTyping = completedMessageIndex !== i && m.role === 'assistant';
+          
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              {m.role === 'assistant' && (
+                <div className="w-7 h-7 rounded-lg bg-accent/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Bot className="w-3.5 h-3.5 text-accent" />
+                </div>
               )}
-            </div>
-            {m.role === 'user' && (
-              <div className="w-7 h-7 rounded-lg bg-secondary border border-border flex items-center justify-center flex-shrink-0 mt-0.5">
-                <User className="w-3.5 h-3.5 text-muted-foreground" />
+              <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+                m.role === 'user'
+                  ? 'bg-accent/15 text-foreground border border-accent/20'
+                  : 'bg-secondary/60 text-foreground border border-border'
+              }`}>
+                {m.role === 'assistant' ? (
+                  <div>
+                    <TypingMessage content={m.content} isComplete={!isTyping} />
+                    {isLastMessage && !isTyping && (
+                      <MessageSuggestions onSelect={handleSuggestionClick} />
+                    )}
+                  </div>
+                ) : (
+                  <p>{m.content}</p>
+                )}
               </div>
-            )}
-          </div>
-        ))}
+              {m.role === 'user' && (
+                <div className="w-7 h-7 rounded-lg bg-secondary border border-border flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <User className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
 
         {loading && (
           <div className="flex gap-2.5">
