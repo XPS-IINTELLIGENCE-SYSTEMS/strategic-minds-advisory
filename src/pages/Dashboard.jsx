@@ -18,6 +18,8 @@ import ReportingAndAlerts from '@/components/dashboard/ReportingAndAlerts';
 import CollaborativeWorkspace from '@/components/dashboard/CollaborativeWorkspace';
 import PitchDeckGenerator from '@/components/dashboard/PitchDeckGenerator';
 import RealTimeAlertsDashboard from '@/components/dashboard/RealTimeAlertsDashboard';
+import InvestorOutreachDashboard from '@/components/dashboard/InvestorOutreachDashboard';
+import MarketIntelligenceChat from '@/components/dashboard/MarketIntelligenceChat';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -46,6 +48,8 @@ export default function Dashboard() {
       case 'workspace': return <CollaborativeWorkspace />;
       case 'pitch': return <PitchDeckGenerator />;
       case 'alerts': return <RealTimeAlertsDashboard />;
+      case 'investors': return <InvestorOutreachDashboard />;
+      case 'intelligence': return <MarketIntelligenceChat />;
       default: return <SimulationTool />;
     }
   };
@@ -79,6 +83,8 @@ export default function Dashboard() {
                activeTool === 'workspace' ? 'Team Workspace' :
                activeTool === 'pitch' ? 'Pitch Deck Generator' :
                activeTool === 'alerts' ? 'Real-Time Alerts' :
+               activeTool === 'investors' ? 'Investor Outreach' :
+               activeTool === 'intelligence' ? 'Market Intelligence AI' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">

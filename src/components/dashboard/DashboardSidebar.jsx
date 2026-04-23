@@ -43,6 +43,8 @@ const NAV_GROUPS = [
       { id: 'workspace', icon: Users, label: 'Workspace' },
       { id: 'pitch', icon: PenTool, label: 'Pitch Decks' },
       { id: 'alerts', icon: Bot, label: 'Real-Time Alerts' },
+      { id: 'investors', icon: Users, label: 'Investors' },
+      { id: 'intelligence', icon: Brain, label: 'Market Intelligence' },
     ],
   },
   {

@@ -1,0 +1,46 @@
+{
+  "name": "InvestorContactLog",
+  "type": "object",
+  "properties": {
+    "investor_id": {
+      "type": "string",
+      "description": "Related Investor ID"
+    },
+    "contact_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "contact_type": {
+      "type": "string",
+      "enum": [
+        "email",
+        "call",
+        "meeting",
+        "pitch",
+        "followup"
+      ],
+      "description": "Type of contact"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative"
+      ],
+      "default": "neutral"
+    },
+    "outcome": {
+      "type": "string",
+      "description": "Meeting outcome or next steps"
+    }
+  },
+  "required": [
+    "investor_id",
+    "contact_date",
+    "contact_type"
+  ]
+}

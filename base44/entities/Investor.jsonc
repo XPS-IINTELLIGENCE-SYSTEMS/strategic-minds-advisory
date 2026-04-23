@@ -1,0 +1,58 @@
+{
+  "name": "Investor",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "company": {
+      "type": "string"
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "seed",
+        "series_a",
+        "series_b",
+        "growth",
+        "late_stage"
+      ],
+      "description": "Investment stage they focus on"
+    },
+    "domains": {
+      "type": "string",
+      "description": "Comma-separated domains they invest in"
+    },
+    "last_contact": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "interested",
+        "pitching",
+        "invested",
+        "rejected"
+      ],
+      "default": "new"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "workspace_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "company",
+    "workspace_id"
+  ]
+}

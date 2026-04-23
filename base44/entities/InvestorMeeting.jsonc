@@ -1,0 +1,51 @@
+{
+  "name": "InvestorMeeting",
+  "type": "object",
+  "properties": {
+    "investor_id": {
+      "type": "string",
+      "description": "Related Investor ID"
+    },
+    "workspace_id": {
+      "type": "string"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "meeting_type": {
+      "type": "string",
+      "enum": [
+        "initial",
+        "deep_dive",
+        "pitch",
+        "due_diligence"
+      ],
+      "default": "initial"
+    },
+    "prep_notes": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string"
+    },
+    "google_calendar_event_id": {
+      "type": "string",
+      "description": "Google Calendar event ID for syncing"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "completed",
+        "cancelled"
+      ],
+      "default": "scheduled"
+    }
+  },
+  "required": [
+    "investor_id",
+    "workspace_id",
+    "scheduled_date"
+  ]
+}
