@@ -78,85 +78,109 @@ export default function VisionCortexShell() {
   };
 
   return (
-    <div className="h-full flex flex-col overflow-hidden">
+    <div className="h-full flex flex-col overflow-hidden bg-gradient-to-br from-background via-background to-background/80">
       {/* Header */}
-      <div className="flex-shrink-0 px-6 pt-5 pb-0 border-b border-border bg-card/30">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500/20 to-accent/20 border border-accent/30 flex items-center justify-center">
-              <Brain className="w-5 h-5 text-accent" />
+      <div className="flex-shrink-0 px-4 md:px-6 pt-4 pb-4 border-b border-border bg-card/40 backdrop-blur-md">
+        {/* Title Section */}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500/25 to-accent/25 border border-accent/40 flex items-center justify-center flex-shrink-0 shadow-lg shadow-accent/20">
+              <Brain className="w-6 h-6 text-accent" />
             </div>
-            <div>
-              <h2 className="font-display text-xl text-gradient-ivory">Vision Cortex</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">9-Agent AI Invention Collective · Operating 24/7</p>
+            <div className="min-w-0">
+              <h2 className="font-display text-2xl text-gradient-accent leading-tight">Vision Cortex</h2>
+              <p className="text-xs text-muted-foreground mt-1">AI Invention Collective • 24/7 Operation</p>
             </div>
-            <div className="hidden md:flex items-center gap-1.5 ml-4 px-3 py-1.5 rounded-full border border-green-500/30 bg-green-500/10">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-xs text-green-400">All Agents Active</span>
-            </div>
-            {selectedIdea && (
-              <div className="hidden lg:flex items-center gap-1.5 ml-2 px-3 py-1.5 rounded-full border border-accent/30 bg-accent/10">
-                <span className="text-xs text-accent truncate max-w-36">💡 {selectedIdea.title}</span>
-              </div>
-            )}
+          </div>
+          
+          {/* Status Badge */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-green-500/30 bg-green-500/10 flex-shrink-0 ml-3">
+            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+            <span className="text-xs text-green-400 font-medium hidden sm:block">Active</span>
           </div>
         </div>
 
-        {/* Agent strip */}
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {AGENTS.map(a => (
-            <div key={a.name} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-secondary/30 flex-shrink-0">
-              <span className="text-xs">{a.emoji}</span>
-              <span className={`text-xs ${a.color} hidden md:block`}>{a.name}</span>
-              <span className={`text-xs ${a.color} md:hidden`}>{a.emoji}</span>
-            </div>
-          ))}
+        {/* Selected Idea Indicator */}
+        {selectedIdea && (
+          <div className="mb-4 p-2.5 rounded-lg border border-accent/20 bg-accent/5">
+            <p className="text-xs text-muted-foreground">Current Idea:</p>
+            <p className="text-sm text-accent font-medium truncate">💡 {selectedIdea.title}</p>
+          </div>
+        )}
+
+        {/* Agent Grid - Compact & Responsive */}
+        <div className="mb-4 p-3 rounded-lg border border-border/50 bg-secondary/20">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground/60 mb-2.5 font-semibold">Agent Collective</p>
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-9 gap-2">
+            {AGENTS.map(a => (
+              <div
+                key={a.name}
+                className="flex flex-col items-center justify-center p-2 rounded-lg border border-border/50 bg-background/40 hover:bg-secondary/50 hover:border-accent/30 transition-all cursor-default group"
+                title={a.name}
+              >
+                <span className="text-lg group-hover:scale-110 transition-transform">{a.emoji}</span>
+                <span className="text-[9px] text-muted-foreground group-hover:text-accent transition-colors mt-0.5 hidden lg:block">
+                  {a.name.split(' ')[0]}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-1 mt-3 overflow-x-auto pb-0">
-          {TABS.map(t => {
-            const Icon = t.icon;
-            const needsIdea = (t.id === 'debate' || t.id === 'sandbox' || t.id === 'deploy') && !selectedIdea;
-            return (
-              <button key={t.id} onClick={() => setActiveTab(t.id)}
-                className={`flex items-center gap-1.5 px-3 py-2.5 text-xs border-b-2 transition-all whitespace-nowrap flex-shrink-0 ${
-                  activeTab === t.id
-                    ? 'border-accent text-accent'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}>
-                <Icon className="w-3.5 h-3.5" />
-                {t.label}
-                {needsIdea && !selectedIdea && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400/60 flex-shrink-0" />
-                )}
-              </button>
-            );
-          })}
+        {/* Tab Navigation - Scrollable with gradient fade */}
+        <div className="relative">
+          <div className="flex gap-2 overflow-x-auto pb-3 scrollbar-hide">
+            {TABS.map(t => {
+              const Icon = t.icon;
+              const needsIdea = (t.id === 'debate' || t.id === 'sandbox' || t.id === 'deploy') && !selectedIdea;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTab(t.id)}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium whitespace-nowrap flex-shrink-0 transition-all ${
+                    activeTab === t.id
+                      ? 'bg-accent/20 text-accent border border-accent/40 shadow-lg shadow-accent/10'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50 border border-transparent'
+                  } ${needsIdea ? 'opacity-60 cursor-not-allowed' : ''}`}
+                  disabled={needsIdea}
+                  title={needsIdea ? 'Select an idea first' : t.label}
+                >
+                  <Icon className="w-4 h-4" />
+                  {t.label}
+                  {needsIdea && <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-hidden">
-        {activeTab === 'autogen'      && <div className="h-full overflow-y-auto"><div className="max-w-5xl mx-auto p-6"><AutoGenerationMonitor /></div></div>}
-        {activeTab === 'feed'         && <VisionFeed />}
-        {activeTab === 'library'      && <IntelligenceLibraryBrowser />}
-        {activeTab === 'intel-matrix' && <IntelligenceMatrixDashboard />}
-        {activeTab === 'map'          && <GlobalTrendsMap />}
-        {activeTab === 'board'        && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
-        {activeTab === 'whiteboard'   && <IdeaWhiteboard />}
-        {activeTab === 'analytics'    && <IdeaAnalytics />}
-        {activeTab === 'custom-stress' && <CustomStressTestBuilder onTestStart={() => setActiveTab('debate-arena')} />}
-        {activeTab === 'stress'       && <MultiAgentStressTest idea={selectedIdea} />}
-        {activeTab === 'risk-map'     && <RiskScenarioMap />}
-        {activeTab === 'tasks'        && <TaskQueue />}
-        {activeTab === 'debate-arena' && <DebateArenaUI idea={selectedIdea} />}
-        {activeTab === 'debate'       && <AgentDebateChat idea={selectedIdea} />}
-        {activeTab === 'sandbox'      && <ActiveSandbox idea={selectedIdea} />}
-        {activeTab === 'deploy'       && <DeploymentEngine />}
-        {activeTab === 'network'      && <NetworkVisualizationDashboard />}
-        {activeTab === 'agent-custom' && <CustomAgentSimulator model={selectedIdea} />}
-        {activeTab === 'logs'         && <VisionLogs />}
+      {/* Content - Rich & Interactive */}
+      <div className="flex-1 overflow-hidden bg-gradient-to-b from-background/50 to-background">
+        {/* Content wrapper with consistent padding */}
+        <div className="h-full overflow-y-auto">
+          <div className="px-4 md:px-6 py-6 space-y-6 max-w-7xl mx-auto">
+            {activeTab === 'autogen'      && <AutoGenerationMonitor />}
+            {activeTab === 'feed'         && <VisionFeed />}
+            {activeTab === 'library'      && <IntelligenceLibraryBrowser />}
+            {activeTab === 'intel-matrix' && <IntelligenceMatrixDashboard />}
+            {activeTab === 'map'          && <GlobalTrendsMap />}
+            {activeTab === 'board'        && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
+            {activeTab === 'whiteboard'   && <IdeaWhiteboard />}
+            {activeTab === 'analytics'    && <IdeaAnalytics />}
+            {activeTab === 'custom-stress' && <CustomStressTestBuilder onTestStart={() => setActiveTab('debate-arena')} />}
+            {activeTab === 'stress'       && <MultiAgentStressTest idea={selectedIdea} />}
+            {activeTab === 'risk-map'     && <RiskScenarioMap />}
+            {activeTab === 'tasks'        && <TaskQueue />}
+            {activeTab === 'debate-arena' && <DebateArenaUI idea={selectedIdea} />}
+            {activeTab === 'debate'       && <AgentDebateChat idea={selectedIdea} />}
+            {activeTab === 'sandbox'      && <ActiveSandbox idea={selectedIdea} />}
+            {activeTab === 'deploy'       && <DeploymentEngine />}
+            {activeTab === 'network'      && <NetworkVisualizationDashboard />}
+            {activeTab === 'agent-custom' && <CustomAgentSimulator model={selectedIdea} />}
+            {activeTab === 'logs'         && <VisionLogs />}
+          </div>
+        </div>
       </div>
     </div>
   );
