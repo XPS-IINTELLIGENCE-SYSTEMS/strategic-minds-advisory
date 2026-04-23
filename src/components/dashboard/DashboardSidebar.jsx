@@ -59,6 +59,9 @@ const NAV_GROUPS = [
       { id: 'workflows', icon: Bot, label: 'Workflows' },
       { id: 'predict', icon: TrendingUp, label: 'Predictions' },
       { id: 'deploy', icon: Send, label: 'Deploy Tasks' },
+      { id: 'pitch', icon: Zap, label: 'Pitch Decks' },
+      { id: 'voice', icon: Zap, label: 'Voice Input' },
+      { id: 'whiteboard', icon: Zap, label: 'Whiteboard' },
     ],
   },
 ];

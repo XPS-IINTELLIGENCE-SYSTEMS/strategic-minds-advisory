@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import jsPDF from 'npm:jspdf@4.0.0';
 
 Deno.serve(async (req) => {
   try {
@@ -11,248 +10,256 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const ideaId = body.ideaId;
+    const { modelId, investorName } = body;
 
-    // Fetch idea, analytics, and deployment data
-    const idea = await base44.asServiceRole.entities.VisionIdea.filter({ id: ideaId });
-    if (!idea || idea.length === 0) {
-      return Response.json({ error: 'Idea not found' }, { status: 404 });
+    // Fetch model and related data
+    const [model, allTests, allIntel] = await Promise.all([
+      base44.entities.SavedModel.filter({ id: modelId }),
+      base44.entities.StressTestResult.filter({ idea_id: modelId }),
+      base44.entities.StrategicIntelligence.list(),
+    ]);
+
+    if (!model || model.length === 0) {
+      return Response.json({ error: 'Model not found' }, { status: 404 });
     }
 
-    const ideaData = idea[0];
+    const selectedModel = model[0];
+    const financialData = JSON.parse(selectedModel.financial_model || '{}');
 
-    // Fetch related saved model with financial projections
-    const savedModels = await base44.asServiceRole.entities.SavedModel.filter({ idea_id: ideaId });
-    let financialData = {};
-    if (savedModels.length > 0) {
-      try {
-        financialData = JSON.parse(savedModels[0].financial_model);
-      } catch (e) {
-        financialData = {};
-      }
-    }
+    // Use LLM to generate deck content
+    const deckResponse = await base44.integrations.Core.InvokeLLM({
+      prompt: `Generate a concise, professional investor pitch deck outline for a business model. Format as JSON with the exact structure shown.
 
-    // Create PDF
-    const doc = new jsPDF({
-      format: 'a4',
-      orientation: 'landscape',
+BUSINESS MODEL: ${selectedModel.name}
+DESCRIPTION: ${selectedModel.description}
+ANNUAL REVENUE POTENTIAL: $${(financialData.revenue_year_5 || 0).toLocaleString()}
+GROSS MARGIN: ${(financialData.gross_margin || 0).toFixed(0)}%
+
+STRESS TEST RISKS (${allTests.length} scenarios tested):
+${allTests.slice(0, 3).map(t => `- ${t.scenario_name}: ${t.survived ? 'Survived' : 'Needs Pivot'} - ${t.recommendations}`).join('\n')}
+
+Create a JSON object with these exact sections:
+{
+  "title": "string (catchy title)",
+  "tagline": "string (one-liner value prop)",
+  "market_opportunity": { "tam": "string", "cagr": "string", "why_now": "string" },
+  "product_solution": "string (2-3 sentences)",
+  "business_model": "string (revenue model)",
+  "go_to_market": "string (launch strategy)",
+  "financial_projections": { "year_1": "string", "year_3": "string", "year_5": "string" },
+  "risk_mitigation": ["string", "string", "string"] (from stress tests),
+  "competitive_advantage": ["string", "string"],
+  "funding_ask": "string (suggested raise)",
+  "use_of_funds": ["string", "string", "string"],
+  "team_requirements": ["string", "string"],
+  "key_metrics": ["string (metric and target)", "string"]
+}`,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          tagline: { type: 'string' },
+          market_opportunity: {
+            type: 'object',
+            properties: {
+              tam: { type: 'string' },
+              cagr: { type: 'string' },
+              why_now: { type: 'string' },
+            },
+          },
+          product_solution: { type: 'string' },
+          business_model: { type: 'string' },
+          go_to_market: { type: 'string' },
+          financial_projections: {
+            type: 'object',
+            properties: {
+              year_1: { type: 'string' },
+              year_3: { type: 'string' },
+              year_5: { type: 'string' },
+            },
+          },
+          risk_mitigation: { type: 'array', items: { type: 'string' } },
+          competitive_advantage: { type: 'array', items: { type: 'string' } },
+          funding_ask: { type: 'string' },
+          use_of_funds: { type: 'array', items: { type: 'string' } },
+          team_requirements: { type: 'array', items: { type: 'string' } },
+          key_metrics: { type: 'array', items: { type: 'string' } },
+        },
+      },
     });
 
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = 25;
+    // Get Google Docs connector
+    const { accessToken } = await base44.asServiceRole.connectors.getCurrentAppUserConnection('69ddcb7e5d965b5605cd24b4');
 
-    let pageNum = 1;
+    // Create Google Slides presentation
+    const slidesResponse = await fetch('https://www.googleapis.com/drive/v3/files', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: `${deckResponse.title} - Investor Pitch (${new Date().toLocaleDateString()})`,
+        mimeType: 'application/vnd.google-apps.presentation',
+      }),
+    });
 
-    // Slide 1: Title Slide
-    doc.setFillColor(10, 10, 20);
-    doc.rect(0, 0, pageWidth, pageHeight, 'F');
+    const presentationData = await slidesResponse.json();
+    const presentationId = presentationData.id;
 
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(48);
-    doc.setFont(undefined, 'bold');
-    doc.text(ideaData.title || 'Investment Opportunity', pageWidth / 2, pageHeight / 2 - 30, { align: 'center' });
-
-    doc.setFontSize(14);
-    doc.setFont(undefined, 'normal');
-    doc.text(ideaData.domain?.toUpperCase() || 'VENTURE', pageWidth / 2, pageHeight / 2 + 10, { align: 'center' });
-
-    doc.setFontSize(11);
-    doc.text(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' }), pageWidth / 2, pageHeight - 40, { align: 'center' });
-
-    // Slide 2: Executive Summary
-    doc.addPage();
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(28);
-    doc.setFont(undefined, 'bold');
-    doc.text('Executive Summary', margin, 30);
-
-    doc.setFontSize(11);
-    doc.setFont(undefined, 'normal');
-    const summary = ideaData.description || 'Transformative business model addressing significant market opportunity.';
-    const summaryLines = doc.splitTextToSize(summary, pageWidth - 2 * margin);
-    doc.text(summaryLines, margin, 50);
-
-    let yPos = 80;
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'bold');
-    doc.text('Market Size:', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text('Large addressable market with strong TAM expansion', margin + 40, yPos);
-
-    yPos += 15;
-    doc.setFont(undefined, 'bold');
-    doc.text('Competitive Advantage:', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text('Unique value prop with defensible moat', margin + 40, yPos);
-
-    yPos += 15;
-    doc.setFont(undefined, 'bold');
-    doc.text('Revenue Model:', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text('Subscription + usage-based hybrid pricing', margin + 40, yPos);
-
-    // Slide 3: Market & Opportunity
-    doc.addPage();
-    doc.setTextColor(0, 0, 0);
-    doc.setFontSize(28);
-    doc.setFont(undefined, 'bold');
-    doc.text('Market Opportunity', margin, 30);
-
-    yPos = 60;
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'bold');
-    doc.text('Total Addressable Market (TAM)', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    yPos += 12;
-    doc.text('Estimated $2-5B in addressable market opportunity', margin, yPos);
-
-    yPos += 25;
-    doc.setFont(undefined, 'bold');
-    doc.text('Target Customer Segments', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    yPos += 12;
-    doc.text('• Enterprise companies (1000+ employees)', margin, yPos);
-    yPos += 10;
-    doc.text('• Mid-market growth companies (100-1000)', margin, yPos);
-    yPos += 10;
-    doc.text('• SMB tech-forward operators', margin, yPos);
-
-    yPos += 25;
-    doc.setFont(undefined, 'bold');
-    doc.text('Competitive Landscape', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    yPos += 12;
-    doc.text('3 established competitors + fragmented landscape', margin, yPos);
-    yPos += 10;
-    doc.text('Clear differentiation through superior UX and pricing', margin, yPos);
-
-    // Slide 4: Financial Projections
-    doc.addPage();
-    doc.setFontSize(28);
-    doc.setFont(undefined, 'bold');
-    doc.text('Financial Projections', margin, 30);
-
-    yPos = 70;
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'normal');
-
-    // Revenue projections table
-    const years = Object.keys(financialData).filter(k => k.startsWith('year'));
-    if (years.length > 0) {
-      doc.setFont(undefined, 'bold');
-      doc.text('Year', margin, yPos);
-      doc.text('Revenue', margin + 40, yPos);
-      doc.text('Growth', margin + 90, yPos);
-      doc.text('Gross Margin', margin + 140, yPos);
-
-      yPos += 12;
-      doc.setFont(undefined, 'normal');
-
-      for (let i = 0; i < Math.min(years.length, 3); i++) {
-        const year = years[i];
-        const value = financialData[year] || 0;
-        const growth = i > 0 ? Math.round(((value - (financialData[years[i - 1]] || 0)) / (financialData[years[i - 1]] || 1)) * 100) : 0;
-
-        doc.text(`Year ${i + 1}`, margin, yPos);
-        doc.text(`$${(value / 1000000).toFixed(1)}M`, margin + 40, yPos);
-        doc.text(`${growth}%`, margin + 90, yPos);
-        doc.text('72%', margin + 140, yPos);
-
-        yPos += 10;
-      }
-    } else {
-      doc.text('Year 1: $500K | Year 2: $2M | Year 3: $8M', margin, yPos);
-      yPos += 15;
-      doc.text('Growth: 300% Y1 → Y2, 300% Y2 → Y3', margin, yPos);
-    }
-
-    yPos += 25;
-    doc.setFont(undefined, 'bold');
-    doc.text('Unit Economics', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    yPos += 12;
-    doc.text('CAC: $5K | LTV: $80K | LTV:CAC Ratio: 16:1', margin, yPos);
-    yPos += 10;
-    doc.text('Payback Period: 9 months | Gross Margin: 72%', margin, yPos);
-
-    // Slide 5: Use of Funds
-    doc.addPage();
-    doc.setFontSize(28);
-    doc.setFont(undefined, 'bold');
-    doc.text('Investment & Use of Funds', margin, 30);
-
-    yPos = 70;
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'bold');
-    doc.text('Seeking: $3M Series A', margin, yPos);
-    yPos += 15;
-
-    doc.setFont(undefined, 'normal');
-    const useOfFunds = [
-      { category: 'Product & Engineering', percent: 45 },
-      { category: 'Sales & Marketing', percent: 35 },
-      { category: 'Operations & Admin', percent: 15 },
-      { category: 'Contingency', percent: 5 },
+    // Add slides to presentation
+    const slidesRequests = [
+      // Cover slide
+      {
+        createSlide: {
+          objectId: 'slide1',
+          slideLayout: 'TITLE_SLIDE',
+          placeholderIdMappings: [
+            { layoutPlaceholder: { type: 'CENTERED_TITLE' }, objectId: 'title1' },
+            { layoutPlaceholder: { type: 'SUBTITLE' }, objectId: 'subtitle1' },
+          ],
+        },
+      },
+      {
+        insertText: {
+          objectId: 'title1',
+          text: deckResponse.title,
+        },
+      },
+      {
+        insertText: {
+          objectId: 'subtitle1',
+          text: deckResponse.tagline,
+        },
+      },
+      // Market Opportunity slide
+      {
+        createSlide: {
+          objectId: 'slide2',
+          slideLayout: 'TITLE_BODY_LAYOUT',
+          placeholderIdMappings: [
+            { layoutPlaceholder: { type: 'TITLE' }, objectId: 'title2' },
+            { layoutPlaceholder: { type: 'BODY' }, objectId: 'body2' },
+          ],
+        },
+      },
+      {
+        insertText: {
+          objectId: 'title2',
+          text: 'Market Opportunity',
+        },
+      },
+      {
+        insertText: {
+          objectId: 'body2',
+          text: `TAM: ${deckResponse.market_opportunity.tam}\nCAGR: ${deckResponse.market_opportunity.cagr}\nWhy Now: ${deckResponse.market_opportunity.why_now}`,
+        },
+      },
+      // Financial Projections slide
+      {
+        createSlide: {
+          objectId: 'slide3',
+          slideLayout: 'TITLE_BODY_LAYOUT',
+          placeholderIdMappings: [
+            { layoutPlaceholder: { type: 'TITLE' }, objectId: 'title3' },
+            { layoutPlaceholder: { type: 'BODY' }, objectId: 'body3' },
+          ],
+        },
+      },
+      {
+        insertText: {
+          objectId: 'title3',
+          text: 'Financial Projections',
+        },
+      },
+      {
+        insertText: {
+          objectId: 'body3',
+          text: `Year 1: ${deckResponse.financial_projections.year_1}\nYear 3: ${deckResponse.financial_projections.year_3}\nYear 5: ${deckResponse.financial_projections.year_5}`,
+        },
+      },
+      // Risk Mitigation slide
+      {
+        createSlide: {
+          objectId: 'slide4',
+          slideLayout: 'TITLE_BODY_LAYOUT',
+          placeholderIdMappings: [
+            { layoutPlaceholder: { type: 'TITLE' }, objectId: 'title4' },
+            { layoutPlaceholder: { type: 'BODY' }, objectId: 'body4' },
+          ],
+        },
+      },
+      {
+        insertText: {
+          objectId: 'title4',
+          text: 'Risk Mitigation',
+        },
+      },
+      {
+        insertText: {
+          objectId: 'body4',
+          text: deckResponse.risk_mitigation.join('\n• '),
+        },
+      },
+      // Funding Ask slide
+      {
+        createSlide: {
+          objectId: 'slide5',
+          slideLayout: 'TITLE_BODY_LAYOUT',
+          placeholderIdMappings: [
+            { layoutPlaceholder: { type: 'TITLE' }, objectId: 'title5' },
+            { layoutPlaceholder: { type: 'BODY' }, objectId: 'body5' },
+          ],
+        },
+      },
+      {
+        insertText: {
+          objectId: 'title5',
+          text: 'Funding Ask',
+        },
+      },
+      {
+        insertText: {
+          objectId: 'body5',
+          text: `${deckResponse.funding_ask}\n\nUse of Funds:\n• ${deckResponse.use_of_funds.join('\n• ')}`,
+        },
+      },
     ];
 
-    for (const item of useOfFunds) {
-      const amount = (3 * item.percent) / 100;
-      doc.text(`${item.category}`, margin, yPos);
-      doc.text(`${item.percent}% ($${amount.toFixed(1)}M)`, margin + 90, yPos);
-      yPos += 12;
-    }
+    const batchUpdateResponse = await fetch(
+      `https://slides.googleapis.com/v1/presentations/${presentationId}:batchUpdate`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ requests: slidesRequests }),
+      }
+    );
 
-    // Slide 6: Team
-    doc.addPage();
-    doc.setFontSize(28);
-    doc.setFont(undefined, 'bold');
-    doc.text('Leadership Team', margin, 30);
+    const updateResult = await batchUpdateResponse.json();
 
-    yPos = 70;
-    doc.setFontSize(10);
-    doc.setFont(undefined, 'bold');
-    doc.text('CEO / Founder', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text('15+ years in enterprise software, ex-Google', margin + 50, yPos);
+    // Log deck generation
+    await base44.asServiceRole.entities.VisionLog.create({
+      session_id: `pitch_deck_${modelId}_${Date.now()}`,
+      agent: 'PitchDeckGenerator',
+      log_type: 'memory',
+      message: `Generated investor pitch deck for ${selectedModel.name}`,
+      idea_id: modelId,
+      metadata: JSON.stringify({
+        presentation_id: presentationId,
+        slides_created: slidesRequests.filter(r => r.createSlide).length,
+        investor_name: investorName,
+      }),
+    });
 
-    yPos += 20;
-    doc.setFont(undefined, 'bold');
-    doc.text('VP Product', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text('Product lead at unicorn, built $50M+ products', margin + 50, yPos);
-
-    yPos += 20;
-    doc.setFont(undefined, 'bold');
-    doc.text('VP Engineering', margin, yPos);
-    doc.setFont(undefined, 'normal');
-    doc.text('Infrastructure engineer, ex-Stripe', margin + 50, yPos);
-
-    // Slide 7: Call to Action
-    doc.addPage();
-    doc.setFillColor(36, 180, 126);
-    doc.rect(0, 0, pageWidth, pageHeight, 'F');
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(32);
-    doc.setFont(undefined, 'bold');
-    doc.text('Let\'s Build the Future Together', pageWidth / 2, pageHeight / 2 - 20, { align: 'center' });
-
-    doc.setFontSize(14);
-    doc.setFont(undefined, 'normal');
-    doc.text('Strategic Minds Advisory', pageWidth / 2, pageHeight / 2 + 20, { align: 'center' });
-    doc.text(user.email, pageWidth / 2, pageHeight / 2 + 40, { align: 'center' });
-
-    // Generate and return PDF
-    const pdfData = doc.output('arraybuffer');
-    const fileName = `${ideaData.title.replace(/\s+/g, '_')}_Pitch_Deck.pdf`;
-
-    return new Response(pdfData, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
-      },
+    return Response.json({
+      success: true,
+      presentation_id: presentationId,
+      presentation_url: `https://docs.google.com/presentation/d/${presentationId}/edit`,
+      title: deckResponse.title,
+      slides_created: slidesRequests.filter(r => r.createSlide).length,
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
