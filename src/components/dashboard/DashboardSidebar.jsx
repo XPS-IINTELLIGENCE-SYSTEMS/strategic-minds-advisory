@@ -26,6 +26,7 @@ const NAV_GROUPS = [
     items: [
       { id: 'intelligence', icon: Brain, label: 'Intelligence' },
       { id: 'playbooks', icon: BookOpen, label: 'Playbooks' },
+      { id: 'playbook-gen', icon: BookOpen, label: 'Playbook Gen' },
       { id: 'alerts', icon: Zap, label: 'Alerts' },
     ],
   },

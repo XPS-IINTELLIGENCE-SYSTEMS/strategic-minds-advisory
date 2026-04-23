@@ -36,6 +36,7 @@ import ExternalIntelligenceIntegrator from '@/components/dashboard/ExternalIntel
 import StrategyPlaybookLibrary from '@/components/dashboard/StrategyPlaybookLibrary';
 import MarketKeywordMonitor from '@/components/dashboard/MarketKeywordMonitor';
 import DecisionToTasksConverter from '@/components/dashboard/DecisionToTasksConverter';
+import InteractivePlaybookGenerator from '@/components/dashboard/InteractivePlaybookGenerator';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -95,6 +96,7 @@ export default function Dashboard() {
       case 'playbooks': return <StrategyPlaybookLibrary />;
       case 'keywords': return <MarketKeywordMonitor />;
       case 'execution': return <DecisionToTasksConverter />;
+      case 'playbook-gen': return <InteractivePlaybookGenerator />;
       case 'account': return <AccountSettings />;
       default: return <SimulationTool />;
     }
@@ -147,6 +149,7 @@ export default function Dashboard() {
                activeTool === 'playbooks' ? 'Strategy Playbook Library' :
                activeTool === 'keywords' ? 'Market Keyword Monitor' :
                activeTool === 'execution' ? 'Decision to Tasks Converter' :
+               activeTool === 'playbook-gen' ? 'Playbook Generator' :
                activeTool === 'account' ? 'Account Settings' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
