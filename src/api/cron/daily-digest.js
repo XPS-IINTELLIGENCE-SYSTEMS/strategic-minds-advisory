@@ -1,3 +1,4 @@
+/* global process */
 // Vercel Cron Job: Daily digest (runs at 9 AM ET)
 // Schedule: 0 9 * * * (in vercel.json)
 
