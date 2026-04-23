@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
   Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool,
-  Workflow, Video, Globe, Brain, Users
+  Workflow, Video, Globe, Brain, Users, TrendingDown
 } from 'lucide-react';
 
 const NAV_GROUPS = [
@@ -43,7 +43,8 @@ const NAV_GROUPS = [
       { id: 'workspace', icon: Users, label: 'Workspace' },
       { id: 'pitch', icon: PenTool, label: 'Pitch Decks' },
       { id: 'alerts', icon: Bot, label: 'Real-Time Alerts' },
-      { id: 'investors', icon: Users, label: 'Investors' },
+      { id: 'investor-pipeline', icon: Users, label: 'Investor Pipeline' },
+      { id: 'battlecard', icon: Zap, label: 'Battlecard' },
       { id: 'intelligence', icon: Brain, label: 'Market Intelligence' },
     ],
   },

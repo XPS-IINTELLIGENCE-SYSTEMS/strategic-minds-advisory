@@ -3,7 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { Users, Plus, Mail, Calendar, Loader2, Trash2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+// Enhanced with Kanban board view
 export default function InvestorOutreachDashboard() {
+  const [viewMode, setViewMode] = React.useState('kanban');
   const [investors, setInvestors] = useState([]);
   const [workspace, setWorkspace] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -125,6 +127,28 @@ export default function InvestorOutreachDashboard() {
     );
   }
 
+  // Import Kanban board
+  const InvestorKanbanBoard = React.lazy(() => import('./InvestorKanbanBoard'));
+
+  if (viewMode === 'kanban') {
+    return (
+      <div className="h-full flex flex-col">
+        <div className="p-6 border-b border-border flex items-center justify-between flex-shrink-0">
+          <h2 className="font-display text-lg text-gradient-ivory">Investor Pipeline</h2>
+          <button
+            onClick={() => setViewMode('list')}
+            className="text-xs px-3 py-1.5 rounded-lg bg-secondary hover:bg-secondary/80 transition"
+          >
+            List View
+          </button>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <InvestorKanbanBoard />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full flex flex-col gap-6 p-6 overflow-y-auto">
       {/* Header */}
@@ -139,13 +163,21 @@ export default function InvestorOutreachDashboard() {
               <p className="text-xs text-muted-foreground">{investors.length} investors tracked</p>
             </div>
           </div>
-          <Button
-            onClick={() => setShowForm(!showForm)}
-            className="btn-ivory rounded-lg"
-          >
-            <Plus className="w-4 h-4" />
-            Add Investor
-          </Button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setViewMode('kanban')}
+              className="text-xs px-3 py-1.5 rounded-lg bg-accent/15 hover:bg-accent/25 transition text-accent"
+            >
+              Kanban
+            </button>
+            <Button
+              onClick={() => setShowForm(!showForm)}
+              className="btn-ivory rounded-lg"
+            >
+              <Plus className="w-4 h-4" />
+              Add
+            </Button>
+          </div>
         </div>
 
         {/* Add Investor Form */}

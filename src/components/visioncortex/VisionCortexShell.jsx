@@ -13,7 +13,8 @@ import AutoGenerationMonitor from './AutoGenerationMonitor';
 import TaskQueue from './TaskQueue';
 import IntelligenceLibraryBrowser from './IntelligenceLibraryBrowser';
 import MultiAgentStressTest from './MultiAgentStressTest';
-import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu, CheckSquare, Library, Zap } from 'lucide-react';
+import RiskScenarioMap from './RiskScenarioMap';
+import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu, CheckSquare, Library, Zap, TrendingDown } from 'lucide-react';
 
 const TABS = [
   { id: 'autogen',      icon: Cpu,            label: '24/7 Auto-Gen' },
@@ -24,6 +25,7 @@ const TABS = [
   { id: 'whiteboard',   icon: StickyNote,     label: 'Whiteboard' },
   { id: 'analytics',    icon: BarChart3,      label: 'Analytics' },
   { id: 'stress',       icon: Zap,            label: 'Stress Test' },
+  { id: 'risk-map',     icon: TrendingDown,   label: 'Risk Map' },
   { id: 'tasks',        icon: CheckSquare,    label: 'Task Queue' },
   { id: 'debate',       icon: MessageSquare,  label: 'Debate' },
   { id: 'sandbox',      icon: Terminal,       label: 'Sandbox' },
@@ -134,6 +136,7 @@ export default function VisionCortexShell() {
         {activeTab === 'whiteboard'   && <IdeaWhiteboard />}
         {activeTab === 'analytics'    && <IdeaAnalytics />}
         {activeTab === 'stress'       && <MultiAgentStressTest idea={selectedIdea} />}
+        {activeTab === 'risk-map'     && <RiskScenarioMap />}
         {activeTab === 'tasks'        && <TaskQueue />}
         {activeTab === 'debate'       && <AgentDebateChat idea={selectedIdea} />}
         {activeTab === 'sandbox'      && <ActiveSandbox idea={selectedIdea} />}
