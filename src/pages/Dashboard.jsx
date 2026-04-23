@@ -21,6 +21,8 @@ import RealTimeAlertsDashboard from '@/components/dashboard/RealTimeAlertsDashbo
 import InvestorOutreachDashboard from '@/components/dashboard/InvestorOutreachDashboard';
 import MarketIntelligenceChat from '@/components/dashboard/MarketIntelligenceChat';
 import CompetitorBattlecard from '@/components/dashboard/CompetitorBattlecard';
+import WorkflowEnginePanel from '@/components/dashboard/WorkflowEnginePanel';
+import PredictiveModelingDashboard from '@/components/dashboard/PredictiveModelingDashboard';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -52,6 +54,8 @@ export default function Dashboard() {
       case 'investor-pipeline': return <InvestorOutreachDashboard />;
       case 'battlecard': return <CompetitorBattlecard />;
       case 'intelligence': return <MarketIntelligenceChat />;
+      case 'workflows': return <WorkflowEnginePanel />;
+      case 'predict': return <PredictiveModelingDashboard />;
       default: return <SimulationTool />;
     }
   };
@@ -89,6 +93,8 @@ export default function Dashboard() {
                activeTool === 'intelligence' ? 'Market Intelligence AI' :
                activeTool === 'investor-pipeline' ? 'Investor Pipeline' :
                activeTool === 'battlecard' ? 'Competitor Battlecard' :
+               activeTool === 'workflows' ? 'Trigger-Action Workflows' :
+               activeTool === 'predict' ? 'Predictive Modeling' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">

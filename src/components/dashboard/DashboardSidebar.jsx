@@ -56,6 +56,8 @@ const NAV_GROUPS = [
       { id: 'sync', icon: RefreshCw, label: 'Google Sync' },
       { id: 'test', icon: TestTube, label: 'Test Module' },
       { id: 'reports', icon: BookOpen, label: 'Reports & Alerts' },
+      { id: 'workflows', icon: Bot, label: 'Workflows' },
+      { id: 'predict', icon: TrendingUp, label: 'Predictions' },
     ],
   },
 ];

@@ -1,0 +1,61 @@
+{
+  "name": "Workflow",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Workflow name"
+    },
+    "workspace_id": {
+      "type": "string"
+    },
+    "trigger_type": {
+      "type": "string",
+      "enum": [
+        "competitive_threat",
+        "market_signal",
+        "idea_update",
+        "stress_test_result",
+        "scheduled"
+      ],
+      "description": "What triggers this workflow"
+    },
+    "trigger_conditions": {
+      "type": "string",
+      "description": "JSON with condition parameters"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "run_stress_test",
+        "update_strategy",
+        "notify_team",
+        "generate_report",
+        "update_pitch"
+      ],
+      "description": "What action to execute"
+    },
+    "action_config": {
+      "type": "string",
+      "description": "JSON with action parameters"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_triggered": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "execution_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "workspace_id",
+    "trigger_type",
+    "action_type"
+  ]
+}
