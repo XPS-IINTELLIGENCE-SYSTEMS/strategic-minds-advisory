@@ -10,6 +10,9 @@ import TestModule from '@/components/dashboard/TestModule';
 import InsightsPanel from '@/components/dashboard/InsightsPanel';
 import SyncPanel from '@/components/dashboard/SyncPanel';
 import ContentEngine from '@/components/dashboard/ContentEngine';
+import WorkflowOrchestrator from '@/components/dashboard/WorkflowOrchestrator';
+import BrandingStudio from '@/components/dashboard/BrandingStudio';
+import SocialIntelligencePanel from '@/components/dashboard/SocialIntelligencePanel';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -29,6 +32,9 @@ export default function Dashboard() {
       case 'insights': return <InsightsPanel />;
       case 'content': return <ContentEngine />;
       case 'sync': return <SyncPanel />;
+      case 'workflow': return <WorkflowOrchestrator />;
+      case 'branding': return <BrandingStudio />;
+      case 'social': return <SocialIntelligencePanel />;
       case 'test': return <TestModule />;
       default: return <SimulationTool />;
     }
@@ -55,6 +61,9 @@ export default function Dashboard() {
                activeTool === 'insights' ? 'Insights' :
                activeTool === 'content' ? 'Content Engine' :
                activeTool === 'sync' ? 'Google Sync' :
+               activeTool === 'workflow' ? 'Workflow Orchestrator' :
+               activeTool === 'branding' ? 'Branding Studio' :
+               activeTool === 'social' ? 'Social Intelligence' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">

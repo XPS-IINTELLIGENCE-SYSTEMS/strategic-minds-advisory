@@ -1,0 +1,50 @@
+{
+  "name": "WorkflowJob",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "schedule": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "paused"
+      ],
+      "default": "pending"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_run": {
+      "type": "string"
+    },
+    "next_run": {
+      "type": "string"
+    },
+    "run_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_result": {
+      "type": "string"
+    },
+    "error_log": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "steps"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "name": "SocialIntelligence",
+  "type": "object",
+  "properties": {
+    "topic": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string",
+      "enum": [
+        "twitter",
+        "linkedin",
+        "instagram",
+        "tiktok",
+        "reddit",
+        "general"
+      ]
+    },
+    "hashtags": {
+      "type": "string"
+    },
+    "competitor_insights": {
+      "type": "string"
+    },
+    "trending_content": {
+      "type": "string"
+    },
+    "benchmark_summary": {
+      "type": "string"
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative",
+        "mixed"
+      ]
+    },
+    "opportunity_score": {
+      "type": "number"
+    },
+    "raw_analysis": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "topic",
+    "platform"
+  ]
+}
