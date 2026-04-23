@@ -149,7 +149,7 @@ export default function Dashboard() {
                activeTool === 'playbooks' ? 'Strategy Playbook Library' :
                activeTool === 'keywords' ? 'Market Keyword Monitor' :
                activeTool === 'execution' ? 'Decision to Tasks Converter' :
-               activeTool === 'playbook-gen' ? 'Playbook Generator' :
+               activeTool === 'playbook-gen' ? 'Strategy Playbooks' :
                activeTool === 'account' ? 'Account Settings' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>

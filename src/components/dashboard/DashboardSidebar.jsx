@@ -25,8 +25,7 @@ const NAV_GROUPS = [
     label: 'Strategy',
     items: [
       { id: 'intelligence', icon: Brain, label: 'Intelligence' },
-      { id: 'playbooks', icon: BookOpen, label: 'Playbooks' },
-      { id: 'playbook-gen', icon: BookOpen, label: 'Playbook Gen' },
+      { id: 'playbook-gen', icon: BookOpen, label: 'Playbooks' },
       { id: 'alerts', icon: Zap, label: 'Alerts' },
     ],
   },
@@ -67,12 +66,14 @@ export default function DashboardSidebar({ activeTool, setActiveTool }) {
                 return (
                   <button
                     key={id}
-                    onClick={() => setActiveTool(id)}
+                    onClick={() => {
+                      setActiveTool(id);
+                    }}
                     onDoubleClick={() => {
                       const element = document.querySelector('[data-tool-content]');
                       if (element) element.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left transition-all group ${
+                    className={`w-full flex items-center justify-center xl:justify-start gap-3 px-3 py-2 rounded-xl text-left transition-all group ${
                       active
                         ? 'bg-accent/15 text-accent'
                         : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60'
