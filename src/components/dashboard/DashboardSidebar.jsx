@@ -8,6 +8,12 @@ import {
 
 const NAV_GROUPS = [
   {
+    label: 'Projects',
+    items: [
+      { id: 'projects', icon: Network, label: 'Projects', action: 'navigate', to: '/projects' },
+    ],
+  },
+  {
     label: 'Vision Cortex',
     items: [
       { id: 'visioncortex', icon: Brain, label: 'Vision Cortex' },

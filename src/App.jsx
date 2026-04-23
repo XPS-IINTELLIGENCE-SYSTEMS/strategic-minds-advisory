@@ -14,6 +14,7 @@ import About from '@/pages/About';
 import Portfolio from '@/pages/Portfolio';
 import Contact from '@/pages/Contact';
 import Dashboard from '@/pages/Dashboard';
+import ProjectDashboard from '@/pages/ProjectDashboard';
 import AutoInventionSystemGuide from '@/pages/AutoInventionSystemGuide';
 import EliteIntelligenceSystemGuide from '@/pages/EliteIntelligenceSystemGuide';
 import PageTransition from '@/components/common/PageTransition';
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
           <Route path="/elite-intelligence" element={<PageTransition><EliteIntelligenceSystemGuide /></PageTransition>} />
         </Route>
         <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
+        <Route path="/projects" element={<PageTransition><ProjectDashboard /></PageTransition>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </AnimatePresence>
