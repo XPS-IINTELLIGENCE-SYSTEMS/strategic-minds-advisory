@@ -6,15 +6,21 @@ import VisionLogs from './VisionLogs';
 import AgentDebateChat from './AgentDebateChat';
 import GlobalTrendsMap from './GlobalTrendsMap';
 import ActiveSandbox from './ActiveSandbox';
-import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal } from 'lucide-react';
+import IdeaWhiteboard from './IdeaWhiteboard';
+import IdeaAnalytics from './IdeaAnalytics';
+import DeploymentEngine from './DeploymentEngine';
+import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket } from 'lucide-react';
 
 const TABS = [
-  { id: 'feed',    icon: Rss,            label: 'Intelligence Feed' },
-  { id: 'map',     icon: Globe,          label: 'Global Trends' },
-  { id: 'board',   icon: Lightbulb,      label: 'Idea Board' },
-  { id: 'debate',  icon: MessageSquare,  label: 'Agent Debate' },
-  { id: 'sandbox', icon: Terminal,       label: 'Active Sandbox' },
-  { id: 'logs',    icon: ScrollText,     label: 'Agent Logs' },
+  { id: 'feed',       icon: Rss,            label: 'Intelligence Feed' },
+  { id: 'map',        icon: Globe,          label: 'Global Trends' },
+  { id: 'board',      icon: Lightbulb,      label: 'Idea Board' },
+  { id: 'whiteboard', icon: StickyNote,     label: 'Whiteboard' },
+  { id: 'analytics',  icon: BarChart3,      label: 'Idea Analytics' },
+  { id: 'debate',     icon: MessageSquare,  label: 'Agent Debate' },
+  { id: 'sandbox',    icon: Terminal,       label: 'Active Sandbox' },
+  { id: 'deploy',     icon: Rocket,         label: 'Deploy' },
+  { id: 'logs',       icon: ScrollText,     label: 'Agent Logs' },
 ];
 
 const AGENTS = [
@@ -91,7 +97,7 @@ export default function VisionCortexShell() {
         <div className="flex gap-1 mt-3 overflow-x-auto pb-0">
           {TABS.map(t => {
             const Icon = t.icon;
-            const needsIdea = t.id === 'debate' || t.id === 'sandbox';
+            const needsIdea = t.id === 'debate' || t.id === 'sandbox' || t.id === 'deploy';
             return (
               <button key={t.id} onClick={() => setActiveTab(t.id)}
                 className={`flex items-center gap-1.5 px-3 py-2.5 text-xs border-b-2 transition-all whitespace-nowrap flex-shrink-0 ${
@@ -112,12 +118,15 @@ export default function VisionCortexShell() {
 
       {/* Content */}
       <div className="flex-1 overflow-hidden">
-        {activeTab === 'feed'    && <VisionFeed />}
-        {activeTab === 'map'     && <GlobalTrendsMap />}
-        {activeTab === 'board'   && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
-        {activeTab === 'debate'  && <AgentDebateChat idea={selectedIdea} />}
-        {activeTab === 'sandbox' && <ActiveSandbox idea={selectedIdea} />}
-        {activeTab === 'logs'    && <VisionLogs />}
+        {activeTab === 'feed'       && <VisionFeed />}
+        {activeTab === 'map'        && <GlobalTrendsMap />}
+        {activeTab === 'board'      && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
+        {activeTab === 'whiteboard' && <IdeaWhiteboard />}
+        {activeTab === 'analytics'  && <IdeaAnalytics />}
+        {activeTab === 'debate'     && <AgentDebateChat idea={selectedIdea} />}
+        {activeTab === 'sandbox'    && <ActiveSandbox idea={selectedIdea} />}
+        {activeTab === 'deploy'     && <DeploymentEngine />}
+        {activeTab === 'logs'       && <VisionLogs />}
       </div>
     </div>
   );
