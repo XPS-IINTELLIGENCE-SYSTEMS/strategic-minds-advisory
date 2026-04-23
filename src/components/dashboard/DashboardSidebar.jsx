@@ -66,14 +66,8 @@ export default function DashboardSidebar({ activeTool, setActiveTool }) {
                 return (
                   <button
                     key={id}
-                    onClick={() => {
-                      setActiveTool(id);
-                    }}
-                    onDoubleClick={() => {
-                      const element = document.querySelector('[data-tool-content]');
-                      if (element) element.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className={`w-full flex items-center justify-center xl:justify-start gap-3 px-3 py-2 rounded-xl text-left transition-all group ${
+                    onClick={() => setActiveTool(id)}
+                    className={`w-full h-10 flex items-center justify-center xl:justify-start gap-3 px-3 rounded-xl text-left transition-all active:scale-95 ${
                       active
                         ? 'bg-accent/15 text-accent'
                         : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60'
