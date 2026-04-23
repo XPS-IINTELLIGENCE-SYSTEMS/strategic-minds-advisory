@@ -38,6 +38,8 @@ import PitchDeckGeneratorModule from '@/components/dashboard/PitchDeckGeneratorM
 import VoiceToStrategyModule from '@/components/dashboard/VoiceToStrategyModule';
 import CompetitiveAnalysisTool from '@/components/dashboard/CompetitiveAnalysisTool';
 import DataHealthDashboard from '@/components/dashboard/DataHealthDashboard';
+import ExecutiveSummaryModule from '@/components/dashboard/ExecutiveSummaryModule';
+import FinancialModelingDashboard from '@/components/dashboard/FinancialModelingDashboard';
 import CollaborativeWhiteboardModule from '@/components/dashboard/CollaborativeWhiteboardModule';
 import DailyDigestModule from '@/components/dashboard/DailyDigestModule';
 import PortfolioManagementModule from '@/components/dashboard/PortfolioManagementModule';
@@ -140,6 +142,9 @@ export default function Dashboard() {
       case 'schema-editor': return <SchemaEditor />;
       case 'competitive-analysis': return <CompetitiveAnalysisTool />;
       case 'data-health': return <DataHealthDashboard />;
+      case 'voice': return <VoiceToStrategyModule />;
+      case 'reports': return <ExecutiveSummaryModule />;
+      case 'financials': return <FinancialModelingDashboard />;
       default: return <SimulationTool />;
     }
   };
@@ -222,6 +227,9 @@ export default function Dashboard() {
                activeTool === 'execution' ? 'Decision to Tasks Converter' :
                activeTool === 'playbook-gen' ? 'Strategy Playbooks' :
                activeTool === 'account' ? 'Account Settings' :
+               activeTool === 'reports' ? 'Executive Summary Report' :
+               activeTool === 'financials' ? 'Financial Modeling' :
+               activeTool === 'voice' ? 'Voice to Strategy Intelligence' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">
