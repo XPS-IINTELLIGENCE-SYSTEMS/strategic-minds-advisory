@@ -1,0 +1,64 @@
+{
+  "name": "PromptLibrary",
+  "type": "object",
+  "properties": {
+    "workspace_id": {
+      "type": "string",
+      "description": "Related Workspace ID"
+    },
+    "creator_email": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "description": "Prompt title/name"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "scraping",
+        "analysis",
+        "simulation",
+        "strategy",
+        "content",
+        "research"
+      ],
+      "description": "Prompt category for organization"
+    },
+    "content": {
+      "type": "string",
+      "description": "The actual prompt text"
+    },
+    "use_cases": {
+      "type": "string",
+      "description": "Comma-separated use cases"
+    },
+    "system_prompt": {
+      "type": "string",
+      "description": "Optional system context for this prompt"
+    },
+    "variables": {
+      "type": "string",
+      "description": "JSON array of template variables {name, placeholder}"
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "Share with team"
+    },
+    "is_pinned": {
+      "type": "boolean",
+      "default": false
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "workspace_id",
+    "creator_email",
+    "title",
+    "content"
+  ]
+}

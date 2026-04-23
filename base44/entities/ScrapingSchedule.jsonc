@@ -1,0 +1,57 @@
+{
+  "name": "ScrapingSchedule",
+  "type": "object",
+  "properties": {
+    "workspace_id": {
+      "type": "string",
+      "description": "Related Workspace ID"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Schedule name"
+    },
+    "urls": {
+      "type": "string",
+      "description": "JSON array of URLs to scrape"
+    },
+    "extraction_schema": {
+      "type": "string",
+      "description": "JSON schema for data extraction"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly",
+        "monthly"
+      ],
+      "default": "daily"
+    },
+    "next_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "run_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "workspace_id",
+    "user_email",
+    "name",
+    "urls"
+  ]
+}

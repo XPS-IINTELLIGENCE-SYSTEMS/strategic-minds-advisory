@@ -10,6 +10,9 @@ import VoiceInputButton from '@/components/mobile/VoiceInputButton';
 import SimulationTool from '@/components/dashboard/SimulationTool';
 import PredictionTool from '@/components/dashboard/PredictionTool';
 import PromptLibraryPanel from '@/components/dashboard/PromptLibraryPanel';
+import ScrapingDashboard from '@/components/dashboard/ScrapingDashboard';
+import SimulationWithScraping from '@/components/dashboard/SimulationWithScraping';
+import PromptLibraryManager from '@/components/dashboard/PromptLibraryManager';
 import AutomationPanel from '@/components/dashboard/AutomationPanel';
 import TemplateLibrary from '@/components/dashboard/TemplateLibrary';
 import TestModule from '@/components/dashboard/TestModule';
@@ -127,6 +130,9 @@ export default function Dashboard() {
       case 'keywords': return <MarketKeywordMonitor />;
       case 'execution': return <DecisionToTasksConverter />;
       case 'playbook-gen': return <InteractivePlaybookGenerator />;
+      case 'scraping': return <ScrapingDashboard />;
+      case 'scrape-simulate': return <SimulationWithScraping />;
+      case 'prompt-library': return <PromptLibraryManager />;
       case 'account': return <AccountSettings />;
       default: return <SimulationTool />;
     }
@@ -175,7 +181,10 @@ export default function Dashboard() {
               <MessageCircle className="w-5 h-5" />
             </button>
             <h1 className="font-display text-lg capitalize text-gradient-ivory">
-              {activeTool === 'prompts' ? 'Prompt Library' :
+              {activeTool === 'scraping' ? 'Scraping Dashboard' :
+               activeTool === 'scrape-simulate' ? 'Scrape → Simulate' :
+               activeTool === 'prompt-library' ? 'Prompt Library Manager' :
+               activeTool === 'prompts' ? 'Prompt Library' :
                activeTool === 'test' ? 'System Tests' :
                activeTool === 'insights' ? 'Insights' :
                activeTool === 'content' ? 'Content Engine' :

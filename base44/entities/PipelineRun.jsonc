@@ -1,0 +1,52 @@
+{
+  "name": "PipelineRun",
+  "type": "object",
+  "properties": {
+    "workspace_id": {
+      "type": "string",
+      "description": "Related Workspace ID"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "pipeline_id": {
+      "type": "string",
+      "description": "Pipeline configuration ID"
+    },
+    "config": {
+      "type": "string",
+      "description": "JSON pipeline configuration"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "running",
+        "completed",
+        "failed"
+      ],
+      "default": "running"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "steps_completed": {
+      "type": "number",
+      "default": 0
+    },
+    "results": {
+      "type": "string",
+      "description": "JSON results from all pipeline steps"
+    }
+  },
+  "required": [
+    "workspace_id",
+    "user_email",
+    "pipeline_id",
+    "config"
+  ]
+}

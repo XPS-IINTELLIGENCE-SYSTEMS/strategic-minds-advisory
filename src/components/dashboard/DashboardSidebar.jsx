@@ -18,6 +18,8 @@ const NAV_GROUPS = [
     items: [
       { id: 'simulation', icon: Zap, label: 'Simulation' },
       { id: 'prediction', icon: TrendingUp, label: 'Prediction' },
+      { id: 'scraping', icon: Globe, label: 'Scraping' },
+      { id: 'scrape-simulate', icon: Network, label: 'Scrape & Simulate' },
       { id: 'insights', icon: BarChart3, label: 'Insights' },
     ],
   },
@@ -26,6 +28,7 @@ const NAV_GROUPS = [
     items: [
       { id: 'intelligence', icon: Brain, label: 'Intelligence' },
       { id: 'playbook-gen', icon: BookOpen, label: 'Playbooks' },
+      { id: 'prompt-library', icon: PenTool, label: 'Prompts' },
       { id: 'alerts', icon: Zap, label: 'Alerts' },
     ],
   },

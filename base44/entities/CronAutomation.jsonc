@@ -1,0 +1,68 @@
+{
+  "name": "CronAutomation",
+  "type": "object",
+  "properties": {
+    "workspace_id": {
+      "type": "string",
+      "description": "Related Workspace ID"
+    },
+    "created_by": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string",
+      "description": "Automation name"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "scraping",
+        "pipeline",
+        "simulation",
+        "report",
+        "alert"
+      ],
+      "description": "Automation type"
+    },
+    "cron_expression": {
+      "type": "string",
+      "description": "Standard cron format (e.g., '0 9 * * 1' = 9 AM Mondays)"
+    },
+    "config": {
+      "type": "string",
+      "description": "JSON config for the automation task"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "next_run": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_count": {
+      "type": "number",
+      "default": 0
+    },
+    "last_status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "failed",
+        "pending"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "workspace_id",
+    "created_by",
+    "name",
+    "type",
+    "cron_expression"
+  ]
+}
