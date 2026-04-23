@@ -13,9 +13,14 @@ export default function FloatingContactForm() {
   const submit = async (e) => {
     e.preventDefault();
     setStatus('sending');
-    await base44.functions.invoke('sendContactEmail', form);
-    setStatus('sent');
-    setTimeout(() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); setOpen(false); }, 2500);
+    try {
+      await base44.functions.invoke('sendContactEmail', form);
+      setStatus('sent');
+      setTimeout(() => { setStatus('idle'); setForm({ name: '', email: '', message: '' }); setOpen(false); }, 2500);
+    } catch (error) {
+      console.error('Failed to send contact form:', error);
+      setStatus('idle');
+    }
   };
 
   return (
