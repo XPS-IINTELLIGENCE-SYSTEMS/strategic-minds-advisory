@@ -62,6 +62,8 @@ const NAV_GROUPS = [
       { id: 'pitch', icon: Zap, label: 'Pitch Decks' },
       { id: 'voice', icon: Zap, label: 'Voice Input' },
       { id: 'whiteboard', icon: Zap, label: 'Whiteboard' },
+      { id: 'digest', icon: Zap, label: 'Daily Digest' },
+      { id: 'portfolio', icon: Zap, label: 'Portfolio' },
     ],
   },
 ];

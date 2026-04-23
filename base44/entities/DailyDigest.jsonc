@@ -1,0 +1,45 @@
+{
+  "name": "DailyDigest",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "digest_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Executive summary of the day"
+    },
+    "intelligence_count": {
+      "type": "number",
+      "description": "New intelligence items"
+    },
+    "voice_insights_count": {
+      "type": "number",
+      "description": "Voice insights captured"
+    },
+    "stress_tests_run": {
+      "type": "number"
+    },
+    "critical_findings": {
+      "type": "string",
+      "description": "Key findings and risks"
+    },
+    "recommendations": {
+      "type": "string",
+      "description": "AI recommendations"
+    },
+    "sent": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_email",
+    "digest_date",
+    "summary"
+  ]
+}

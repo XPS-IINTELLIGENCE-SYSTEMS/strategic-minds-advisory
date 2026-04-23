@@ -1,0 +1,37 @@
+{
+  "name": "Portfolio",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Portfolio name (e.g., 'Q2 2026 Models')"
+    },
+    "description": {
+      "type": "string"
+    },
+    "owner_email": {
+      "type": "string"
+    },
+    "model_ids": {
+      "type": "string",
+      "description": "Comma-separated SavedModel IDs"
+    },
+    "collective_risk_score": {
+      "type": "number",
+      "description": "0-100 aggregate risk across all models"
+    },
+    "last_stress_test_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "owner_email",
+    "model_ids"
+  ]
+}

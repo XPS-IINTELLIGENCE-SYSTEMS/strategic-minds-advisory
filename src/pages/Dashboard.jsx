@@ -27,6 +27,8 @@ import DeploymentPanel from '@/components/dashboard/DeploymentPanel';
 import PitchDeckGeneratorModule from '@/components/dashboard/PitchDeckGeneratorModule';
 import VoiceToStrategyModule from '@/components/dashboard/VoiceToStrategyModule';
 import CollaborativeWhiteboardModule from '@/components/dashboard/CollaborativeWhiteboardModule';
+import DailyDigestModule from '@/components/dashboard/DailyDigestModule';
+import PortfolioManagementModule from '@/components/dashboard/PortfolioManagementModule';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -64,6 +66,8 @@ export default function Dashboard() {
       case 'pitch': return <PitchDeckGeneratorModule />;
       case 'voice': return <VoiceToStrategyModule />;
       case 'whiteboard': return <CollaborativeWhiteboardModule />;
+      case 'digest': return <DailyDigestModule />;
+      case 'portfolio': return <PortfolioManagementModule />;
       default: return <SimulationTool />;
     }
   };
@@ -107,6 +111,8 @@ export default function Dashboard() {
                activeTool === 'pitch' ? 'Investor Pitch Decks' :
                activeTool === 'voice' ? 'Voice-to-Strategy Intelligence' :
                activeTool === 'whiteboard' ? 'Collaborative Whiteboard' :
+               activeTool === 'digest' ? 'Daily Strategic Digest' :
+               activeTool === 'portfolio' ? 'Portfolio Management' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">
