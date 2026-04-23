@@ -12,6 +12,7 @@ import About from '@/pages/About';
 import Portfolio from '@/pages/Portfolio';
 import Contact from '@/pages/Contact';
 import Dashboard from '@/pages/Dashboard';
+import AutoInventionSystemGuide from '@/pages/AutoInventionSystemGuide';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<About />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/auto-invention" element={<AutoInventionSystemGuide />} />
       </Route>
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="*" element={<PageNotFound />} />

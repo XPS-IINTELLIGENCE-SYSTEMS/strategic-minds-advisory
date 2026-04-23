@@ -9,9 +9,11 @@ import ActiveSandbox from './ActiveSandbox';
 import IdeaWhiteboard from './IdeaWhiteboard';
 import IdeaAnalytics from './IdeaAnalytics';
 import DeploymentEngine from './DeploymentEngine';
-import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket } from 'lucide-react';
+import AutoGenerationMonitor from './AutoGenerationMonitor';
+import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu } from 'lucide-react';
 
 const TABS = [
+  { id: 'autogen',    icon: Cpu,            label: '24/7 Auto-Gen' },
   { id: 'feed',       icon: Rss,            label: 'Intelligence Feed' },
   { id: 'map',        icon: Globe,          label: 'Global Trends' },
   { id: 'board',      icon: Lightbulb,      label: 'Idea Board' },
@@ -97,7 +99,7 @@ export default function VisionCortexShell() {
         <div className="flex gap-1 mt-3 overflow-x-auto pb-0">
           {TABS.map(t => {
             const Icon = t.icon;
-            const needsIdea = t.id === 'debate' || t.id === 'sandbox' || t.id === 'deploy';
+            const needsIdea = (t.id === 'debate' || t.id === 'sandbox' || t.id === 'deploy') && !selectedIdea;
             return (
               <button key={t.id} onClick={() => setActiveTab(t.id)}
                 className={`flex items-center gap-1.5 px-3 py-2.5 text-xs border-b-2 transition-all whitespace-nowrap flex-shrink-0 ${
@@ -118,6 +120,7 @@ export default function VisionCortexShell() {
 
       {/* Content */}
       <div className="flex-1 overflow-hidden">
+        {activeTab === 'autogen'    && <div className="h-full overflow-y-auto"><div className="max-w-5xl mx-auto p-6"><AutoGenerationMonitor /></div></div>}
         {activeTab === 'feed'       && <VisionFeed />}
         {activeTab === 'map'        && <GlobalTrendsMap />}
         {activeTab === 'board'      && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}

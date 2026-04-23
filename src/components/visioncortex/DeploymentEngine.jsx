@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
+import GitHubIntegrationGuide from './GitHubIntegrationGuide';
 import {
   Rocket, Loader2, Copy, CheckCircle2, ChevronDown, ChevronRight,
-  Github, Cloud, Server, Database, Zap, FileCode
+  Github, Cloud, Server, Database, Zap, FileCode, HelpCircle
 } from 'lucide-react';
 
 const DEPLOY_TARGETS = [
@@ -87,6 +88,8 @@ export default function DeploymentEngine() {
   const [pipelineStage, setPipelineStage] = useState(null);
   const [pipelineCompleted, setPipelineCompleted] = useState([]);
   const [openResult, setOpenResult] = useState(null);
+  const [githubConnected, setGithubConnected] = useState(false);
+  const [showGithubGuide, setShowGithubGuide] = useState(false);
 
   useEffect(() => {
     base44.entities.VisionIdea.list('-created_date', 50).then(data => {
@@ -171,6 +174,22 @@ export default function DeploymentEngine() {
             {ideas.map(i => <option key={i.id} value={i.id}>{i.title} [{i.status}]</option>)}
             {ideas.length === 0 && <option value="">No documented ideas yet — build one first</option>}
           </select>
+
+          <div className="relative">
+            <button onClick={() => setShowGithubGuide(!showGithubGuide)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm border ${showGithubGuide ? 'btn-ivory' : 'border-border bg-secondary/30 text-muted-foreground hover:text-foreground'}`}>
+              <Github className="w-4 h-4" />
+              {githubConnected ? 'GitHub Connected' : 'Setup GitHub'}
+            </button>
+            <AnimatePresence>
+              {showGithubGuide && (
+                <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
+                  className="absolute top-full right-0 mt-2 z-30 w-[480px] max-h-96 overflow-y-auto bg-card border border-border rounded-2xl shadow-2xl p-5">
+                  <GitHubIntegrationGuide />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           <button onClick={generate} disabled={loading || !selectedIdea || selectedTargets.length === 0}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl btn-ivory text-sm disabled:opacity-60">
