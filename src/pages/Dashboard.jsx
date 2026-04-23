@@ -6,6 +6,7 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
 import ChatPanel from '@/components/dashboard/EnhancedChatPanel';
 import AccountSettings from '@/components/dashboard/AccountSettings';
+import SchemaEditor from '@/components/dashboard/SchemaEditor';
 import VoiceInputButton from '@/components/mobile/VoiceInputButton';
 import SimulationTool from '@/components/dashboard/SimulationTool';
 import PredictionTool from '@/components/dashboard/PredictionTool';
@@ -134,6 +135,7 @@ export default function Dashboard() {
       case 'scrape-simulate': return <SimulationWithScraping />;
       case 'prompt-library': return <PromptLibraryManager />;
       case 'account': return <AccountSettings />;
+      case 'schema-editor': return <SchemaEditor />;
       default: return <SimulationTool />;
     }
   };
