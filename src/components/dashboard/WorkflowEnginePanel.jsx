@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Plus, Trash2, Power, Loader2, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import MobileSelect from '@/components/common/MobileSelect';
 
 const TRIGGERS = ['competitive_threat', 'market_signal', 'idea_update', 'stress_test_result', 'scheduled'];
 const ACTIONS = ['run_stress_test', 'update_strategy', 'notify_team', 'generate_report', 'update_pitch'];
@@ -142,30 +143,24 @@ export default function WorkflowEnginePanel() {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs font-medium text-foreground mb-2 block">If (Trigger)</label>
-                <select
-                  value={newWorkflow.trigger_type}
-                  onChange={(e) => setNewWorkflow({ ...newWorkflow, trigger_type: e.target.value })}
-                  className="w-full px-3 py-2 text-sm rounded-lg bg-secondary/40 border border-border outline-none focus:border-accent transition"
-                >
-                  {TRIGGERS.map(t => (
-                    <option key={t} value={t}>{t.replace('_', ' ')}</option>
-                  ))}
-                </select>
-              </div>
+                 <label className="text-xs font-medium text-foreground mb-2 block">If (Trigger)</label>
+                 <MobileSelect
+                   value={newWorkflow.trigger_type}
+                   onChange={(value) => setNewWorkflow({ ...newWorkflow, trigger_type: value })}
+                   options={TRIGGERS.map(t => ({ value: t, label: t.replace('_', ' ') }))}
+                   placeholder="Select trigger"
+                 />
+               </div>
 
               <div>
-                <label className="text-xs font-medium text-foreground mb-2 block">Then (Action)</label>
-                <select
-                  value={newWorkflow.action_type}
-                  onChange={(e) => setNewWorkflow({ ...newWorkflow, action_type: e.target.value })}
-                  className="w-full px-3 py-2 text-sm rounded-lg bg-secondary/40 border border-border outline-none focus:border-accent transition"
-                >
-                  {ACTIONS.map(a => (
-                    <option key={a} value={a}>{a.replace('_', ' ')}</option>
-                  ))}
-                </select>
-              </div>
+                 <label className="text-xs font-medium text-foreground mb-2 block">Then (Action)</label>
+                 <MobileSelect
+                   value={newWorkflow.action_type}
+                   onChange={(value) => setNewWorkflow({ ...newWorkflow, action_type: value })}
+                   options={ACTIONS.map(a => ({ value: a, label: a.replace('_', ' ') }))}
+                   placeholder="Select action"
+                 />
+               </div>
             </div>
 
             <Button onClick={addWorkflow} className="btn-ivory rounded-lg w-full">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Zap, CheckCircle2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import MobileSelect from '@/components/common/MobileSelect';
 
 export default function DecisionToTasksConverter() {
   const [debates, setDebates] = useState([]);
@@ -191,15 +192,16 @@ export default function DecisionToTasksConverter() {
               <h5 className="text-xs font-bold text-accent">Sync to Project Management</h5>
 
               {/* PM Tool Selection */}
-              <select
+              <MobileSelect
                 value={syncConfig.pmTool}
-                onChange={(e) => setSyncConfig(prev => ({ ...prev, pmTool: e.target.value }))}
-                className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-xs outline-none focus:border-accent transition"
-              >
-                <option value="linear">Linear</option>
-                <option value="jira">Jira</option>
-                <option value="asana">Asana</option>
-              </select>
+                onChange={(value) => setSyncConfig(prev => ({ ...prev, pmTool: value }))}
+                options={[
+                  { value: 'linear', label: 'Linear' },
+                  { value: 'jira', label: 'Jira' },
+                  { value: 'asana', label: 'Asana' }
+                ]}
+                placeholder="Select tool"
+              />
 
               {/* Project Key */}
               <input

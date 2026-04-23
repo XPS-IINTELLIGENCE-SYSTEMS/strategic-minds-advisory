@@ -157,7 +157,7 @@ export default function VisionCortexShell() {
       <div className="flex-1 overflow-hidden bg-gradient-to-b from-background/50 to-background">
         {/* Content wrapper with consistent padding */}
         <div className="h-full overflow-y-auto">
-          <div className="px-4 md:px-6 py-6 space-y-6 max-w-7xl mx-auto">
+          <div className="px-4 md:px-6 py-6 space-y-6 max-w-7xl mx-auto" style={{ paddingLeft: 'calc(1rem + env(safe-area-inset-left))', paddingRight: 'calc(1rem + env(safe-area-inset-right))' }}>
             {activeTab === 'autogen'      && <AutoGenerationMonitor />}
             {activeTab === 'feed'         && <VisionFeed />}
             {activeTab === 'library'      && <IntelligenceLibraryBrowser />}
