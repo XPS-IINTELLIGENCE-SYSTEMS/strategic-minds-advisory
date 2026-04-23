@@ -5,6 +5,7 @@ import {
   Code2, Database, Zap, TrendingUp, RefreshCw
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ArchitectureGraph from '@/components/dashboard/ArchitectureGraph';
 
 export default function ProjectDashboard() {
   const [projects, setProjects] = useState([]);
@@ -31,6 +32,7 @@ export default function ProjectDashboard() {
         totalOperations: opsRes.length,
         indexedProjects: projectIndexes.length,
         lastDeployment: vercelRes.data.lastDeployment || 'N/A',
+        lastProjectIndex: projectIndexes[0],
       });
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -181,6 +183,11 @@ export default function ProjectDashboard() {
             </div>
           )}
         </div>
+
+        {/* Architecture Graph */}
+        {projects.length > 0 && (
+          <ArchitectureGraph projectIndex={metrics?.lastProjectIndex} />
+        )}
 
         {/* Recent Operations */}
         <div>
