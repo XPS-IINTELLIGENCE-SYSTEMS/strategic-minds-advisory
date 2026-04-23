@@ -1,0 +1,59 @@
+{
+  "name": "StrategyPlaybook",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Playbook name (e.g., 'Market Downturn Response')"
+    },
+    "description": {
+      "type": "string"
+    },
+    "creator_email": {
+      "type": "string"
+    },
+    "source_scenario": {
+      "type": "string",
+      "description": "Original stress test scenario this came from"
+    },
+    "pivot_strategy": {
+      "type": "string",
+      "description": "The successful pivot strategy"
+    },
+    "implementation_steps": {
+      "type": "string",
+      "description": "JSON array of step-by-step instructions"
+    },
+    "expected_outcomes": {
+      "type": "string",
+      "description": "What results to expect"
+    },
+    "success_metrics": {
+      "type": "string",
+      "description": "How to measure success"
+    },
+    "applicable_domains": {
+      "type": "string",
+      "description": "Comma-separated domains this applies to"
+    },
+    "success_rate": {
+      "type": "number",
+      "description": "Percentage of applications that succeeded"
+    },
+    "times_applied": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times this playbook has been used"
+    },
+    "is_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "Share with other team members"
+    }
+  },
+  "required": [
+    "title",
+    "creator_email",
+    "pivot_strategy"
+  ]
+}

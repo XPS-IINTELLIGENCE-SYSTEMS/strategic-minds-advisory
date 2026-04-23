@@ -64,6 +64,9 @@ const NAV_GROUPS = [
       { id: 'whiteboard', icon: Zap, label: 'Whiteboard' },
       { id: 'digest', icon: Zap, label: 'Daily Digest' },
       { id: 'portfolio', icon: Zap, label: 'Portfolio' },
+      { id: 'debate-history', icon: Zap, label: 'Debate History' },
+      { id: 'integrations', icon: Zap, label: 'Integrations' },
+      { id: 'playbooks', icon: Zap, label: 'Playbooks' },
     ],
   },
 ];

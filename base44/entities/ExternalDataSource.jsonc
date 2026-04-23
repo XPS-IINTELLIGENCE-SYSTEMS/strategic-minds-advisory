@@ -1,0 +1,53 @@
+{
+  "name": "ExternalDataSource",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "slack",
+        "notion",
+        "trello",
+        "airtable",
+        "hubspot",
+        "custom"
+      ]
+    },
+    "source_name": {
+      "type": "string",
+      "description": "User-friendly name (e.g., 'Sales Slack Workspace')"
+    },
+    "connector_id": {
+      "type": "string",
+      "description": "Registered connector ID"
+    },
+    "config": {
+      "type": "string",
+      "description": "JSON config (workspace_id, channel, board_id, etc.)"
+    },
+    "sync_enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "items_synced": {
+      "type": "number",
+      "default": 0
+    },
+    "intelligence_domains": {
+      "type": "string",
+      "description": "Which domains to extract intelligence from this source"
+    }
+  },
+  "required": [
+    "user_email",
+    "source_type",
+    "connector_id"
+  ]
+}

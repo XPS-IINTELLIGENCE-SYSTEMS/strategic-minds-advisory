@@ -29,6 +29,9 @@ import VoiceToStrategyModule from '@/components/dashboard/VoiceToStrategyModule'
 import CollaborativeWhiteboardModule from '@/components/dashboard/CollaborativeWhiteboardModule';
 import DailyDigestModule from '@/components/dashboard/DailyDigestModule';
 import PortfolioManagementModule from '@/components/dashboard/PortfolioManagementModule';
+import AgentDebateHistoryDashboard from '@/components/dashboard/AgentDebateHistoryDashboard';
+import ExternalIntelligenceIntegrator from '@/components/dashboard/ExternalIntelligenceIntegrator';
+import StrategyPlaybookLibrary from '@/components/dashboard/StrategyPlaybookLibrary';
 
 export default function Dashboard() {
   const [activeTool, setActiveTool] = useState('simulation');
@@ -68,6 +71,9 @@ export default function Dashboard() {
       case 'whiteboard': return <CollaborativeWhiteboardModule />;
       case 'digest': return <DailyDigestModule />;
       case 'portfolio': return <PortfolioManagementModule />;
+      case 'debate-history': return <AgentDebateHistoryDashboard />;
+      case 'integrations': return <ExternalIntelligenceIntegrator />;
+      case 'playbooks': return <StrategyPlaybookLibrary />;
       default: return <SimulationTool />;
     }
   };
@@ -113,6 +119,9 @@ export default function Dashboard() {
                activeTool === 'whiteboard' ? 'Collaborative Whiteboard' :
                activeTool === 'digest' ? 'Daily Strategic Digest' :
                activeTool === 'portfolio' ? 'Portfolio Management' :
+               activeTool === 'debate-history' ? 'Agent Debate History' :
+               activeTool === 'integrations' ? 'External Intelligence Integrator' :
+               activeTool === 'playbooks' ? 'Strategy Playbook Library' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">

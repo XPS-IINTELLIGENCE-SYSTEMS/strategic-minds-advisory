@@ -1,0 +1,51 @@
+{
+  "name": "DebateHistory",
+  "type": "object",
+  "properties": {
+    "idea_id": {
+      "type": "string",
+      "description": "Related VisionIdea ID"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Unique debate session identifier"
+    },
+    "title": {
+      "type": "string"
+    },
+    "debate_round": {
+      "type": "number",
+      "description": "Which round of debate"
+    },
+    "messages": {
+      "type": "string",
+      "description": "JSON array of debate messages with agent, content, timestamp"
+    },
+    "conclusion": {
+      "type": "string",
+      "description": "Final consensus from debate"
+    },
+    "decision_made": {
+      "type": "string",
+      "description": "What strategic decision was made"
+    },
+    "debate_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "participants": {
+      "type": "string",
+      "description": "Comma-separated agent names"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Searchable tags"
+    }
+  },
+  "required": [
+    "idea_id",
+    "session_id",
+    "title",
+    "messages"
+  ]
+}
