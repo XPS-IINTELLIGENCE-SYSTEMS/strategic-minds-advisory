@@ -90,7 +90,7 @@ export default function Navbar() {
                 <Link
                   key={l.to}
                   to={l.to}
-                  className={`text-base ${
+                  className={`text-base text-right ${
                     pathname === l.to ? 'text-foreground' : 'text-muted-foreground'
                   }`}
                 >
