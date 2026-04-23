@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Loader2, Zap, CheckCircle2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import MobileSelect from '@/components/common/MobileSelect';
+import SmartTaskAssignment from './SmartTaskAssignment';
 
 export default function DecisionToTasksConverter() {
   const [debates, setDebates] = useState([]);
@@ -186,6 +187,13 @@ export default function DecisionToTasksConverter() {
                 </div>
               ))}
             </div>
+
+            {/* Smart Task Assignment */}
+            {tasks && (
+              <div className="glass-card rounded-2xl p-4 border border-border flex-shrink-0">
+                <SmartTaskAssignment tasks={tasks.tasks} decisionId={tasks.decision_task_id} />
+              </div>
+            )}
 
             {/* Sync Configuration */}
             <div className="glass-card rounded-2xl p-4 border border-border space-y-3 flex-shrink-0">

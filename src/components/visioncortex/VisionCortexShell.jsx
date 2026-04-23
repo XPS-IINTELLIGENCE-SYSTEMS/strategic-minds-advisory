@@ -19,6 +19,7 @@ import MultiAgentStressTest from './MultiAgentStressTest';
 import RiskScenarioMap from './RiskScenarioMap';
 import NetworkVisualizationDashboard from './NetworkVisualizationDashboard';
 import CustomAgentSimulator from './CustomAgentSimulator';
+import AIPlaybookGenerator from '@/components/visioncortex/AIPlaybookGenerator';
 import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu, CheckSquare, Library, Zap, TrendingDown } from 'lucide-react';
 
 const TABS = [
@@ -28,6 +29,7 @@ const TABS = [
   { id: 'intel-matrix', icon: Globe,          label: 'Intel Matrix' },
   { id: 'map',          icon: Globe,          label: 'Global Trends' },
   { id: 'board',        icon: Lightbulb,      label: 'Idea Board' },
+  { id: 'playbooks',    icon: Brain,          label: 'AI Playbooks' },
   { id: 'whiteboard',   icon: StickyNote,     label: 'Whiteboard' },
   { id: 'analytics',    icon: BarChart3,      label: 'Analytics' },
   { id: 'custom-stress',icon: Zap,            label: 'Custom Stress' },
@@ -164,6 +166,7 @@ export default function VisionCortexShell() {
             {activeTab === 'intel-matrix' && <IntelligenceMatrixDashboard />}
             {activeTab === 'map'          && <GlobalTrendsMap />}
             {activeTab === 'board'        && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
+            {activeTab === 'playbooks'    && <AIPlaybookGenerator idea={selectedIdea} />}
             {activeTab === 'whiteboard'   && <IdeaWhiteboard />}
             {activeTab === 'analytics'    && <IdeaAnalytics />}
             {activeTab === 'custom-stress' && <CustomStressTestBuilder onTestStart={() => setActiveTab('debate-arena')} />}

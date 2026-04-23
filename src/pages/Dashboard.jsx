@@ -36,6 +36,8 @@ import PredictiveModelingDashboard from '@/components/dashboard/PredictiveModeli
 import DeploymentPanel from '@/components/dashboard/DeploymentPanel';
 import PitchDeckGeneratorModule from '@/components/dashboard/PitchDeckGeneratorModule';
 import VoiceToStrategyModule from '@/components/dashboard/VoiceToStrategyModule';
+import CompetitiveAnalysisTool from '@/components/dashboard/CompetitiveAnalysisTool';
+import DataHealthDashboard from '@/components/dashboard/DataHealthDashboard';
 import CollaborativeWhiteboardModule from '@/components/dashboard/CollaborativeWhiteboardModule';
 import DailyDigestModule from '@/components/dashboard/DailyDigestModule';
 import PortfolioManagementModule from '@/components/dashboard/PortfolioManagementModule';
@@ -136,6 +138,8 @@ export default function Dashboard() {
       case 'prompt-library': return <PromptLibraryManager />;
       case 'account': return <AccountSettings />;
       case 'schema-editor': return <SchemaEditor />;
+      case 'competitive-analysis': return <CompetitiveAnalysisTool />;
+      case 'data-health': return <DataHealthDashboard />;
       default: return <SimulationTool />;
     }
   };
