@@ -163,7 +163,7 @@ export default function Dashboard() {
         setActiveTool={handleToolChange}
       />
 
-      {/* Left sidebar nav - hidden on mobile */}
+      {/* Left sidebar nav - always visible on md+ */}
       <div className="hidden md:flex">
         <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
       </div>
@@ -219,7 +219,7 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileDrawerOpen(true)}
-              className="md:hidden p-1.5 rounded-lg hover:bg-secondary transition"
+              className="p-1.5 rounded-lg hover:bg-secondary transition"
             >
               <Menu className="w-5 h-5" />
             </button>

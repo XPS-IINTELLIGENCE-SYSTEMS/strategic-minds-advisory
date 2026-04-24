@@ -93,7 +93,7 @@ export default function MobileSidebarDrawer({ isOpen, onClose, activeTool, setAc
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="md:hidden fixed inset-0 bg-black/60 z-40"
+            className="fixed inset-0 bg-black/60 z-40"
           />
 
           <motion.div
@@ -101,7 +101,7 @@ export default function MobileSidebarDrawer({ isOpen, onClose, activeTool, setAc
             animate={{ x: 0 }}
             exit={{ x: -320 }}
             transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-            className="md:hidden fixed left-0 top-0 h-screen w-72 bg-card border-r border-border flex flex-col z-50"
+            className="fixed left-0 top-0 h-screen w-72 bg-card border-r border-border flex flex-col z-50"
           >
             {/* Header */}
             <div className="h-14 border-b border-border flex items-center justify-between px-4 flex-shrink-0">
