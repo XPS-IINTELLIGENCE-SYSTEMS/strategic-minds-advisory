@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Zap, CheckCircle2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import MobileSelect from '@/components/common/MobileSelect';
+import SmartTaskAssignment from './SmartTaskAssignment';
 
 export default function DecisionToTasksConverter() {
   const [debates, setDebates] = useState([]);
@@ -186,20 +188,28 @@ export default function DecisionToTasksConverter() {
               ))}
             </div>
 
+            {/* Smart Task Assignment */}
+            {tasks && (
+              <div className="glass-card rounded-2xl p-4 border border-border flex-shrink-0">
+                <SmartTaskAssignment tasks={tasks.tasks} decisionId={tasks.decision_task_id} />
+              </div>
+            )}
+
             {/* Sync Configuration */}
             <div className="glass-card rounded-2xl p-4 border border-border space-y-3 flex-shrink-0">
               <h5 className="text-xs font-bold text-accent">Sync to Project Management</h5>
 
               {/* PM Tool Selection */}
-              <select
+              <MobileSelect
                 value={syncConfig.pmTool}
-                onChange={(e) => setSyncConfig(prev => ({ ...prev, pmTool: e.target.value }))}
-                className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-xs outline-none focus:border-accent transition"
-              >
-                <option value="linear">Linear</option>
-                <option value="jira">Jira</option>
-                <option value="asana">Asana</option>
-              </select>
+                onChange={(value) => setSyncConfig(prev => ({ ...prev, pmTool: value }))}
+                options={[
+                  { value: 'linear', label: 'Linear' },
+                  { value: 'jira', label: 'Jira' },
+                  { value: 'asana', label: 'Asana' }
+                ]}
+                placeholder="Select tool"
+              />
 
               {/* Project Key */}
               <input

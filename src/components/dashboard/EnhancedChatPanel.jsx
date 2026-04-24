@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Send, Loader2, Bot, User, Trash2, Sparkles, Code2, FileText, CheckCircle2, AlertCircle, Settings } from 'lucide-react';
+import { Send, Loader2, Bot, User, Trash2, Sparkles, Code2, FileText, CheckCircle2, AlertCircle, Settings, Bug } from 'lucide-react';
 import TypingMessage from './TypingMessage';
 import MessageSuggestions from './MessageSuggestions';
+import DebuggerMode from './DebuggerMode';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SYSTEM_PROMPT = `You are an elite AI consultant and strategist at Strategic Minds Advisory. 
@@ -29,6 +30,7 @@ const CODE_STARTERS = [
 
 export default function EnhancedChatPanel({ seed, onSeedConsumed, embedded }) {
   const [mode, setMode] = useState('strategy'); // 'strategy' or 'code'
+  const [subMode, setSubMode] = useState('chat'); // 'chat' or 'debugger'
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -158,6 +160,15 @@ export default function EnhancedChatPanel({ seed, onSeedConsumed, embedded }) {
           </button>
           {mode === 'code' && (
             <button
+              onClick={() => setSubMode(subMode === 'chat' ? 'debugger' : 'chat')}
+              className={`p-1.5 rounded-lg transition ${subMode === 'debugger' ? 'bg-accent/15 text-accent' : 'hover:bg-secondary'}`}
+              title="Toggle Debugger Mode"
+            >
+              <Bug className="w-3.5 h-3.5" />
+            </button>
+          )}
+          {mode === 'code' && subMode === 'chat' && (
+            <button
               onClick={() => setMode('strategy')}
               className="text-xs px-2.5 py-1 rounded-lg border border-border hover:bg-secondary transition"
             >
@@ -217,7 +228,15 @@ export default function EnhancedChatPanel({ seed, onSeedConsumed, embedded }) {
         )}
       </AnimatePresence>
 
+      {/* Debugger Mode */}
+      {mode === 'code' && subMode === 'debugger' && (
+        <div className="flex-1 overflow-y-auto px-4 py-4">
+          <DebuggerMode onApplyFix={() => setSubMode('chat')} />
+        </div>
+      )}
+
       {/* Messages */}
+      {subMode === 'chat' && (
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {messages.length === 0 && (
           <div className="space-y-4">
@@ -337,8 +356,10 @@ export default function EnhancedChatPanel({ seed, onSeedConsumed, embedded }) {
 
         <div ref={bottomRef} />
       </div>
+      )}
 
       {/* Input */}
+      {subMode === 'chat' && (
       <div className="p-3 border-t border-border flex-shrink-0">
         <div className="flex gap-2">
           <textarea
@@ -363,6 +384,7 @@ export default function EnhancedChatPanel({ seed, onSeedConsumed, embedded }) {
           </button>
         </div>
       </div>
+      )}
     </div>
   );
 }

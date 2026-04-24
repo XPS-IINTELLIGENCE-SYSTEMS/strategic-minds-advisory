@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Users, Plus, Mail, Calendar, Loader2, Trash2, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import MobileSelect from '@/components/common/MobileSelect';
 
 // Enhanced with Kanban board view
 export default function InvestorOutreachDashboard() {
@@ -204,17 +205,18 @@ export default function InvestorOutreachDashboard() {
               onChange={(e) => setFormData({ ...formData, company: e.target.value })}
               className="w-full px-3 py-2 text-sm rounded-lg bg-secondary/40 border border-border outline-none focus:border-accent transition"
             />
-            <select
-              value={formData.stage}
-              onChange={(e) => setFormData({ ...formData, stage: e.target.value })}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-secondary/40 border border-border outline-none focus:border-accent transition"
-            >
-              <option value="seed">Seed</option>
-              <option value="series_a">Series A</option>
-              <option value="series_b">Series B</option>
-              <option value="growth">Growth</option>
-              <option value="late_stage">Late Stage</option>
-            </select>
+            <MobileSelect
+               value={formData.stage}
+               onChange={(value) => setFormData({ ...formData, stage: value })}
+               options={[
+                 { value: 'seed', label: 'Seed' },
+                 { value: 'series_a', label: 'Series A' },
+                 { value: 'series_b', label: 'Series B' },
+                 { value: 'growth', label: 'Growth' },
+                 { value: 'late_stage', label: 'Late Stage' }
+               ]}
+               placeholder="Select stage"
+             />
             <input
               type="text"
               placeholder="Domains (e.g., AI, fintech, climate)"
@@ -276,18 +278,19 @@ export default function InvestorOutreachDashboard() {
               </button>
 
               {/* Status Dropdown */}
-              <select
+              <MobileSelect
                 value={investor.status}
-                onChange={(e) => updateInvestorStatus(investor.id, e.target.value)}
-                className="flex-1 px-3 py-2 text-xs rounded-lg bg-secondary/30 border border-border outline-none focus:border-accent transition"
-              >
-                <option value="new">New</option>
-                <option value="contacted">Contacted</option>
-                <option value="interested">Interested</option>
-                <option value="pitching">Pitching</option>
-                <option value="invested">Invested</option>
-                <option value="rejected">Rejected</option>
-              </select>
+                onChange={(value) => updateInvestorStatus(investor.id, value)}
+                options={[
+                  { value: 'new', label: 'New' },
+                  { value: 'contacted', label: 'Contacted' },
+                  { value: 'interested', label: 'Interested' },
+                  { value: 'pitching', label: 'Pitching' },
+                  { value: 'invested', label: 'Invested' },
+                  { value: 'rejected', label: 'Rejected' }
+                ]}
+                placeholder="Select status"
+              />
             </div>
           </div>
         ))}

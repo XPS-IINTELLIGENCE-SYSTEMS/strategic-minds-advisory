@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { 
   MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
   Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool,
-  Workflow, Video, Globe, Brain, Users, TrendingDown, Network, Send, Settings
+  Workflow, Video, Globe, Brain, Users, TrendingDown, Network, Send, Settings, Database, FileText, Mic, Activity
 } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const NAV_GROUPS = [
   {
@@ -43,6 +44,27 @@ const NAV_GROUPS = [
     items: [
       { id: 'workspace', icon: Users, label: 'Team' },
       { id: 'investor-pipeline', icon: TrendingUp, label: 'Investors' },
+    ],
+  },
+  {
+    label: 'Development',
+    items: [
+      { id: 'schema-editor', icon: Database, label: 'Schema Editor' },
+    ],
+  },
+  {
+    label: 'Reporting & Insights',
+    items: [
+      { id: 'reports', icon: FileText, label: 'Executive Summary' },
+      { id: 'financials', icon: TrendingUp, label: 'Financial Models' },
+      { id: 'voice', icon: Mic, label: 'Voice to Strategy' },
+    ],
+  },
+  {
+    label: 'Admin Tools',
+    items: [
+      { id: 'audit', icon: Activity, label: 'System Audit' },
+      { id: 'supabase', icon: Database, label: 'Supabase Status' },
     ],
   },
   {
@@ -95,7 +117,8 @@ export default function DashboardSidebar({ activeTool, setActiveTool }) {
       </nav>
 
       {/* Footer */}
-      <div className="p-2 border-t border-border">
+      <div className="p-2 border-t border-border space-y-2">
+        <ThemeToggle />
         <Link
           to="/"
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition text-sm"

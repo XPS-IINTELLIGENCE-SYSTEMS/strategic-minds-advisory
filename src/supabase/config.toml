@@ -1,0 +1,50 @@
+# Supabase Configuration
+
+[project]
+project_id = "your_supabase_project_id"
+account_id = "your_account_id"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 5432
+major_version = 15
+
+[realtime]
+enabled = true
+max_bytes_per_second = 1048576
+max_connections = 1000
+max_events_per_second = 1000
+
+[auth]
+site_url = "https://example.com"
+additional_redirect_urls = [
+  "https://example.com/auth/callback"
+]
+jwt_expiry = 3600
+enable_signup = true
+email_change_confirmation_required = false
+mfa_phone_enabled = false
+jwt_secret = "your_jwt_secret_key"
+
+[storage]
+file_size_limit = 52428800
+allowed_mime_types = [
+  "image/jpeg",
+  "image/png",
+  "application/pdf",
+  "text/csv",
+  "application/json"
+]
+
+[functions]
+import_map = "./functions/import_map.json"
+verify_jwt = true
+
+[cron]
+enabled = true
