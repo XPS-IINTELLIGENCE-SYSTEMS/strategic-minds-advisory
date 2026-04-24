@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const links = [
   { to: '/', label: 'Home' },
   { to: '/services', label: 'Services' },
+  { to: '/ai-in-action', label: 'AI Labs' },
   { to: '/about', label: 'About' },
   { to: '/portfolio', label: 'Portfolio' },
   { to: '/contact', label: 'Contact' },
@@ -62,10 +63,10 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <Link
-            to="/contact"
+            to="/ai-in-action"
             className="hidden md:inline-flex btn-ivory rounded-full px-5 py-2.5 text-sm font-medium hover:opacity-90 transition min-h-[44px] min-w-[44px] justify-center"
           >
-            Begin Engagement
+            Watch AI in Action
           </Link>
           <button
             onClick={() => setOpen(!open)}
@@ -98,24 +99,12 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="hairline mt-2" />
-              <div className="flex gap-2 pt-2">
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  className="flex-1 px-5 py-2.5 text-sm border border-border rounded-full hover:bg-secondary transition"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  className="flex-1 px-5 py-2.5 text-sm btn-ivory rounded-full hover:opacity-90 transition font-medium"
-                >
-                  Sign Up
-                </button>
-              </div>
+              <Link
+                to="/ai-in-action"
+                className="px-5 py-3 text-center text-sm btn-ivory rounded-full hover:opacity-90 transition font-medium"
+              >
+                Watch AI in Action
+              </Link>
             </div>
           </motion.div>
         )}
