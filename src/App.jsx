@@ -18,6 +18,7 @@ import Dashboard from '@/pages/Dashboard';
 import ProjectDashboard from '@/pages/ProjectDashboard';
 import AutoInventionSystemGuide from '@/pages/AutoInventionSystemGuide';
 import EliteIntelligenceSystemGuide from '@/pages/EliteIntelligenceSystemGuide';
+import AIInActionLabs from '@/pages/AIInActionLabs';
 import PageTransition from '@/components/common/PageTransition';
 
 const AuthenticatedApp = () => {
@@ -52,6 +53,7 @@ const AuthenticatedApp = () => {
           <Route path="/services" element={<PageTransition><Services /></PageTransition>} />
           <Route path="/about" element={<PageTransition><About /></PageTransition>} />
           <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
+          <Route path="/ai-in-action" element={<PageTransition><AIInActionLabs /></PageTransition>} />
           <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
           <Route path="/auto-invention" element={<PageTransition><AutoInventionSystemGuide /></PageTransition>} />
           <Route path="/elite-intelligence" element={<PageTransition><EliteIntelligenceSystemGuide /></PageTransition>} />
