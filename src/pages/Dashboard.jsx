@@ -198,19 +198,21 @@ export default function Dashboard() {
       {/* Main tool panel */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <div className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 flex-shrink-0 bg-card/40 backdrop-blur-sm relative z-10">
+        <div className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 flex-shrink-0 bg-card/40 backdrop-blur-sm sticky top-0 z-20">
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onPointerDown={(e) => { e.stopPropagation(); setMobileDrawerOpen(true); }}
-              className="p-1.5 rounded-lg hover:bg-secondary transition cursor-pointer"
+              onClick={(e) => { e.stopPropagation(); setMobileDrawerOpen(true); }}
+              className="p-2 rounded-lg hover:bg-secondary transition cursor-pointer touch-manipulation"
+              style={{ minWidth: 44, minHeight: 44 }}
             >
               <Menu className="w-5 h-5" />
             </button>
             <button
               type="button"
-              onPointerDown={(e) => { e.stopPropagation(); setChatOpen(c => !c); }}
-              className="p-1.5 rounded-lg hover:bg-secondary transition cursor-pointer"
+              onClick={(e) => { e.stopPropagation(); setChatOpen(c => !c); }}
+              className="p-2 rounded-lg hover:bg-secondary transition cursor-pointer touch-manipulation"
+              style={{ minWidth: 44, minHeight: 44 }}
               title={chatOpen ? 'Close chat' : 'Open chat'}
             >
               <MessageCircle className="w-5 h-5" />
