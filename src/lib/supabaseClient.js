@@ -1,22 +1,68 @@
 import { createClient } from '@supabase/supabase-js';
+import { runtimeConfig, runtimeStatus } from '@/lib/runtimeConfig';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+let client = null;
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.warn('Supabase environment variables not configured');
+export function getSupabaseClient() {
+  if (runtimeStatus.supabase !== 'configured') return null;
+
+  if (!client) {
+    client = createClient(runtimeConfig.supabaseUrl, runtimeConfig.supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+      },
+    });
+  }
+
+  return client;
 }
 
-export const supabase = createClient(
-  SUPABASE_URL || '',
-  SUPABASE_ANON_KEY || ''
-);
+export const supabase = getSupabaseClient();
 
-// Auth helper
 export const supabaseAuth = {
-  signUp: (email, password) => supabase.auth.signUp({ email, password }),
-  signIn: (email, password) => supabase.auth.signInWithPassword({ email, password }),
-  signOut: () => supabase.auth.signOut(),
-  getSession: () => supabase.auth.getSession(),
-  onAuthStateChange: (callback) => supabase.auth.onAuthStateChange(callback),
+  signUp: (email, password) => {
+    const activeClient = getSupabaseClient();
+    if (!activeClient) return Promise.resolve({ data: null, error: new Error('Supabase is not configured') });
+    return activeClient.auth.signUp({ email, password });
+  },
+  signIn: (email, password) => {
+    const activeClient = getSupabaseClient();
+    if (!activeClient) return Promise.resolve({ data: null, error: new Error('Supabase is not configured') });
+    return activeClient.auth.signInWithPassword({ email, password });
+  },
+  signOut: () => {
+    const activeClient = getSupabaseClient();
+    if (!activeClient) return Promise.resolve({ error: null });
+    return activeClient.auth.signOut();
+  },
+  getSession: () => {
+    const activeClient = getSupabaseClient();
+    if (!activeClient) return Promise.resolve({ data: { session: null }, error: null });
+    return activeClient.auth.getSession();
+  },
+  onAuthStateChange: (callback) => {
+    const activeClient = getSupabaseClient();
+    if (!activeClient) {
+      return { data: { subscription: { unsubscribe: () => {} } } };
+    }
+    return activeClient.auth.onAuthStateChange(callback);
+  },
 };
+
+export async function safeSelect(table, fallback = []) {
+  const activeClient = getSupabaseClient();
+  if (!activeClient) return { data: fallback, error: null, mode: 'synthetic' };
+
+  try {
+    const { data, error } = await activeClient.from(table).select('*');
+    if (error) return { data: fallback, error, mode: 'fallback' };
+    return { data: data || fallback, error: null, mode: 'live' };
+  } catch (error) {
+    return { data: fallback, error, mode: 'fallback' };
+  }
+}
+
+export function getSupabaseMode() {
+  return runtimeStatus.supabase;
+}
