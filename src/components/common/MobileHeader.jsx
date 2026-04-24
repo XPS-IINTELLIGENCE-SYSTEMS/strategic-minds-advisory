@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 
-const ROUTES_WITH_BACK = ['/contact', '/services', '/about', '/portfolio', '/dashboard'];
+const ROUTES_WITH_BACK = ['/contact', '/services', '/about', '/portfolio'];
 
 export default function MobileHeader() {
   const { pathname } = useLocation();
