@@ -1,16 +1,18 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  MessageSquare, Zap, TrendingUp, BookOpen, Bot, 
-  Layout, TestTube, Home, ChevronRight, BarChart3, RefreshCw, PenTool,
-  Workflow, Video, Globe, Brain, Users, TrendingDown, Network, Send, Settings, Database, FileText, Mic, Activity
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  Zap, TrendingUp, BookOpen, BarChart3, PenTool,
+  Workflow, Globe, Brain, Users, Network, Settings, Database, FileText, Mic, Activity,
+  ChevronRight, Home, Lightbulb, Rocket
 } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
 
 const NAV_GROUPS = [
   {
-    label: 'Projects',
+    label: 'Guides',
     items: [
+      { id: 'auto-invention', icon: Lightbulb, label: 'Auto Invention', action: 'navigate', to: '/auto-invention' },
+      { id: 'elite-intelligence', icon: Rocket, label: 'Elite Intelligence', action: 'navigate', to: '/elite-intelligence' },
       { id: 'projects', icon: Network, label: 'Projects', action: 'navigate', to: '/projects' },
     ],
   },
@@ -47,13 +49,7 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'Development',
-    items: [
-      { id: 'schema-editor', icon: Database, label: 'Schema Editor' },
-    ],
-  },
-  {
-    label: 'Reporting & Insights',
+    label: 'Reporting',
     items: [
       { id: 'reports', icon: FileText, label: 'Executive Summary' },
       { id: 'financials', icon: TrendingUp, label: 'Financial Models' },
@@ -61,8 +57,9 @@ const NAV_GROUPS = [
     ],
   },
   {
-    label: 'Admin Tools',
+    label: 'Dev & Admin',
     items: [
+      { id: 'schema-editor', icon: Database, label: 'Schema Editor' },
       { id: 'audit', icon: Activity, label: 'System Audit' },
       { id: 'supabase', icon: Database, label: 'Supabase Status' },
     ],
@@ -76,6 +73,16 @@ const NAV_GROUPS = [
 ];
 
 export default function DashboardSidebar({ activeTool, setActiveTool }) {
+  const navigate = useNavigate();
+
+  const handleItemClick = (item) => {
+    if (item.action === 'navigate' && item.to) {
+      navigate(item.to);
+    } else {
+      setActiveTool(item.id);
+    }
+  };
+
   return (
     <div className="w-16 xl:w-56 flex-shrink-0 border-r border-border flex flex-col bg-card/50">
       {/* Logo */}
@@ -92,12 +99,13 @@ export default function DashboardSidebar({ activeTool, setActiveTool }) {
           <div key={group.label}>
             <div className="hidden xl:block text-[9px] uppercase tracking-[0.25em] text-muted-foreground/50 px-3 mb-1">{group.label}</div>
             <div className="space-y-0.5">
-              {group.items.map(({ id, icon: Icon, label }) => {
+              {group.items.map((item) => {
+                const { id, icon: Icon, label } = item;
                 const active = activeTool === id;
                 return (
                   <button
                     key={id}
-                    onClick={() => setActiveTool(id)}
+                    onClick={() => handleItemClick(item)}
                     className={`w-full h-10 flex items-center justify-center xl:justify-start gap-3 px-3 rounded-xl text-left transition-all active:scale-95 ${
                       active
                         ? 'bg-accent/15 text-accent'

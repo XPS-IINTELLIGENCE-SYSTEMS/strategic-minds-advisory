@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, MessageCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTabState } from '@/hooks/useTabState';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
@@ -168,14 +168,49 @@ export default function Dashboard() {
         <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
       </div>
 
-      {/* Chat panel - slide in/out */}
-      <motion.div
-        animate={{ width: chatOpen ? 384 : 0 }}
-        transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-        className="hidden xl:flex overflow-hidden border-r border-border flex-col bg-background"
-      >
-        <ChatPanel seed={chatSeed} onSeedConsumed={() => setChatSeed(null)} />
-      </motion.div>
+      {/* Chat panel - slide in/out on desktop */}
+      <AnimatePresence>
+        {chatOpen && (
+          <motion.div
+            key="chat-panel"
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 380, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+            className="hidden xl:flex overflow-hidden border-r border-border flex-col bg-background flex-shrink-0"
+            style={{ minWidth: 0 }}
+          >
+            <ChatPanel seed={chatSeed} onSeedConsumed={() => setChatSeed(null)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Chat panel - mobile fullscreen overlay */}
+      <AnimatePresence>
+        {chatOpen && (
+          <motion.div
+            key="chat-mobile"
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+            className="xl:hidden fixed inset-0 z-50 bg-background flex flex-col"
+          >
+            <div className="h-14 border-b border-border flex items-center justify-between px-4 flex-shrink-0">
+              <span className="font-display text-base">AI Chat</span>
+              <button
+                onClick={() => setChatOpen(false)}
+                className="p-1.5 rounded-lg hover:bg-secondary transition text-muted-foreground hover:text-foreground"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden">
+              <ChatPanel seed={chatSeed} onSeedConsumed={() => setChatSeed(null)} embedded />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main tool panel */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -190,7 +225,7 @@ export default function Dashboard() {
             </button>
             <button
               onClick={() => setChatOpen(!chatOpen)}
-              className="hidden xl:flex p-1.5 rounded-lg hover:bg-secondary transition"
+              className="p-1.5 rounded-lg hover:bg-secondary transition"
               title={chatOpen ? 'Close chat' : 'Open chat'}
             >
               <MessageCircle className="w-5 h-5" />
