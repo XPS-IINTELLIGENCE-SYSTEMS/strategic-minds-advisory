@@ -1,229 +1,213 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
-import { Mic, StopCircle, Loader2, CheckCircle2, Copy } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+import { base44 } from '@/api/base44Client';
+import { Loader2, Mic, Send } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function VoiceToStrategyModule() {
   const [recording, setRecording] = useState(false);
-  const [transcript, setTranscript] = useState('');
-  const [insights, setInsights] = useState(null);
   const [processing, setProcessing] = useState(false);
-  const mediaRecorder = useRef(null);
-  const audioChunks = useRef([]);
-  const [copied, setCopied] = useState(false);
+  const [recordingTitle, setRecordingTitle] = useState('');
+  const [result, setResult] = useState(null);
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const streamRef = useRef(null);
 
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorder.current = new MediaRecorder(stream);
-      audioChunks.current = [];
+      streamRef.current = stream;
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      chunksRef.current = [];
 
-      mediaRecorder.current.ondataavailable = e => audioChunks.current.push(e.data);
-      mediaRecorder.current.onstop = () => processAudio();
+      mediaRecorder.ondataavailable = (e) => {
+        chunksRef.current.push(e.data);
+      };
 
-      mediaRecorder.current.start();
+      mediaRecorder.start();
       setRecording(true);
+
+      // Auto-stop after 60 seconds
+      setTimeout(() => {
+        if (mediaRecorder.state === 'recording') {
+          stopRecording();
+        }
+      }, 60000);
     } catch (error) {
-      console.error('Recording failed:', error);
+      alert('Microphone access denied');
     }
   };
 
   const stopRecording = () => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.stop();
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
       setRecording(false);
     }
   };
 
-  const processAudio = async () => {
+  const submitRecording = async () => {
+    if (chunksRef.current.length === 0) return;
+
     setProcessing(true);
-    const audioBlob = new Blob(audioChunks.current, { type: 'audio/webm' });
-
     try {
-      // Upload audio to Supabase storage
-      const fileName = `audio-${Date.now()}.webm`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('voice-inputs')
-        .upload(fileName, audioBlob);
-      if (uploadError) throw uploadError;
+      const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+      const reader = new FileReader();
 
-      // Transcribe and extract insights
-      const { data: res, error: fnError } = await supabase.functions.invoke('voiceToInsight', {
-        audioUrl: uploadData.path,
-      });
-      if (fnError) throw fnError;
+      reader.onload = async () => {
+        const base64Audio = reader.result.split(',')[1];
 
-      setTranscript(res.transcript);
-      setInsights(res.insights);
+        const response = await base44.functions.invoke('voiceToStrategy', {
+          audioBase64: base64Audio,
+          recordingTitle,
+        });
 
-      // Log to intelligence feed
-      const { data: { user } } = await supabase.auth.getUser();
-      const { error: createError } = await supabase.from('strategic_intelligence').insert([{
-        user_email: user?.email,
-        title: res.insights?.category || 'Voice Note',
-        content: res.transcript,
-        source_type: 'voice_note',
-        sentiment: res.insights?.sentiment || 'neutral',
-        impact_score: res.insights?.impact || 50,
-        tags: res.insights?.tags?.join(',') || '',
-      }]);
-      if (createError) throw createError;
+        setResult({
+          transcription: response.data.transcription,
+          signals: response.data.competitive_signals,
+          modelsTestedCount: response.data.models_tested,
+        });
 
-      alert('✓ Insights logged to intelligence feed');
+        // Reset for next recording
+        chunksRef.current = [];
+        setRecordingTitle('');
+      };
+
+      reader.readAsDataURL(blob);
     } catch (error) {
-      console.error('Processing failed:', error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setProcessing(false);
     }
-
-    setProcessing(false);
-  };
-
-  const copyTranscript = () => {
-    navigator.clipboard.writeText(transcript);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="font-display text-2xl text-gradient-ivory">Voice to Strategy</h2>
-        <p className="text-sm text-muted-foreground mt-1">Capture insights from your voice</p>
-      </div>
-
-      {/* Recording Controls */}
-      <div className="p-6 rounded-2xl border border-border bg-card/50 text-center space-y-4">
-        {!recording ? (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={startRecording}
-            disabled={processing}
-            className={`mx-auto w-20 h-20 rounded-full border-4 flex items-center justify-center transition ${
-              processing
-                ? 'border-accent/50 bg-accent/10'
-                : 'border-accent bg-accent/20 hover:bg-accent/30'
-            }`}
-          >
-            <Mic className={`w-8 h-8 ${processing ? 'text-accent/50' : 'text-accent'}`} />
-          </motion.button>
-        ) : (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={stopRecording}
-            className="mx-auto w-20 h-20 rounded-full border-4 border-red-500 bg-red-500/20 flex items-center justify-center hover:bg-red-500/30 transition animate-pulse"
-          >
-            <StopCircle className="w-8 h-8 text-red-500" />
-          </motion.button>
-        )}
-
-        <div className="text-sm font-medium text-foreground">
-          {recording && <span className="text-red-400">Recording…</span>}
-          {processing && <span className="text-accent flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Processing…</span>}
-          {!recording && !processing && <span className="text-muted-foreground">Click to start recording</span>}
+    <div className="h-full flex flex-col gap-6 p-6 overflow-y-auto">
+      {/* Header */}
+      <div className="glass-card rounded-2xl p-6 border border-border">
+        <div className="flex items-center gap-3 mb-4">
+          <Mic className="w-5 h-5 text-accent" />
+          <div>
+            <h3 className="font-medium text-foreground">Voice-to-Strategy Intelligence</h3>
+            <p className="text-xs text-muted-foreground">Record 60-second insights to auto-generate intelligence & stress tests</p>
+          </div>
         </div>
       </div>
 
-      {/* Transcript */}
-      <AnimatePresence>
-        {transcript && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-5 rounded-2xl border border-border bg-card/50 space-y-3"
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium text-foreground">Transcript</h3>
-              <button
-                onClick={copyTranscript}
-                className="p-1.5 rounded-lg hover:bg-secondary transition"
+      {!result ? (
+        <div className="glass-card rounded-2xl p-8 border border-border">
+          <div className="space-y-4">
+            {/* Recording Title */}
+            <div>
+              <label className="text-xs font-bold text-accent mb-2 block">Recording Title (Optional)</label>
+              <input
+                type="text"
+                value={recordingTitle}
+                onChange={(e) => setRecordingTitle(e.target.value)}
+                placeholder="e.g., CompetitorA funding news..."
+                className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-accent transition"
+              />
+            </div>
+
+            {/* Recording Controls */}
+            <div className="flex gap-2">
+              {!recording ? (
+                <Button
+                  onClick={startRecording}
+                  className="flex-1 btn-ivory rounded-lg"
+                >
+                  <Mic className="w-4 h-4" />
+                  Start Recording
+                </Button>
+              ) : (
+                <Button
+                  onClick={stopRecording}
+                  className="flex-1 bg-destructive hover:bg-destructive/90 rounded-lg"
+                >
+                  ⏹ Stop Recording
+                </Button>
+              )}
+            </div>
+
+            {/* Timer */}
+            {recording && (
+              <div className="text-center">
+                <p className="text-sm font-medium text-accent">Recording... (Max 60 seconds)</p>
+                <div className="mt-2 h-1 bg-secondary/40 rounded-full overflow-hidden">
+                  <div className="h-full bg-accent animate-pulse" style={{ width: '100%' }} />
+                </div>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            {chunksRef.current.length > 0 && !recording && (
+              <Button
+                onClick={submitRecording}
+                disabled={processing}
+                className="w-full btn-ivory rounded-lg"
               >
-                {copied ? (
-                  <CheckCircle2 className="w-4 h-4 text-green-400" />
+                {processing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Processing...
+                  </>
                 ) : (
-                  <Copy className="w-4 h-4 text-muted-foreground" />
+                  <>
+                    <Send className="w-4 h-4" />
+                    Submit Recording
+                  </>
                 )}
-              </button>
-            </div>
-            <p className="text-xs text-foreground/80 leading-relaxed p-3 rounded-lg bg-secondary/30">
-              {transcript}
+              </Button>
+            )}
+
+            {/* Info */}
+            <p className="text-xs text-muted-foreground text-center">
+              💡 Tip: Speak clearly about competitive moves, market signals, or strategic insights
             </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {/* Transcription */}
+          <div className="glass-card rounded-2xl p-6 border border-border">
+            <h4 className="font-bold text-accent mb-3">Transcription</h4>
+            <p className="text-sm text-foreground/80 leading-relaxed">{result.transcription}</p>
+          </div>
 
-      {/* Insights */}
-      <AnimatePresence>
-        {insights && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-5 rounded-2xl border border-border bg-card/50 space-y-4"
-          >
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-green-400" />
-              <h3 className="text-sm font-medium text-foreground">Extracted Insights</h3>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: 'Category', value: insights.category },
-                { label: 'Sentiment', value: insights.sentiment?.toUpperCase() },
-                { label: 'Impact Score', value: `${insights.impact}/100` },
-                { label: 'Confidence', value: `${insights.confidence}%` },
-              ].map((item, i) => (
-                <div key={i} className="p-2 rounded-lg bg-secondary/30">
-                  <div className="text-[10px] text-muted-foreground mb-0.5">{item.label}</div>
-                  <div className="text-xs font-medium text-accent">{item.value}</div>
-                </div>
+          {/* Competitive Signals */}
+          <div className="glass-card rounded-2xl p-6 border border-border">
+            <h4 className="font-bold text-accent mb-3">Extracted Competitive Signals</h4>
+            <ul className="space-y-2">
+              {result.signals.map((signal, idx) => (
+                <li key={idx} className="text-sm text-foreground/80">
+                  ✓ {signal}
+                </li>
               ))}
-            </div>
+            </ul>
+          </div>
 
-            {insights.tags && insights.tags.length > 0 && (
-              <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2 font-medium">
-                  Tags
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {insights.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="px-2 py-1 rounded-full text-[10px] font-medium bg-accent/15 text-accent"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+          {/* Automation Status */}
+          <div className="glass-card rounded-2xl p-6 border border-border bg-green-500/10 border-green-500/20">
+            <p className="text-sm text-green-400 font-medium">
+              ✓ Intelligence Created & {result.modelsTestedCount} models stress-tested
+            </p>
+            <p className="text-xs text-green-400/70 mt-1">
+              Workflow Engine automatically triggered related scenarios
+            </p>
+          </div>
 
-            {insights.summary && (
-              <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2 font-medium">
-                  Summary
-                </div>
-                <p className="text-xs text-foreground/80 leading-relaxed">{insights.summary}</p>
-              </div>
-            )}
-
-            {insights.actionItems && insights.actionItems.length > 0 && (
-              <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2 font-medium">
-                  Suggested Actions
-                </div>
-                <ul className="space-y-1">
-                  {insights.actionItems.map((item, i) => (
-                    <li key={i} className="text-xs text-foreground/80 flex items-start gap-2">
-                      <span className="text-accent mt-0.5">→</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Reset */}
+          <Button
+            onClick={() => setResult(null)}
+            variant="outline"
+            className="w-full rounded-lg"
+          >
+            Record Another Insight
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,9 +6,6 @@ import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
 import MobileSidebarDrawer from '@/components/dashboard/MobileSidebarDrawer';
 import ChatPanel from '@/components/dashboard/EnhancedChatPanel';
 import AccountSettings from '@/components/dashboard/AccountSettings';
-import SystemAuditDashboard from '@/components/dashboard/SystemAuditDashboard';
-import SupabaseStatusDashboard from '@/components/dashboard/SupabaseStatusDashboard';
-import SchemaEditor from '@/components/dashboard/SchemaEditor';
 import VoiceInputButton from '@/components/mobile/VoiceInputButton';
 import SimulationTool from '@/components/dashboard/SimulationTool';
 import PredictionTool from '@/components/dashboard/PredictionTool';
@@ -38,10 +35,6 @@ import PredictiveModelingDashboard from '@/components/dashboard/PredictiveModeli
 import DeploymentPanel from '@/components/dashboard/DeploymentPanel';
 import PitchDeckGeneratorModule from '@/components/dashboard/PitchDeckGeneratorModule';
 import VoiceToStrategyModule from '@/components/dashboard/VoiceToStrategyModule';
-import CompetitiveAnalysisTool from '@/components/dashboard/CompetitiveAnalysisTool';
-import DataHealthDashboard from '@/components/dashboard/DataHealthDashboard';
-import ExecutiveSummaryModule from '@/components/dashboard/ExecutiveSummaryModule';
-import FinancialModelingDashboard from '@/components/dashboard/FinancialModelingDashboard';
 import CollaborativeWhiteboardModule from '@/components/dashboard/CollaborativeWhiteboardModule';
 import DailyDigestModule from '@/components/dashboard/DailyDigestModule';
 import PortfolioManagementModule from '@/components/dashboard/PortfolioManagementModule';
@@ -141,20 +134,12 @@ export default function Dashboard() {
       case 'scrape-simulate': return <SimulationWithScraping />;
       case 'prompt-library': return <PromptLibraryManager />;
       case 'account': return <AccountSettings />;
-      case 'schema-editor': return <SchemaEditor />;
-      case 'competitive-analysis': return <CompetitiveAnalysisTool />;
-      case 'data-health': return <DataHealthDashboard />;
-      case 'voice': return <VoiceToStrategyModule />;
-      case 'reports': return <ExecutiveSummaryModule />;
-      case 'financials': return <FinancialModelingDashboard />;
-      case 'audit': return <SystemAuditDashboard />;
-      case 'supabase': return <SupabaseStatusDashboard />;
       default: return <SimulationTool />;
     }
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden" style={{ paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
+    <div className="flex h-screen bg-background overflow-hidden">
       <VoiceInputButton />
       <MobileSidebarDrawer
         isOpen={mobileDrawerOpen}
@@ -231,9 +216,6 @@ export default function Dashboard() {
                activeTool === 'execution' ? 'Decision to Tasks Converter' :
                activeTool === 'playbook-gen' ? 'Strategy Playbooks' :
                activeTool === 'account' ? 'Account Settings' :
-               activeTool === 'reports' ? 'Executive Summary Report' :
-               activeTool === 'financials' ? 'Financial Modeling' :
-               activeTool === 'voice' ? 'Voice to Strategy Intelligence' :
                activeTool.charAt(0).toUpperCase() + activeTool.slice(1)}
             </h1>
             <span className="hidden md:block text-xs text-muted-foreground border border-border rounded-full px-2.5 py-1">
@@ -249,13 +231,11 @@ export default function Dashboard() {
         {/* Tool content */}
         <div 
           ref={contentScrollRef}
-          className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-secondary scrollbar-track-background" 
+          className="flex-1 overflow-y-auto overflow-x-hidden" 
           data-tool-content
           onScroll={handleScroll}
         >
-          <div className="px-4 md:px-6">
-            {renderTool()}
-          </div>
+          {renderTool()}
         </div>
       </div>
     </div>

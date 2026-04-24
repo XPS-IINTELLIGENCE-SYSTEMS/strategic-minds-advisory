@@ -1,171 +1,93 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, LogIn } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 export default function Hero({ bgImage }) {
   return (
-    <section style={{
-      position: 'relative',
-      minHeight: '92vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      overflow: 'hidden',
-    }}>
+    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden noise">
       {bgImage && (
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.5,
-        }} />
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-50"
+          style={{ backgroundImage: `url(${bgImage})` }}
+        />
       )}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: 'linear-gradient(180deg, rgba(21,15,10,0.4), rgba(21,15,10,0.6), rgb(21,15,10))',
-      }} />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background" />
+      <div className="absolute inset-0 ambient-glow pointer-events-none" />
 
-      <div style={{
-        position: 'relative',
-        maxWidth: '96rem',
-        margin: '0 auto',
-        padding: '0 1.5rem',
-        textAlign: 'center',
-        paddingTop: '112px',
-        paddingBottom: '112px',
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            padding: '0.5rem 1rem',
-            borderRadius: '9999px',
-            border: '1px solid rgba(212,175,55,0.2)',
-            background: 'rgba(212,175,55,0.1)',
-            backdropFilter: 'blur(8px)',
-          }}>
-            <Sparkles style={{ width: '14px', height: '14px', color: '#d4af37' }} />
-            <span style={{
-              fontSize: '12px',
-              textTransform: 'uppercase',
-              letterSpacing: '0.0625em',
-              color: '#9ca3af',
-            }}>
+      <div className="relative max-w-6xl mx-auto px-6 lg:px-10 text-center py-28">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border/80 bg-secondary/40 backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-accent" />
+            <span className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
               AI Consulting for Every Industry
             </span>
           </div>
-        </div>
+        </motion.div>
 
-        <h1 style={{
-          fontFamily: 'Fraunces, serif',
-          fontSize: 'clamp(48px, 12vw, 96px)',
-          lineHeight: 0.98,
-          marginTop: '2.5rem',
-          letterSpacing: '-0.01em',
-          marginBottom: '2rem',
-        }}>
-          <span style={{
-            background: 'linear-gradient(180deg, hsl(40 35% 96%) 0%, hsl(30 15% 62%) 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-          }}>
-            Intelligence
-          </span>
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="font-display text-[48px] md:text-[96px] leading-[0.98] mt-10 tracking-tight"
+        >
+          <span className="text-gradient-ivory">Intelligence</span>
           <br />
-          <span style={{
-            fontStyle: 'italic',
-            background: 'linear-gradient(120deg, hsl(40 35% 96%) 0%, hsl(36 55% 70%) 50%, hsl(30 15% 62%) 100%)',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-          }}>
-            that advises.
-          </span>
-        </h1>
+          <span className="italic text-gradient-accent">that advises.</span>
+        </motion.h1>
 
-        <p style={{
-          color: '#9ca3af',
-          fontSize: '1.125rem',
-          maxWidth: '42rem',
-          margin: '0 auto 3rem',
-          lineHeight: 1.5,
-        }}>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.25 }}
+          className="text-muted-foreground text-lg md:text-xl mt-8 max-w-2xl mx-auto leading-relaxed"
+        >
           Strategic Minds Advisory engineers AI strategy, predictive simulation, data intelligence,
           and human-centered systems for organizations shaping what's next.
-        </p>
+        </motion.p>
 
-        <div style={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: '1rem',
-          justifyContent: 'center',
-          marginTop: '3rem',
-          flexWrap: 'wrap',
-        }}>
-          <Link to="/contact" style={{
-            background: 'linear-gradient(180deg, hsl(40 30% 98%) 0%, hsl(35 15% 85%) 100%)',
-            color: '#150f0a',
-            borderRadius: '9999px',
-            padding: '0.875rem 1.75rem',
-            fontSize: '14px',
-            fontWeight: 500,
-            textDecoration: 'none',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            transition: 'opacity 0.2s',
-          }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex flex-col sm:flex-row gap-4 justify-center mt-12"
+        >
+          <Link
+            to="/contact"
+            className="btn-ivory rounded-full px-7 py-3.5 text-sm font-medium inline-flex items-center gap-2 hover:opacity-90 transition group"
+          >
             Begin Engagement
-            <ArrowRight style={{ width: '16px', height: '16px' }} />
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
-          <button onClick={() => window.location.href = '/dashboard'} style={{
-            borderRadius: '9999px',
-            padding: '0.875rem 1.75rem',
-            fontSize: '14px',
-            fontWeight: 500,
-            border: '1px solid rgba(212,175,55,0.5)',
-            background: 'rgba(212,175,55,0.1)',
-            color: '#d4af37',
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-          }}>
-            <LogIn style={{ width: '16px', height: '16px' }} />
-            Dashboard
+          <button
+            onClick={() => base44.auth.redirectToLogin()}
+            className="rounded-full px-7 py-3.5 text-sm font-medium border border-accent/50 bg-accent/10 text-accent hover:bg-accent/20 transition inline-flex items-center gap-2"
+          >
+            <LogIn className="w-4 h-4" />
+            Sign In
           </button>
-        </div>
+        </motion.div>
 
-        <div style={{
-          position: 'absolute',
-          bottom: '2.5rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}>
-          <div style={{
-            width: '26px',
-            height: '42px',
-            border: '1px solid #3d3229',
-            borderRadius: '9999px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            padding: '6px',
-          }}>
-            <div style={{
-              width: '4px',
-              height: '6px',
-              background: '#d4af37',
-              borderRadius: '9999px',
-            }} />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        >
+          <div className="w-[26px] h-[42px] border border-border rounded-full flex justify-center items-start p-1.5">
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-1 h-1.5 bg-accent rounded-full"
+            />
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

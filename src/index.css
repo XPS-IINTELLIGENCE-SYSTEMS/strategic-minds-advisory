@@ -4,41 +4,181 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force dark background on everything */
-html, body, body > div#root, body > * {
-  background-color: #150f0a !important;
-  color: #f5f1e8 !important;
+@layer base {
+  :root {
+    /* Light theme (fallback) */
+    --background: 30 10% 97%;
+    --foreground: 30 10% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 30 10% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 30 10% 10%;
+    --primary: 30 10% 10%;
+    --primary-foreground: 30 15% 96%;
+    --secondary: 30 10% 94%;
+    --secondary-foreground: 30 10% 10%;
+    --muted: 30 10% 94%;
+    --muted-foreground: 30 8% 40%;
+    --accent: 36 50% 60%;
+    --accent-foreground: 30 10% 10%;
+    --destructive: 0 74% 52%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 10% 88%;
+    --input: 30 10% 88%;
+    --ring: 36 50% 50%;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
+
+    --radius: 1rem;
+  }
+
+  /* Respect system dark mode preference */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      /* Dark-first editorial palette */
+      --background: 30 8% 5%;
+      --foreground: 40 25% 94%;
+      --card: 30 8% 8%;
+      --card-foreground: 40 25% 94%;
+      --popover: 30 8% 8%;
+      --popover-foreground: 40 25% 94%;
+      --primary: 40 30% 95%;
+      --primary-foreground: 30 10% 10%;
+      --secondary: 30 6% 12%;
+      --secondary-foreground: 40 25% 94%;
+      --muted: 30 6% 12%;
+      --muted-foreground: 30 10% 60%;
+      --accent: 36 55% 62%;
+      --accent-foreground: 30 10% 10%;
+      --destructive: 0 70% 50%;
+      --destructive-foreground: 0 0% 98%;
+      --border: 30 6% 15%;
+      --input: 30 6% 15%;
+      --ring: 36 55% 55%;
+    }
+  }
+
+  /* Explicit .dark class override for manual theme switching */
+  .dark {
+    --background: 30 8% 5%;
+    --foreground: 40 25% 94%;
+    --card: 30 8% 8%;
+    --card-foreground: 40 25% 94%;
+    --popover: 30 8% 8%;
+    --popover-foreground: 40 25% 94%;
+    --primary: 40 30% 95%;
+    --primary-foreground: 30 10% 10%;
+    --secondary: 30 6% 12%;
+    --secondary-foreground: 40 25% 94%;
+    --muted: 30 6% 12%;
+    --muted-foreground: 30 10% 60%;
+    --accent: 36 55% 62%;
+    --accent-foreground: 30 10% 10%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 6% 15%;
+    --input: 30 6% 15%;
+    --ring: 36 55% 55%;
+  }
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  h1, h2, h3, h4, h5, .font-display {
+    font-family: var(--font-display);
+    font-feature-settings: "ss01";
+    letter-spacing: -0.01em;
+  }
+  button, nav a, [role="button"] {
+    @apply select-none;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-  background: #150f0a !important;
-}
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-sans {
+    font-family: var(--font-sans);
+  }
 
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-feature-settings: "ss01", "cv11";
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overscroll-behavior-y: none;
-  background: #150f0a !important;
-  color: #f5f1e8 !important;
-}
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
 
-#root {
-  background: #150f0a !important;
-  color: #f5f1e8 !important;
-  width: 100%;
-  min-height: 100vh;
-}
+  /* Ambient radial glow behind hero sections */
+  .ambient-glow {
+    background:
+      radial-gradient(60% 50% at 20% 80%, hsla(36, 60%, 50%, 0.18) 0%, transparent 60%),
+      radial-gradient(50% 40% at 80% 10%, hsla(230, 60%, 50%, 0.15) 0%, transparent 65%),
+      radial-gradient(40% 40% at 50% 50%, hsla(30, 8%, 6%, 0) 0%, hsl(var(--background)) 80%);
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Fraunces', Georgia, serif;
-  letter-spacing: -0.01em;
+  .text-gradient-ivory {
+    background: linear-gradient(180deg, hsl(40 35% 96%) 0%, hsl(30 15% 62%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-accent {
+    background: linear-gradient(120deg, hsl(40 35% 96%) 0%, hsl(36 55% 70%) 50%, hsl(30 15% 62%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .hairline {
+    background: linear-gradient(90deg, transparent, hsl(var(--border)) 20%, hsl(var(--border)) 80%, transparent);
+    height: 1px;
+  }
+
+  .glass-card {
+    background: linear-gradient(180deg, hsla(30, 8%, 12%, 0.6) 0%, hsla(30, 8%, 7%, 0.6) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid hsl(var(--border));
+  }
+
+  .btn-ivory {
+    background: linear-gradient(180deg, hsl(40 30% 98%) 0%, hsl(35 15% 85%) 100%);
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 1px 0 hsla(40, 30%, 100%, 0.5) inset, 0 10px 40px -10px hsla(36, 60%, 50%, 0.25);
+  }
 }

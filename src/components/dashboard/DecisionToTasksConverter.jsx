@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/api/supabaseClient';
+import { base44 } from '@/api/base44Client';
 import { Loader2, Zap, CheckCircle2, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import MobileSelect from '@/components/common/MobileSelect';
-import SmartTaskAssignment from './SmartTaskAssignment';
 
 export default function DecisionToTasksConverter() {
   const [debates, setDebates] = useState([]);
@@ -25,10 +23,10 @@ export default function DecisionToTasksConverter() {
 
   const loadData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      const [{ data: allDebates }, { data: allMembers }] = await Promise.all([
-        supabase.from('debate_history').select('*').not('participants', 'is', null),
-        supabase.from('team_member').select('*'),
+      const user = await base44.auth.me();
+      const [allDebates, allMembers] = await Promise.all([
+        base44.entities.DebateHistory.filter({ participants: { $exists: true } }),
+        base44.entities.TeamMember.list(),
       ]);
 
       setDebates(allDebates.sort((a, b) => 
@@ -50,17 +48,14 @@ export default function DecisionToTasksConverter() {
 
     setGenerating(true);
     try {
-      const { data: response, error } = await supabase.functions.invoke('transformDecisionToTasks', {
-        body: {
-          debateId: debate.id,
-          ideaId: debate.idea_id,
-          decision: debate.decision_made,
-        },
+      const response = await base44.functions.invoke('transformDecisionToTasks', {
+        debateId: debate.id,
+        ideaId: debate.idea_id,
+        decision: debate.decision_made,
       });
-      if (error) throw error;
 
       setSelectedDebate(debate);
-      setTasks(response);
+      setTasks(response.data);
     } catch (error) {
       alert(`Error: ${error.message}`);
     } finally {
@@ -76,15 +71,12 @@ export default function DecisionToTasksConverter() {
 
     setSyncing(true);
     try {
-      const { data: response, error } = await supabase.functions.invoke('syncTasksToProjectManagement', {
-        body: {
-          decisionTaskId: tasks.decision_task_id,
-          pmTool: syncConfig.pmTool,
-          projectKey: syncConfig.projectKey,
-          assignedMembers: syncConfig.assignedMembers,
-        },
+      const response = await base44.functions.invoke('syncTasksToProjectManagement', {
+        decisionTaskId: tasks.decision_task_id,
+        pmTool: syncConfig.pmTool,
+        projectKey: syncConfig.projectKey,
+        assignedMembers: syncConfig.assignedMembers,
       });
-      if (error) throw error;
 
       alert(`✓ ${response.data.tasks_created} tasks synced to ${syncConfig.pmTool}`);
       setTasks(null);
@@ -194,28 +186,20 @@ export default function DecisionToTasksConverter() {
               ))}
             </div>
 
-            {/* Smart Task Assignment */}
-            {tasks && (
-              <div className="glass-card rounded-2xl p-4 border border-border flex-shrink-0">
-                <SmartTaskAssignment tasks={tasks.tasks} decisionId={tasks.decision_task_id} />
-              </div>
-            )}
-
             {/* Sync Configuration */}
             <div className="glass-card rounded-2xl p-4 border border-border space-y-3 flex-shrink-0">
               <h5 className="text-xs font-bold text-accent">Sync to Project Management</h5>
 
               {/* PM Tool Selection */}
-              <MobileSelect
+              <select
                 value={syncConfig.pmTool}
-                onChange={(value) => setSyncConfig(prev => ({ ...prev, pmTool: value }))}
-                options={[
-                  { value: 'linear', label: 'Linear' },
-                  { value: 'jira', label: 'Jira' },
-                  { value: 'asana', label: 'Asana' }
-                ]}
-                placeholder="Select tool"
-              />
+                onChange={(e) => setSyncConfig(prev => ({ ...prev, pmTool: e.target.value }))}
+                className="w-full bg-secondary/40 border border-border rounded-lg px-3 py-2 text-xs outline-none focus:border-accent transition"
+              >
+                <option value="linear">Linear</option>
+                <option value="jira">Jira</option>
+                <option value="asana">Asana</option>
+              </select>
 
               {/* Project Key */}
               <input

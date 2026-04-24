@@ -19,7 +19,6 @@ import MultiAgentStressTest from './MultiAgentStressTest';
 import RiskScenarioMap from './RiskScenarioMap';
 import NetworkVisualizationDashboard from './NetworkVisualizationDashboard';
 import CustomAgentSimulator from './CustomAgentSimulator';
-import AIPlaybookGenerator from '@/components/visioncortex/AIPlaybookGenerator';
 import { Brain, Rss, Lightbulb, ScrollText, MessageSquare, Globe, Terminal, StickyNote, BarChart3, Rocket, Cpu, CheckSquare, Library, Zap, TrendingDown } from 'lucide-react';
 
 const TABS = [
@@ -29,7 +28,6 @@ const TABS = [
   { id: 'intel-matrix', icon: Globe,          label: 'Intel Matrix' },
   { id: 'map',          icon: Globe,          label: 'Global Trends' },
   { id: 'board',        icon: Lightbulb,      label: 'Idea Board' },
-  { id: 'playbooks',    icon: Brain,          label: 'AI Playbooks' },
   { id: 'whiteboard',   icon: StickyNote,     label: 'Whiteboard' },
   { id: 'analytics',    icon: BarChart3,      label: 'Analytics' },
   { id: 'custom-stress',icon: Zap,            label: 'Custom Stress' },
@@ -159,14 +157,13 @@ export default function VisionCortexShell() {
       <div className="flex-1 overflow-hidden bg-gradient-to-b from-background/50 to-background">
         {/* Content wrapper with consistent padding */}
         <div className="h-full overflow-y-auto">
-          <div className="px-4 md:px-6 py-6 space-y-6 max-w-7xl mx-auto" style={{ paddingLeft: 'calc(1rem + env(safe-area-inset-left))', paddingRight: 'calc(1rem + env(safe-area-inset-right))' }}>
+          <div className="px-4 md:px-6 py-6 space-y-6 max-w-7xl mx-auto">
             {activeTab === 'autogen'      && <AutoGenerationMonitor />}
             {activeTab === 'feed'         && <VisionFeed />}
             {activeTab === 'library'      && <IntelligenceLibraryBrowser />}
             {activeTab === 'intel-matrix' && <IntelligenceMatrixDashboard />}
             {activeTab === 'map'          && <GlobalTrendsMap />}
             {activeTab === 'board'        && <VisionIdeaBoard onSelectIdea={(idea) => { setSelectedIdea(idea); setDetailIdea(idea); }} />}
-            {activeTab === 'playbooks'    && <AIPlaybookGenerator idea={selectedIdea} />}
             {activeTab === 'whiteboard'   && <IdeaWhiteboard />}
             {activeTab === 'analytics'    && <IdeaAnalytics />}
             {activeTab === 'custom-stress' && <CustomStressTestBuilder onTestStart={() => setActiveTab('debate-arena')} />}
