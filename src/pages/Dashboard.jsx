@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Menu, MessageCircle } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Menu, MessageCircle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTabState } from '@/hooks/useTabState';
 import DashboardSidebar from '@/components/dashboard/DashboardSidebar';
@@ -168,39 +168,22 @@ export default function Dashboard() {
         <DashboardSidebar activeTool={activeTool} setActiveTool={handleToolChange} />
       </div>
 
-      {/* Chat panel - slide in/out on desktop */}
+      {/* Chat panel - fullscreen overlay on all screens */}
       <AnimatePresence>
         {chatOpen && (
           <motion.div
-            key="chat-panel"
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 380, opacity: 1 }}
-            exit={{ width: 0, opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-            className="hidden xl:flex overflow-hidden border-r border-border flex-col bg-background flex-shrink-0"
-            style={{ minWidth: 0 }}
-          >
-            <ChatPanel seed={chatSeed} onSeedConsumed={() => setChatSeed(null)} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Chat panel - mobile fullscreen overlay */}
-      <AnimatePresence>
-        {chatOpen && (
-          <motion.div
-            key="chat-mobile"
+            key="chat-overlay"
             initial={{ opacity: 0, y: '100%' }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 120 }}
-            className="xl:hidden fixed inset-0 z-50 bg-background flex flex-col"
+            className="fixed inset-0 z-50 bg-background flex flex-col"
           >
             <div className="h-14 border-b border-border flex items-center justify-between px-4 flex-shrink-0">
               <span className="font-display text-base">AI Chat</span>
               <button
                 onClick={() => setChatOpen(false)}
-                className="p-1.5 rounded-lg hover:bg-secondary transition text-muted-foreground hover:text-foreground"
+                className="p-1.5 rounded-lg hover:bg-secondary transition text-muted-foreground hover:text-foreground text-lg"
               >
                 ✕
               </button>
@@ -215,17 +198,19 @@ export default function Dashboard() {
       {/* Main tool panel */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <div className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 flex-shrink-0 bg-card/40 backdrop-blur-sm">
+        <div className="h-14 border-b border-border flex items-center justify-between px-4 md:px-6 flex-shrink-0 bg-card/40 backdrop-blur-sm relative z-10">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setMobileDrawerOpen(true)}
-              className="p-1.5 rounded-lg hover:bg-secondary transition"
+              type="button"
+              onPointerDown={(e) => { e.stopPropagation(); setMobileDrawerOpen(true); }}
+              className="p-1.5 rounded-lg hover:bg-secondary transition cursor-pointer"
             >
               <Menu className="w-5 h-5" />
             </button>
             <button
-              onClick={() => setChatOpen(!chatOpen)}
-              className="p-1.5 rounded-lg hover:bg-secondary transition"
+              type="button"
+              onPointerDown={(e) => { e.stopPropagation(); setChatOpen(c => !c); }}
+              className="p-1.5 rounded-lg hover:bg-secondary transition cursor-pointer"
               title={chatOpen ? 'Close chat' : 'Open chat'}
             >
               <MessageCircle className="w-5 h-5" />
