@@ -29,11 +29,17 @@ jobs:
         with:
           version: latest
 
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
       - name: Validate required secrets
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN" || (echo "Missing SUPABASE_ACCESS_TOKEN" && exit 1)
           test -n "$SUPABASE_DB_PASSWORD" || (echo "Missing SUPABASE_DB_PASSWORD" && exit 1)
           test -n "$SUPABASE_PROJECT_ID" || (echo "Missing SUPABASE_PROJECT_ID" && exit 1)
+          echo "Required Supabase secret names are present. Values are masked by GitHub."
 
       - name: Link Supabase project
         env:
@@ -44,16 +50,82 @@ jobs:
           supabase link \
             --project-ref "$SUPABASE_PROJECT_ID" \
             --password "$SUPABASE_DB_PASSWORD" \
-            --no-prompt
+            --yes
 
       - name: Preview pending migrations
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-        run: supabase db push --dry-run --password "$SUPABASE_DB_PASSWORD"
+        run: supabase db push --dry-run
 
       - name: Push migrations
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-        run: supabase db push --yes --password "$SUPABASE_DB_PASSWORD"
+        run: supabase db push --yes
+
+      - name: Verify required tables exist
+        env:
+          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: |
+          REQUIRED_TABLES=(
+            paper_portfolio_snapshots
+            paper_trades
+            asset_price_checks
+            content_packages
+            source_links
+            platform_logs
+            ai_labs
+            ai_schedules
+            ai_schedule_runs
+            ai_runs
+            ai_source_receipts
+            ai_strategy_simulations
+            ai_interest_topics
+            ai_avatar_personas
+            ai_media_jobs
+            ai_approval_queue
+            ai_risk_flags
+            ai_system_state
+            ai_memory_snapshots
+            ai_decision_log
+            ai_blockers
+            ai_repo_registry
+            ai_agent_registry
+            ai_agent_runs
+            ai_tool_registry
+            ai_tool_evaluations
+            ai_discovery_runs
+            ai_trend_signals
+            ai_lab_lifecycle
+            ai_validation_checks
+            ai_notifications
+            ai_admin_reviews
+          )
+
+          MISSING=()
+          for table in "${REQUIRED_TABLES[@]}"; do
+            EXISTS=$(psql \
+              --host "db.${SUPABASE_PROJECT_ID}.supabase.co" \
+              --port 5432 \
+              --username postgres \
+              --dbname postgres \
+              --tuples-only \
+              --no-align \
+              --command "select exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = '$table');")
+            if [ "$EXISTS" = "t" ]; then
+              echo "OK $table"
+            else
+              echo "MISSING $table"
+              MISSING+=("$table")
+            fi
+          done
+
+          if [ "${#MISSING[@]}" -gt 0 ]; then
+            echo "ERROR: Missing required tables: ${MISSING[*]}"
+            echo "Check docs/SUPABASE_MIGRATION_ADMIN_RUNBOOK.md for repair steps."
+            exit 1
+          fi
+
+          echo "All ${#REQUIRED_TABLES[@]} required tables verified successfully."
