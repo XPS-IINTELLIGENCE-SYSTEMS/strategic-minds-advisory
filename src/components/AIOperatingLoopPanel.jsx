@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Bot, CalendarClock, CheckCircle2, Database, Film, ShieldAlert, Sparkles, Target } from 'lucide-react';
 import { loadAIOperatingLoopData } from '@/lib/aiOperatingLoopData';
 import AIMemoryPanel from '@/components/AIMemoryPanel';
+import AIAutonomyCommandPanel from '@/components/AIAutonomyCommandPanel';
 
 function MiniCard({ title, value, helper, icon: Icon }) {
   return (
@@ -152,6 +153,7 @@ export default function AIOperatingLoopPanel() {
       </section>
 
       <AIMemoryPanel />
+      <AIAutonomyCommandPanel />
     </>
   );
 }
