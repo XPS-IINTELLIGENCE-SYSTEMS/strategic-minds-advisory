@@ -17,12 +17,10 @@ import {
 import {
   Activity,
   AlertTriangle,
-  BookOpen,
   CalendarClock,
   CheckCircle2,
   Clock,
   ExternalLink,
-  Mail,
   PlayCircle,
   RefreshCw,
   Shield,
@@ -30,6 +28,7 @@ import {
   TrendingUp,
   Wallet,
 } from 'lucide-react';
+import AIOperatingLoopPanel from '@/components/AIOperatingLoopPanel';
 
 const COLORS = ['#22c55e', '#38bdf8', '#a78bfa', '#fb923c', '#f87171', '#2dd4bf', '#facc15', '#94a3b8'];
 
@@ -132,14 +131,14 @@ export default function AIInActionLabs() {
                 Watch AI use real data, simulated decisions, and transparent systems.
               </h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-                AI in Action Labs turns scheduled GPT workflows into an educational media platform. The first lab is a live-source, paper-only trading simulation that teaches risk control, decision quality, and content creation without representing simulated trades as real-money performance.
+                AI in Action Labs turns controlled automation into an educational media platform. The first lab is a live-source, paper-only trading simulation that teaches risk control, decision quality, and content creation without representing simulated trades as real-money performance.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="#paper-lab" className="inline-flex items-center gap-2 rounded-full bg-emerald-400 px-5 py-3 font-bold text-slate-950 transition hover:bg-emerald-300">
                   <PlayCircle className="h-5 w-5" /> View Paper Trading Lab
                 </a>
-                <a href="#content-engine" className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 font-bold text-white transition hover:bg-white/10">
-                  <CalendarClock className="h-5 w-5" /> View Content Engine
+                <a href="#ai-operating-loop" className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 font-bold text-white transition hover:bg-white/10">
+                  <CalendarClock className="h-5 w-5" /> View AI Operating Loop
                 </a>
               </div>
             </div>
@@ -147,7 +146,7 @@ export default function AIInActionLabs() {
               <div className="mb-4 flex items-center justify-between">
                 <div>
                   <p className="text-sm text-slate-400">Current mode</p>
-                  <p className="text-xl font-black text-white">Educational simulation</p>
+                  <p className="text-xl font-black text-white">Controlled simulation</p>
                 </div>
                 <span className="rounded-full bg-amber-400/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-200">Paper only</span>
               </div>
@@ -168,6 +167,8 @@ export default function AIInActionLabs() {
       </section>
 
       <main className="mx-auto max-w-7xl space-y-16 px-6 pb-24 md:px-10 lg:px-16">
+        <AIOperatingLoopPanel />
+
         <section id="paper-lab" className="space-y-6">
           <SectionTitle eyebrow="Lab 01" title="AI Paper Trading Lab">
             A $50,000 simulated account, exact-source live price checks, risk rules, and email-safe visual reports. No fake prices. No fake fills. No performance guarantees.
@@ -277,7 +278,7 @@ export default function AIInActionLabs() {
 
         <section id="content-engine">
           <SectionTitle eyebrow="Scheduled media engine" title="From GPT Tasks to social video platform">
-            The same scheduled reports become YouTube episodes, Shorts, Reels, newsletters, thumbnail prompts, and platform optimization briefs.
+            The same scheduled reports become YouTube episodes, Shorts, Reels, newsletters, thumbnail prompts, avatar scripts, and platform optimization briefs.
           </SectionTitle>
           <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]">
             <table className="w-full min-w-[760px] text-sm">
@@ -303,7 +304,7 @@ export default function AIInActionLabs() {
 
         <section>
           <SectionTitle eyebrow="Expansion roadmap" title="More AI-in-action labs">
-            The trading lab is the first proof loop. The broader platform can teach many high-interest skills by showing AI working in public with sources, simulations, and transparent decisions.
+            The trading lab is the first proof loop. The broader platform can teach high-interest skills by showing AI working with sources, simulations, and transparent decisions.
           </SectionTitle>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {labs.map((lab, index) => (
@@ -339,8 +340,8 @@ export default function AIInActionLabs() {
                 <p className="mt-1 text-2xl font-black text-white">${metrics.weeklyStop.toFixed(2)}</p>
               </div>
               <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 md:col-span-2">
-                <p className="text-sm text-slate-400">Next deployment step</p>
-                <p className="mt-1 text-xl font-black text-white">Connect Vercel, import this repository, and deploy the app.</p>
+                <p className="text-sm text-slate-400">Next control step</p>
+                <p className="mt-1 text-xl font-black text-white">Run the Supabase migration workflow so the operating-loop panel switches from fallback data to live tables.</p>
               </div>
             </div>
           </div>
@@ -352,8 +353,8 @@ export default function AIInActionLabs() {
               <div className="mb-3 inline-flex items-center gap-2 text-emerald-200">
                 <CheckCircle2 className="h-5 w-5" /> Source-of-truth files created in Drive
               </div>
-              <h2 className="text-3xl font-black text-white">AI in Action Labs is ready for Vercel deployment.</h2>
-              <p className="mt-2 max-w-3xl text-slate-300">The GitHub app page, Drive operating files, and GPT schedule layer are now aligned around the same platform concept.</p>
+              <h2 className="text-3xl font-black text-white">AI in Action Labs has a GitHub, Vercel, Supabase, Groq, Drive, and Gmail operating spine.</h2>
+              <p className="mt-2 max-w-3xl text-slate-300">The public dashboard now has a visible operating-loop panel that can read from Supabase once migrations are applied.</p>
             </div>
             <a href="https://docs.google.com/document/d/1BBMcNVri1OjBuWxupLeiR4JgwzV5GVu4CkBZWkHJuj4" target="_blank" rel="noreferrer" className="inline-flex shrink-0 items-center gap-2 rounded-full border border-emerald-300/30 px-5 py-3 font-bold text-emerald-100 hover:bg-emerald-300/10">
               Open Master OS <ExternalLink className="h-4 w-4" />
