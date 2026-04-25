@@ -39,7 +39,7 @@ export default async function handler(request, response) {
     whatAiDid: summary,
     howAiDidIt: 'Generated a scheduled educational operating summary using the server-side AI route and logged the result to Supabase when configured.',
     whyItMatters: 'This keeps the AI-in-action process visible even when no human is actively in chat.',
-    blocker: groq.error || scheduleRun.error || aiRun?.error || null,
+    blocker: groq.error || scheduleRun.error || null,
     nextAction: 'Review Supabase migration status and continue building source receipts, memory, discovery, and media pipelines.',
     riskLevel: 'low',
     evidence: [{ type: 'cron', route: '/api/cron/daily-summary', started_at: startedAt }],
