@@ -1,0 +1,108 @@
+name: AI Ops Command Dispatcher
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.ai-ops/commands/**.json'
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover'
+        required: true
+        default: 'run-health-check'
+      route:
+        description: 'Optional route for cron failover: platform-health, market-check, daily-summary, content-package, all'
+        required: false
+        default: 'platform-health'
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+jobs:
+  dispatch:
+    name: Dispatch allowlisted AI ops command
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Resolve command
+        id: resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          COMMAND="${{ github.event.inputs.command || '' }}"
+          ROUTE="${{ github.event.inputs.route || 'platform-health' }}"
+
+          if [ -z "$COMMAND" ]; then
+            FILE=$(git diff --name-only HEAD~1 HEAD -- '.ai-ops/commands/**.json' | tail -n 1 || true)
+            if [ -z "$FILE" ]; then
+              echo "No command file found."
+              exit 1
+            fi
+            echo "Reading command from $FILE"
+            COMMAND=$(jq -r '.command // empty' "$FILE")
+            ROUTE=$(jq -r '.route // "platform-health"' "$FILE")
+          fi
+
+          case "$COMMAND" in
+            run-supabase-migrations|run-health-check|run-cron-failover)
+              echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
+              echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
+              echo "Allowed command: $COMMAND"
+              ;;
+            *)
+              echo "Unsupported command: $COMMAND"
+              exit 1
+              ;;
+          esac
+
+      - name: Dispatch Supabase migrations
+        if: steps.resolve.outputs.command == 'run-supabase-migrations'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run supabase-migrations.yml --ref main
+
+      - name: Dispatch health check
+        if: steps.resolve.outputs.command == 'run-health-check'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ai-in-action-health-check.yml --ref main
+
+      - name: Dispatch cron failover
+        if: steps.resolve.outputs.command == 'run-cron-failover'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ai-in-action-cron-failover.yml --ref main -f route='${{ steps.resolve.outputs.route }}'
+
+      - name: Create audit issue comment as issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const command = '${{ steps.resolve.outputs.command }}';
+            const route = '${{ steps.resolve.outputs.route }}';
+            const status = '${{ job.status }}';
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `AI ops command dispatched: ${command || 'unknown'}`,
+              body: [
+                '# AI Ops Command Dispatch',
+                '',
+                `Command: ${command || 'unknown'}`,
+                `Route: ${route || 'not applicable'}`,
+                `Status: ${status}`,
+                `Commit: ${context.sha}`,
+                '',
+                'This issue is an audit record created by the command dispatcher. No secret values are included.'
+              ].join('\n'),
+              labels: ['ai-in-action', 'github-actions']
+            });
