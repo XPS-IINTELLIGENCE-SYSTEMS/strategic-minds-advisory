@@ -1,0 +1,59 @@
+name: AI in Action Cron Failover
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      route:
+        description: 'Cron route to run: platform-health, market-check, daily-summary, content-package, or all'
+        required: false
+        default: 'platform-health'
+
+permissions:
+  contents: read
+
+jobs:
+  trigger:
+    name: Trigger AI in Action cron endpoints
+    runs-on: ubuntu-latest
+    env:
+      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      ROUTE: ${{ github.event.inputs.route || 'platform-health' }}
+    steps:
+      - name: Validate base URL
+        run: |
+          test -n "$AI_IN_ACTION_BASE_URL" || (echo "Missing AI_IN_ACTION_BASE_URL secret" && exit 1)
+
+      - name: Trigger selected cron route
+        shell: bash
+        run: |
+          set -euo pipefail
+          trigger_route() {
+            local route="$1"
+            local url="$AI_IN_ACTION_BASE_URL/api/cron/$route"
+            echo "Triggering $url"
+            if [ -n "${CRON_SECRET:-}" ]; then
+              curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$url"
+            else
+              curl -fsS "$url"
+            fi
+            echo ""
+          }
+
+          case "$ROUTE" in
+            all)
+              trigger_route platform-health
+              trigger_route market-check
+              trigger_route daily-summary
+              trigger_route content-package
+              ;;
+            platform-health|market-check|daily-summary|content-package)
+              trigger_route "$ROUTE"
+              ;;
+            *)
+              echo "Unknown route: $ROUTE"
+              exit 1
+              ;;
+          esac
