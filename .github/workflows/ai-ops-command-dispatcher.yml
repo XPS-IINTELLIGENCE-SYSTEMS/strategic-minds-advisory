@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline, run-invention-autopilot'
+        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline, run-invention-autopilot, validate-skill-drill-coach'
         required: true
         default: 'run-health-check'
       route:
-        description: 'Optional route/mode/theme: cron route, next-pipeline mode, or invention theme'
+        description: 'Optional route/mode/theme'
         required: false
         default: 'platform-health'
 
@@ -74,6 +74,10 @@ jobs:
             run-invention-autopilot)
               WORKFLOW_FILE="ai-invention-autopilot.yml"
               WORKFLOW_NAME="AI Invention Autopilot"
+              ;;
+            validate-skill-drill-coach)
+              WORKFLOW_FILE="ai-skill-drill-coach-validate.yml"
+              WORKFLOW_NAME="AI Skill Drill Coach Validation"
               ;;
             *)
               echo "Unsupported command: $COMMAND"
