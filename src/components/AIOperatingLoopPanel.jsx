@@ -3,6 +3,7 @@ import { Bot, CalendarClock, CheckCircle2, Database, Film, ShieldAlert, Sparkles
 import { loadAIOperatingLoopData } from '@/lib/aiOperatingLoopData';
 import AIMemoryPanel from '@/components/AIMemoryPanel';
 import AIAutonomyCommandPanel from '@/components/AIAutonomyCommandPanel';
+import AIInventionFactoryPanel from '@/components/AIInventionFactoryPanel';
 
 function MiniCard({ title, value, helper, icon: Icon }) {
   return (
@@ -154,6 +155,7 @@ export default function AIOperatingLoopPanel() {
 
       <AIMemoryPanel />
       <AIAutonomyCommandPanel />
+      <AIInventionFactoryPanel />
     </>
   );
 }
