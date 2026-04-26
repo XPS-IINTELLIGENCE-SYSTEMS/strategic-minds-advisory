@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "system_name": "AI Habit Drill Coach",
+  "system_slug": "ai-habit-drill-coach",
+  "files": [
+    "api/sandbox/generated/ai-habit-drill-coach.js",
+    "supabase/migrations/20260426135520_ai-habit-drill-coach_seed.sql",
+    ".ai-ops/inventions/ai-habit-drill-coach.json"
+  ]
+}
