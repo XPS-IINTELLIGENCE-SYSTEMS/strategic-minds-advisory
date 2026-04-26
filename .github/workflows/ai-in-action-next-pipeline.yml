@@ -1,0 +1,118 @@
+name: AI in Action Next Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Pipeline mode: validate, full-safe, status-only'
+        required: false
+        default: 'full-safe'
+  schedule:
+    - cron: '23 */4 * * *'
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+jobs:
+  next-pipeline:
+    name: Run next safe AI in Action pipeline steps
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      MODE: ${{ github.event.inputs.mode || 'full-safe' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Confirm pipeline scope
+        run: |
+          echo "AI in Action next pipeline mode: $MODE"
+          echo "This workflow dispatches only allowlisted validation and cron-failover workflows."
+          echo "It does not publish publicly, merge PRs, expose secrets, or perform destructive operations."
+
+      - name: Dispatch health check
+        id: health
+        continue-on-error: true
+        run: |
+          gh workflow run ai-in-action-health-check.yml --ref main
+          echo "dispatched=true" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch platform-health cron failover
+        id: platform_health
+        if: env.MODE != 'status-only'
+        continue-on-error: true
+        run: |
+          gh workflow run ai-in-action-cron-failover.yml --ref main -f route=platform-health
+          echo "dispatched=true" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch market-check cron failover
+        id: market_check
+        if: env.MODE == 'full-safe'
+        continue-on-error: true
+        run: |
+          gh workflow run ai-in-action-cron-failover.yml --ref main -f route=market-check
+          echo "dispatched=true" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch daily-summary cron failover
+        id: daily_summary
+        if: env.MODE == 'full-safe'
+        continue-on-error: true
+        run: |
+          gh workflow run ai-in-action-cron-failover.yml --ref main -f route=daily-summary
+          echo "dispatched=true" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch content-package cron failover
+        id: content_package
+        if: env.MODE == 'full-safe'
+        continue-on-error: true
+        run: |
+          gh workflow run ai-in-action-cron-failover.yml --ref main -f route=content-package
+          echo "dispatched=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create pipeline visibility issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const mode = process.env.MODE || 'full-safe';
+            const body = [
+              '# AI in Action Next Pipeline Report',
+              '',
+              `Mode: ${mode}`,
+              `Commit: ${context.sha}`,
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## Dispatched steps',
+              '',
+              `- Health check: ${{ steps.health.outputs.dispatched || 'not-dispatched' }}`,
+              `- Platform health: ${{ steps.platform_health.outputs.dispatched || 'not-dispatched' }}`,
+              `- Market check: ${{ steps.market_check.outputs.dispatched || 'not-dispatched' }}`,
+              `- Daily summary: ${{ steps.daily_summary.outputs.dispatched || 'not-dispatched' }}`,
+              `- Content package: ${{ steps.content_package.outputs.dispatched || 'not-dispatched' }}`,
+              '',
+              '## Safety limits',
+              '',
+              '- No public publishing.',
+              '- No real-money trading.',
+              '- No secret exposure.',
+              '- No destructive database action.',
+              '- No auto-merge.',
+              '',
+              '## Next checks',
+              '',
+              '- Review generated health/cron visibility issues.',
+              '- Confirm Supabase writes in dashboard.',
+              '- Confirm `/ai-in-action` live data mode.',
+              '- Promote only true blockers to admin review.',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `AI in Action next pipeline ran: ${mode}`,
+              body,
+              labels: ['ai-in-action', 'github-actions', 'pipeline']
+            });
