@@ -1,0 +1,6 @@
+{
+  "command": "run-vercel-deploy-bridge",
+  "reason": "Deploy after adding selectRows helper and hardening /api/sandbox/skill-drill-coach to return fail-safe JSON.",
+  "requested_by": "ai-in-action",
+  "created_at": "2026-04-26T04:10:00Z"
+}
