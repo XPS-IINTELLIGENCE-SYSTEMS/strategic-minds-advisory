@@ -1,0 +1,6 @@
+{
+  "command": "validate-skill-drill-coach",
+  "reason": "Run dedicated Skill Drill Coach validation against the production proof domain after Vercel deploy bridge success.",
+  "requested_by": "ai-in-action",
+  "created_at": "2026-04-26T04:20:00Z"
+}
