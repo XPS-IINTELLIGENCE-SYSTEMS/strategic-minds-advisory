@@ -1,0 +1,21 @@
+{
+  "queue_json": {
+    "batch_name": "profit-os-dynamic-batch-proof",
+    "max_items": 2,
+    "deploy_after_batch": true,
+    "requests": [
+      {
+        "system_name": "AI Opportunity Radar",
+        "system_slug": "ai-opportunity-radar",
+        "description": "A sandbox radar that explains how AI scans trends, pain points, and low-cost build paths to identify useful money-making opportunities.",
+        "objective": "Prove the profit operating system can generate an opportunity-analysis invention through the shared dynamic generated route."
+      },
+      {
+        "system_name": "AI Content Blueprint Coach",
+        "system_slug": "ai-content-blueprint-coach",
+        "description": "A sandbox coach that turns a validated system into a short video hook, lesson outline, thumbnail idea, and blueprint offer.",
+        "objective": "Prove the profit operating system can generate content strategy inventions through the shared dynamic generated route."
+      }
+    ]
+  }
+}
