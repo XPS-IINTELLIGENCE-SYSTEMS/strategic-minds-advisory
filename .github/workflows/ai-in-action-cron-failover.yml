@@ -18,13 +18,15 @@ jobs:
     name: Trigger AI in Action cron endpoints
     runs-on: ubuntu-latest
     env:
-      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL }}
+      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app' }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
       ROUTE: ${{ github.event.inputs.route || 'platform-health' }}
     steps:
       - name: Validate base URL
         run: |
-          test -n "$AI_IN_ACTION_BASE_URL" || (echo "Missing AI_IN_ACTION_BASE_URL secret" && exit 1)
+          test -n "$AI_IN_ACTION_BASE_URL" || (echo "Missing AI_IN_ACTION_BASE_URL and no fallback proof URL available" && exit 1)
+          echo "Using proof URL: $AI_IN_ACTION_BASE_URL"
 
       - name: Trigger selected cron route
         shell: bash
@@ -33,11 +35,13 @@ jobs:
           trigger_route() {
             local route="$1"
             local url="$AI_IN_ACTION_BASE_URL/api/cron/$route"
+            local headers=()
             echo "Triggering $url"
+            if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then headers=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS}"); fi
             if [ -n "${CRON_SECRET:-}" ]; then
-              curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$url"
+              curl -fsS "${headers[@]}" -H "Authorization: Bearer $CRON_SECRET" "$url"
             else
-              curl -fsS "$url"
+              curl -fsS "${headers[@]}" "$url"
             fi
             echo ""
           }
