@@ -14,7 +14,7 @@ jobs:
     name: Validate AI Skill Drill Coach sandbox
     runs-on: ubuntu-latest
     env:
-      PROOF_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategicmindsadvisory.com' }}
+      PROOF_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app' }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
       VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
     steps:
@@ -98,7 +98,7 @@ jobs:
             };
             const status = '${{ job.status }}';
             const success = status === 'success';
-            const baseUrl = process.env.PROOF_BASE_URL || 'https://strategicmindsadvisory.com';
+            const baseUrl = process.env.PROOF_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app';
             const bypassUsed = process.env.VERCEL_PROTECTION_BYPASS ? 'yes' : 'no';
             const title = success
               ? 'AI Skill Drill Coach validation completed'
