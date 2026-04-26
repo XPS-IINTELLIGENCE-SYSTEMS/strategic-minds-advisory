@@ -1,0 +1,89 @@
+name: AI In Action Scheduled Worker
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  worker:
+    name: Process one AI In Action queue task
+    runs-on: ubuntu-latest
+    env:
+      AI_WORKER_NAME: ai-in-action-phase1-worker
+      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app' }}
+      VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      OPENAI_DAILY_BUDGET_USD: ${{ vars.OPENAI_DAILY_BUDGET_USD || '3' }}
+      OPENAI_MAX_CALLS_PER_DAY: ${{ vars.OPENAI_MAX_CALLS_PER_DAY || '50' }}
+      OPENAI_DEFAULT_MODEL: ${{ vars.OPENAI_DEFAULT_MODEL || 'gpt-5-nano' }}
+      OPENAI_ESCALATION_MODEL: ${{ vars.OPENAI_ESCALATION_MODEL || 'gpt-5-mini' }}
+      AI_WORKER_OUTPUT: .ai-ops/worker-last-output.json
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run deterministic queue worker
+        id: worker
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          node tools/ai-in-action-worker/run-worker.mjs | tee worker-output.log
+
+      - name: Persist worker output artifact in repo when changed
+        if: always()
+        run: |
+          set -euo pipefail
+          if [ -f .ai-ops/worker-last-output.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .ai-ops/worker-last-output.json
+            if git diff --cached --quiet; then
+              echo "No worker output change to commit."
+            else
+              git commit -m "Record latest AI In Action worker output"
+              git push
+            fi
+          fi
+
+      - name: Create worker visibility issue on blocker or failure
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let output = { ok: false, status: 'missing_output', error: 'Worker output file missing.' };
+            try {
+              output = JSON.parse(fs.readFileSync('.ai-ops/worker-last-output.json', 'utf8'));
+            } catch (error) {
+              output = { ok: false, status: 'output_parse_error', error: error.message };
+            }
+            const shouldIssue = !output.ok || ['blocked','failed','budget_exceeded','needs_approval'].includes(output.status || '');
+            if (!shouldIssue) return;
+            const body = [
+              '# AI In Action Scheduled Worker Report',
+              '',
+              `Status: ${output.status || 'unknown'}`,
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## Output',
+              '```json',
+              JSON.stringify(output, null, 2).slice(0, 6000),
+              '```',
+              '',
+              output.handoff_prompt ? '## GPT Plus handoff prompt\n\n```text\n' + output.handoff_prompt + '\n```' : '',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `AI In Action worker ${output.status || 'needs review'}`,
+              body,
+              labels: ['ai-in-action', 'scheduled-worker', shouldIssue ? 'needs-review' : 'proof']
+            });
