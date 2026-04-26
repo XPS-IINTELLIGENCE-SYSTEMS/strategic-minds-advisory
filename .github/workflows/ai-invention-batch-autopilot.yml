@@ -1,0 +1,141 @@
+name: AI Invention Batch Autopilot
+
+on:
+  workflow_dispatch:
+    inputs:
+      queue_json:
+        description: 'Queue JSON with batch_name, max_items, deploy_after_batch, requests[]'
+        required: true
+        default: '{"batch_name":"starter-batch","max_items":2,"deploy_after_batch":true,"requests":[{"system_name":"AI Focus Sprint Coach","system_slug":"ai-focus-sprint-coach","description":"A sandbox coach for planning one focused work sprint.","objective":"Prove batch autopilot can generate and validate a sandbox route."}]}'
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+jobs:
+  batch:
+    name: Generate deploy and validate batch
+    runs-on: ubuntu-latest
+    env:
+      PROOF_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app' }}
+      VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+
+      - name: Write queue JSON
+        run: |
+          set -euo pipefail
+          mkdir -p .ai-ops/invention-queue
+          cat > .ai-ops/invention-queue/current-batch.json <<'JSON'
+          ${{ github.event.inputs.queue_json }}
+          JSON
+          node -e "JSON.parse(require('fs').readFileSync('.ai-ops/invention-queue/current-batch.json','utf8')); console.log('queue json valid')"
+
+      - name: Run batch generator
+        run: |
+          set -euo pipefail
+          node tools/invention-factory/run-batch-lite.mjs .ai-ops/invention-queue/current-batch.json | tee batch-output.json
+
+      - name: Commit generated batch files
+        id: commit
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add api/sandbox/generated supabase/migrations .ai-ops/inventions .ai-ops/invention-requests .ai-ops/invention-factory-last-output.json .ai-ops/invention-factory-last-batch-output.json
+          if git diff --cached --quiet; then
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            echo "No batch changes to commit."
+          else
+            BATCH=$(node -e "console.log(require('./batch-output.json').batch_name || 'batch')")
+            git commit -m "Generate sandbox invention batch: $BATCH"
+            git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy once after batch
+        if: ${{ fromJSON(github.event.inputs.queue_json).deploy_after_batch != false }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          BEFORE=$(gh run list --workflow vercel-production-deploy.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId // ""' || true)
+          gh workflow run vercel-production-deploy.yml --ref main
+          STATUS="unknown"
+          CONCLUSION="unknown"
+          RUN_URL=""
+          for i in $(seq 1 72); do
+            LATEST=$(gh run list --workflow vercel-production-deploy.yml --branch main --limit 5 --json databaseId,url,status,conclusion --jq '.[0]')
+            ID=$(echo "$LATEST" | jq -r '.databaseId // empty')
+            RUN_URL=$(echo "$LATEST" | jq -r '.url // empty')
+            STATUS=$(echo "$LATEST" | jq -r '.status // "unknown"')
+            CONCLUSION=$(echo "$LATEST" | jq -r '.conclusion // ""')
+            if [ -n "$ID" ] && [ "$ID" != "$BEFORE" ]; then
+              echo "Deploy bridge status: $STATUS conclusion: ${CONCLUSION:-pending}"
+              if [ "$STATUS" = "completed" ]; then break; fi
+            else
+              echo "Waiting for deploy bridge to appear... attempt $i"
+            fi
+            sleep 10
+          done
+          echo "Deploy bridge run: ${RUN_URL:-unavailable}"
+          if [ "$STATUS" != "completed" ] || [ "$CONCLUSION" != "success" ]; then
+            echo "Deploy bridge did not complete successfully."
+            exit 1
+          fi
+
+      - name: Validate generated routes
+        run: |
+          set -euo pipefail
+          mkdir -p .ai-ops/validation
+          node -e "const o=require('./batch-output.json'); for (const g of o.generated) console.log(g.system_slug)" > slugs.txt
+          CURL_HEADERS=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then CURL_HEADERS=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS}"); fi
+          while read -r SLUG; do
+            test -n "$SLUG" || continue
+            echo "Validating $SLUG"
+            curl -fsS "${CURL_HEADERS[@]}" "$PROOF_BASE_URL/api/sandbox/generated/$SLUG" | tee ".ai-ops/validation/$SLUG-get.json"
+            grep -q "\"system_slug\":\"$SLUG\"" ".ai-ops/validation/$SLUG-get.json"
+            curl -fsS -X POST "${CURL_HEADERS[@]}" "$PROOF_BASE_URL/api/sandbox/generated/$SLUG" | tee ".ai-ops/validation/$SLUG-post.json"
+            grep -q '"report"' ".ai-ops/validation/$SLUG-post.json"
+          done < slugs.txt
+
+      - name: Create batch proof issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const status = '${{ job.status }}';
+            const readJson = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
+            const batch = fs.existsSync('batch-output.json') ? readJson('batch-output.json') : { batch_name: 'unknown', generated: [] };
+            const success = status === 'success';
+            const lines = [
+              '# AI Invention Batch Autopilot Report',
+              '',
+              `Batch: ${batch.batch_name || 'unknown'}`,
+              `Status: ${status}`,
+              `Generated count: ${(batch.generated || []).length}`,
+              `Committed changes: ${{ steps.commit.outputs.committed }}`,
+              `Proof base URL: ${process.env.PROOF_BASE_URL}`,
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## Generated systems',
+              ''
+            ];
+            for (const item of batch.generated || []) {
+              lines.push(`- ${item.system_name} (${item.system_slug})`);
+              for (const file of item.files || []) lines.push(`  - \`${file}\``);
+            }
+            lines.push('', '## Safety gates', '', '- Sandbox-only until promoted.', '- No public publishing without approval.', '- No paid API activation without approval.', '- No real-money trading.', '- No secret values in code, logs, issues, or frontend.', '', '## Next action', '', success ? 'Batch generated, deployed, and validated. Ready for next bounded batch or dashboard surfacing.' : 'Review the workflow logs. Batch stopped on a blocker or safety gate.', '', 'No secret values are included.');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: success ? `Batch autopilot completed: ${batch.batch_name || 'unknown'}` : `Batch autopilot needs review: ${batch.batch_name || 'unknown'}`,
+              body: lines.join('\n'),
+              labels: success ? ['ai-in-action','invention-factory','batch-autopilot','validated'] : ['ai-in-action','invention-factory','batch-autopilot','needs-review']
+            });
