@@ -1,0 +1,6 @@
+{
+  "command": "run-supabase-migrations",
+  "reason": "Apply AI In Action Phase 1 autonomy schema and seed records before scheduled worker runs.",
+  "requested_by": "ai-in-action-phase1-worker",
+  "created_at": "2026-04-26T23:10:00Z"
+}
