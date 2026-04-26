@@ -101,7 +101,7 @@ jobs:
               '## Next action',
               '',
               deploy
-                ? 'Deploy bridge requested. Validate the generated API after deployment.'
+                ? 'Deploy bridge requested directly by workflow dispatch. Validate the generated API after deployment.'
                 : 'Deploy bridge was not requested. Run deployment before validation.',
               '',
               'No secret values are included.'
@@ -114,20 +114,39 @@ jobs:
               labels: ['ai-in-action', 'invention-factory', 'generated', 'sandbox']
             });
 
-      - name: Trigger deploy bridge command
+      - name: Dispatch deploy bridge directly
         if: github.event.inputs.deploy_after_generate == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          TS=$(date -u +%Y%m%dT%H%M%SZ)
-          mkdir -p .ai-ops/commands
-          cat > ".ai-ops/commands/run-vercel-deploy-bridge-generated-${{ steps.meta.outputs.slug }}-$TS.json" <<JSON
-          {
-            "command": "run-vercel-deploy-bridge",
-            "reason": "Deploy generated sandbox invention ${{ steps.meta.outputs.slug }}.",
-            "requested_by": "ai-invention-generator",
-            "created_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          }
-          JSON
-          git add .ai-ops/commands
-          git commit -m "Command deploy bridge for generated invention: ${{ steps.meta.outputs.slug }}"
-          git push
+          BEFORE=$(gh run list --workflow vercel-production-deploy.yml --branch main --limit 1 --json databaseId --jq '.[0].databaseId // ""' || true)
+          echo "Previous deploy run: ${BEFORE:-none}"
+          gh workflow run vercel-production-deploy.yml --ref main
+          RUN_ID=""
+          RUN_URL=""
+          STATUS="unknown"
+          CONCLUSION="unknown"
+          for i in $(seq 1 60); do
+            LATEST=$(gh run list --workflow vercel-production-deploy.yml --branch main --limit 5 --json databaseId,url,status,conclusion --jq '.[0]')
+            ID=$(echo "$LATEST" | jq -r '.databaseId // empty')
+            URL=$(echo "$LATEST" | jq -r '.url // empty')
+            STATUS=$(echo "$LATEST" | jq -r '.status // "unknown"')
+            CONCLUSION=$(echo "$LATEST" | jq -r '.conclusion // ""')
+            if [ -n "$ID" ] && [ "$ID" != "$BEFORE" ]; then
+              RUN_ID="$ID"
+              RUN_URL="$URL"
+              echo "Deploy bridge status: $STATUS conclusion: ${CONCLUSION:-pending}"
+              if [ "$STATUS" = "completed" ]; then
+                break
+              fi
+            else
+              echo "Waiting for deploy bridge workflow to appear... attempt $i"
+            fi
+            sleep 10
+          done
+          echo "Deploy bridge run: ${RUN_URL:-unavailable}"
+          if [ "$STATUS" != "completed" ] || [ "$CONCLUSION" != "success" ]; then
+            echo "Deploy bridge did not complete successfully within the generator wait window."
+            exit 1
+          fi
