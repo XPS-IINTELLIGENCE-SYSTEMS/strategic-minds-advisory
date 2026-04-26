@@ -53,10 +53,17 @@ jobs:
           fi
 
           case "$COMMAND" in
-            run-supabase-migrations|run-health-check|run-cron-failover)
-              echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
-              echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
-              echo "Allowed command: $COMMAND"
+            run-supabase-migrations)
+              WORKFLOW_FILE="supabase-migrations.yml"
+              WORKFLOW_NAME="Supabase Database Migrations"
+              ;;
+            run-health-check)
+              WORKFLOW_FILE="ai-in-action-health-check.yml"
+              WORKFLOW_NAME="AI in Action Health Check"
+              ;;
+            run-cron-failover)
+              WORKFLOW_FILE="ai-in-action-cron-failover.yml"
+              WORKFLOW_NAME="AI in Action Cron Failover"
               ;;
             *)
               echo "Unsupported command: $COMMAND"
@@ -64,45 +71,157 @@ jobs:
               ;;
           esac
 
-      - name: Dispatch Supabase migrations
-        if: steps.resolve.outputs.command == 'run-supabase-migrations'
+          echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
+          echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
+          echo "workflow_file=$WORKFLOW_FILE" >> "$GITHUB_OUTPUT"
+          echo "workflow_name=$WORKFLOW_NAME" >> "$GITHUB_OUTPUT"
+          echo "Allowed command: $COMMAND"
+          echo "Target workflow: $WORKFLOW_FILE"
+
+      - name: Dispatch target workflow
+        id: dispatch
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run supabase-migrations.yml --ref main
+          WORKFLOW_FILE: ${{ steps.resolve.outputs.workflow_file }}
+          COMMAND: ${{ steps.resolve.outputs.command }}
+          ROUTE: ${{ steps.resolve.outputs.route }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          BEFORE=$(gh run list --workflow "$WORKFLOW_FILE" --branch main --limit 1 --json databaseId --jq '.[0].databaseId // ""' || true)
+          echo "Previous latest run id: ${BEFORE:-none}"
 
-      - name: Dispatch health check
-        if: steps.resolve.outputs.command == 'run-health-check'
+          if [ "$COMMAND" = "run-cron-failover" ]; then
+            gh workflow run "$WORKFLOW_FILE" --ref main -f route="$ROUTE"
+          else
+            gh workflow run "$WORKFLOW_FILE" --ref main
+          fi
+
+          echo "before=$BEFORE" >> "$GITHUB_OUTPUT"
+          echo "Dispatched $WORKFLOW_FILE"
+
+      - name: Wait for target workflow to appear
+        id: target
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ai-in-action-health-check.yml --ref main
+          WORKFLOW_FILE: ${{ steps.resolve.outputs.workflow_file }}
+          BEFORE: ${{ steps.dispatch.outputs.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID=""
+          RUN_URL=""
+          for i in $(seq 1 24); do
+            LATEST=$(gh run list --workflow "$WORKFLOW_FILE" --branch main --limit 5 --json databaseId,url,status,conclusion,createdAt --jq '.[0]')
+            ID=$(echo "$LATEST" | jq -r '.databaseId // empty')
+            URL=$(echo "$LATEST" | jq -r '.url // empty')
+            if [ -n "$ID" ] && [ "$ID" != "$BEFORE" ]; then
+              RUN_ID="$ID"
+              RUN_URL="$URL"
+              break
+            fi
+            echo "Waiting for target workflow run to appear... attempt $i"
+            sleep 5
+          done
 
-      - name: Dispatch cron failover
-        if: steps.resolve.outputs.command == 'run-cron-failover'
+          if [ -z "$RUN_ID" ]; then
+            echo "target_found=false" >> "$GITHUB_OUTPUT"
+            echo "run_id=" >> "$GITHUB_OUTPUT"
+            echo "run_url=" >> "$GITHUB_OUTPUT"
+            echo "Target workflow run did not appear within polling window."
+            exit 0
+          fi
+
+          echo "target_found=true" >> "$GITHUB_OUTPUT"
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "run_url=$RUN_URL" >> "$GITHUB_OUTPUT"
+          echo "Target run id: $RUN_ID"
+          echo "Target run url: $RUN_URL"
+
+      - name: Wait for target workflow completion
+        id: result
+        if: steps.target.outputs.target_found == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ai-in-action-cron-failover.yml --ref main -f route='${{ steps.resolve.outputs.route }}'
+          RUN_ID: ${{ steps.target.outputs.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          STATUS="unknown"
+          CONCLUSION="unknown"
+          JOB_SUMMARY=""
+          for i in $(seq 1 60); do
+            DATA=$(gh run view "$RUN_ID" --json status,conclusion,url,jobs)
+            STATUS=$(echo "$DATA" | jq -r '.status // "unknown"')
+            CONCLUSION=$(echo "$DATA" | jq -r '.conclusion // ""')
+            echo "Target run status: $STATUS conclusion: ${CONCLUSION:-pending}"
+            if [ "$STATUS" = "completed" ]; then
+              JOB_SUMMARY=$(echo "$DATA" | jq -r '.jobs[]? | "- " + .name + ": " + (.conclusion // .status // "unknown")' | head -n 20)
+              break
+            fi
+            sleep 10
+          done
 
-      - name: Create audit issue comment as issue
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "conclusion=${CONCLUSION:-pending}" >> "$GITHUB_OUTPUT"
+          {
+            echo 'job_summary<<EOF'
+            echo "$JOB_SUMMARY"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create visibility audit issue
         if: always()
         uses: actions/github-script@v7
         with:
           script: |
             const command = '${{ steps.resolve.outputs.command }}';
             const route = '${{ steps.resolve.outputs.route }}';
-            const status = '${{ job.status }}';
+            const workflowFile = '${{ steps.resolve.outputs.workflow_file }}';
+            const workflowName = '${{ steps.resolve.outputs.workflow_name }}';
+            const dispatcherStatus = '${{ job.status }}';
+            const targetFound = '${{ steps.target.outputs.target_found }}';
+            const runId = '${{ steps.target.outputs.run_id }}';
+            const runUrl = '${{ steps.target.outputs.run_url }}';
+            const targetStatus = '${{ steps.result.outputs.status }}';
+            const targetConclusion = '${{ steps.result.outputs.conclusion }}';
+            const jobSummary = `${{ steps.result.outputs.job_summary }}`;
+            const needsAdmin = targetFound !== 'true' || (targetConclusion && !['success', ''].includes(targetConclusion));
+            const title = needsAdmin
+              ? `AI ops visibility: ${command || 'unknown'} needs review`
+              : `AI ops visibility: ${command || 'unknown'} completed`;
+            const body = [
+              '# AI Ops Visibility Report',
+              '',
+              `Command: ${command || 'unknown'}`,
+              `Route: ${route || 'not applicable'}`,
+              `Target workflow: ${workflowName || workflowFile}`,
+              `Workflow file: ${workflowFile}`,
+              `Dispatcher status: ${dispatcherStatus}`,
+              `Target run found: ${targetFound || 'unknown'}`,
+              `Target run id: ${runId || 'unavailable'}`,
+              `Target status: ${targetStatus || 'unavailable'}`,
+              `Target conclusion: ${targetConclusion || 'unavailable'}`,
+              runUrl ? `Target run URL: ${runUrl}` : 'Target run URL: unavailable',
+              '',
+              '## Job summary',
+              '',
+              jobSummary || 'No job summary available from GitHub CLI.',
+              '',
+              '## Next action',
+              '',
+              needsAdmin
+                ? 'Review the target workflow run URL or provide the latest failed step log. No secret values are included in this report.'
+                : 'No admin action required unless downstream validation finds missing tables or runtime config.',
+              '',
+              `Dispatcher commit: ${context.sha}`,
+              '',
+              'No secret values were included in this issue.'
+            ].join('\n');
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `AI ops command dispatched: ${command || 'unknown'}`,
-              body: [
-                '# AI Ops Command Dispatch',
-                '',
-                `Command: ${command || 'unknown'}`,
-                `Route: ${route || 'not applicable'}`,
-                `Status: ${status}`,
-                `Commit: ${context.sha}`,
-                '',
-                'This issue is an audit record created by the command dispatcher. No secret values are included.'
-              ].join('\n'),
-              labels: ['ai-in-action', 'github-actions']
+              title,
+              body,
+              labels: needsAdmin ? ['ai-in-action', 'github-actions', 'needs-validation', 'human-input-needed'] : ['ai-in-action', 'github-actions']
             });
