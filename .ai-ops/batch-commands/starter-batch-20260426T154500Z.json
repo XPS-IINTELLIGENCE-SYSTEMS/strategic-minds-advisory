@@ -1,0 +1,34 @@
+{
+  "queue_json": {
+    "batch_name": "starter-batch-autopilot-proof",
+    "max_items": 2,
+    "deploy_after_batch": true,
+    "requests": [
+      {
+        "system_name": "AI Focus Sprint Coach",
+        "system_slug": "ai-focus-sprint-coach",
+        "description": "A sandbox coach that helps a user plan one focused work sprint with a clear goal, timer discipline, and completion checklist.",
+        "objective": "Prove batch autopilot can generate, deploy, and validate the first generated sandbox route in a batch.",
+        "safety": [
+          "Sandbox-only until promoted.",
+          "No public publishing without approval.",
+          "No paid API activation without approval.",
+          "No secret values in code, issues, logs, or frontend."
+        ]
+      },
+      {
+        "system_name": "AI Meeting Prep Coach",
+        "system_slug": "ai-meeting-prep-coach",
+        "description": "A sandbox coach that helps a user prepare for a meeting by clarifying purpose, agenda, questions, and follow-up actions.",
+        "objective": "Prove batch autopilot can generate, deploy, and validate a second generated sandbox route in the same batch.",
+        "safety": [
+          "Sandbox-only until promoted.",
+          "No public publishing without approval.",
+          "No paid API activation without approval.",
+          "No confidential meeting details stored in generated public proof.",
+          "No secret values in code, issues, logs, or frontend."
+        ]
+      }
+    ]
+  }
+}
