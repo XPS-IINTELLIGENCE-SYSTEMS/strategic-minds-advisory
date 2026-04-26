@@ -2,13 +2,13 @@
   "system_name": "AI Habit Drill Coach",
   "system_slug": "ai-habit-drill-coach",
   "target_mode": "sandbox",
-  "generated_at": "2026-04-26T13:55:20.349Z",
+  "generated_at": "2026-04-26T14:07:30.261Z",
   "files": {
     "api": "api/sandbox/generated/ai-habit-drill-coach.js",
-    "migration": "supabase/migrations/20260426135520_ai-habit-drill-coach_seed.sql",
+    "migration": "supabase/migrations/20260426140730_ai-habit-drill-coach_seed.sql",
     "manifest": ".ai-ops/inventions/ai-habit-drill-coach.json"
   },
-  "objective": "Prove the AI Invention Factory Generator can create a second sandbox invention package, deploy it, and validate the generated API route.",
+  "objective": "Prove the AI Invention Factory Generator can create a second sandbox invention package, deploy it, and validate the generated API route after direct deploy dispatch hardening.",
   "description": "A safe generated sandbox coach that teaches users how to build one repeatable daily skill habit with a tiny practice loop, checklist, and validation route.",
   "safety": [
     "Sandbox-only until promoted.",

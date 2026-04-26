@@ -3,7 +3,7 @@ const system = {
   "system_slug": "ai-habit-drill-coach",
   "target_mode": "sandbox",
   "status": "generated",
-  "objective": "Prove the AI Invention Factory Generator can create a second sandbox invention package, deploy it, and validate the generated API route.",
+  "objective": "Prove the AI Invention Factory Generator can create a second sandbox invention package, deploy it, and validate the generated API route after direct deploy dispatch hardening.",
   "description": "A safe generated sandbox coach that teaches users how to build one repeatable daily skill habit with a tiny practice loop, checklist, and validation route.",
   "safety": [
     "Sandbox-only until promoted.",
