@@ -14,12 +14,13 @@ jobs:
     name: Check deployed AI in Action runtime
     runs-on: ubuntu-latest
     env:
-      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL }}
+      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategicmindsadvisory.com' }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
     steps:
-      - name: Validate configuration
+      - name: Resolve proof URL
         run: |
-          test -n "$AI_IN_ACTION_BASE_URL" || (echo "Missing AI_IN_ACTION_BASE_URL secret" && exit 1)
+          test -n "$AI_IN_ACTION_BASE_URL" || (echo "Missing AI_IN_ACTION_BASE_URL and no default proof URL was available" && exit 1)
+          echo "Using proof URL: $AI_IN_ACTION_BASE_URL"
 
       - name: Check health endpoint
         run: |
@@ -41,17 +42,21 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const baseUrl = process.env.AI_IN_ACTION_BASE_URL || 'https://strategicmindsadvisory.com';
             const title = 'AI in Action health check failed';
             const body = [
               '# AI in Action health check failed',
               '',
               'The scheduled health check could not verify the deployed runtime.',
               '',
-              '## Required admin check',
+              `Proof URL checked: ${baseUrl}`,
               '',
-              '- Confirm `AI_IN_ACTION_BASE_URL` is configured in GitHub Actions secrets.',
-              '- Confirm Vercel deployment is live.',
+              '## Required check',
+              '',
+              '- Confirm the Strategic Minds Advisory domain points to the latest Vercel deployment.',
               '- Confirm `/api/health` is reachable.',
+              '- Confirm `/api/cron/platform-health` is reachable.',
+              '- If using a different proof URL later, set `AI_IN_ACTION_BASE_URL` in GitHub Actions secrets.',
               '- Confirm `CRON_SECRET` matches Vercel if route protection is enabled.',
               '',
               'No secret values were printed by this workflow.'
