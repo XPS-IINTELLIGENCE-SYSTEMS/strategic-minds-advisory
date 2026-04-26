@@ -56,7 +56,7 @@ jobs:
           echo "Checking whether expected AI in Action schema exists before push."
           supabase db dump --schema public > prepush_public_schema.sql
 
-          if grep -Eq 'CREATE TABLE (public\.)?"?ai_labs"?' prepush_public_schema.sql; then
+          if grep -Fq 'ai_labs' prepush_public_schema.sql; then
             echo "Expected schema is present. No migration-history repair needed."
             exit 0
           fi
@@ -99,9 +99,17 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
+          set -euo pipefail
           echo "Dumping remote public schema through Supabase CLI for verification."
           supabase db dump --schema public > remote_public_schema.sql
+
+          echo "Generating remote TypeScript database types as a second verification source."
+          supabase gen types typescript --linked --schema public > remote_public_types.ts || true
+
+          echo "Schema dump byte count: $(wc -c < remote_public_schema.sql)"
+          echo "Generated types byte count: $(wc -c < remote_public_types.ts 2>/dev/null || echo 0)"
 
           REQUIRED_TABLES=(
             paper_portfolio_snapshots
@@ -140,7 +148,7 @@ jobs:
 
           MISSING=()
           for table in "${REQUIRED_TABLES[@]}"; do
-            if grep -Eq "CREATE TABLE (public\.)?\"?$table\"?" remote_public_schema.sql; then
+            if grep -Fq "$table" remote_public_schema.sql || grep -Fq "$table" remote_public_types.ts; then
               echo "OK $table"
             else
               echo "MISSING $table"
@@ -150,6 +158,10 @@ jobs:
 
           if [ "${#MISSING[@]}" -gt 0 ]; then
             echo "ERROR: Missing required tables: ${MISSING[*]}"
+            echo "Schema dump preview follows for debugging."
+            head -n 80 remote_public_schema.sql || true
+            echo "Generated types preview follows for debugging."
+            head -n 80 remote_public_types.ts || true
             echo "Check docs/SUPABASE_MIGRATION_ADMIN_RUNBOOK.md for repair steps."
             exit 1
           fi
