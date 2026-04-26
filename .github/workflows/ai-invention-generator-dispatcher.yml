@@ -1,0 +1,153 @@
+name: AI Invention Generator Dispatcher
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.ai-ops/generator-commands/**.json'
+  workflow_dispatch:
+    inputs:
+      request_json:
+        description: 'JSON request for generated invention'
+        required: true
+      deploy_after_generate:
+        description: 'Trigger deploy bridge after generation'
+        required: true
+        default: 'true'
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+jobs:
+  dispatch:
+    name: Dispatch generated invention request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Resolve generator request
+        id: resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+          REQUEST_JSON='${{ github.event.inputs.request_json || '' }}'
+          DEPLOY_AFTER='${{ github.event.inputs.deploy_after_generate || 'true' }}'
+
+          if [ -z "$REQUEST_JSON" ]; then
+            FILE=$(git diff --name-only HEAD~1 HEAD -- '.ai-ops/generator-commands/**.json' | tail -n 1 || true)
+            if [ -z "$FILE" ]; then
+              echo "No generator command file found."
+              exit 1
+            fi
+            echo "Reading generator command from $FILE"
+            REQUEST_JSON=$(jq -c '.request_json // .request // empty' "$FILE")
+            DEPLOY_AFTER=$(jq -r '.deploy_after_generate // "true"' "$FILE")
+          fi
+
+          if [ -z "$REQUEST_JSON" ] || [ "$REQUEST_JSON" = "null" ]; then
+            echo "Missing request_json."
+            exit 1
+          fi
+
+          echo "$REQUEST_JSON" | jq . >/tmp/request.json
+          NAME=$(jq -r '.system_name // .name // "Generated AI System"' /tmp/request.json)
+          SLUG=$(jq -r '.system_slug // .slug // "generated-ai-system"' /tmp/request.json)
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "deploy_after=$DEPLOY_AFTER" >> "$GITHUB_OUTPUT"
+          {
+            echo 'request_json<<EOF'
+            cat /tmp/request.json
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch generator workflow
+        id: dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REQUEST_JSON: ${{ steps.resolve.outputs.request_json }}
+          DEPLOY_AFTER: ${{ steps.resolve.outputs.deploy_after }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKFLOW_FILE="ai-invention-generator.yml"
+          BEFORE=$(gh run list --workflow "$WORKFLOW_FILE" --branch main --limit 1 --json databaseId --jq '.[0].databaseId // ""' || true)
+          echo "before=$BEFORE" >> "$GITHUB_OUTPUT"
+          gh workflow run "$WORKFLOW_FILE" --ref main -f request_json="$REQUEST_JSON" -f deploy_after_generate="$DEPLOY_AFTER"
+
+      - name: Wait for generator completion
+        id: result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ steps.dispatch.outputs.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKFLOW_FILE="ai-invention-generator.yml"
+          RUN_ID=""
+          RUN_URL=""
+          STATUS="unknown"
+          CONCLUSION="unknown"
+          for i in $(seq 1 60); do
+            LATEST=$(gh run list --workflow "$WORKFLOW_FILE" --branch main --limit 5 --json databaseId,url,status,conclusion --jq '.[0]')
+            ID=$(echo "$LATEST" | jq -r '.databaseId // empty')
+            URL=$(echo "$LATEST" | jq -r '.url // empty')
+            if [ -n "$ID" ] && [ "$ID" != "$BEFORE" ]; then
+              RUN_ID="$ID"
+              RUN_URL="$URL"
+              DATA=$(gh run view "$RUN_ID" --json status,conclusion,jobs,url)
+              STATUS=$(echo "$DATA" | jq -r '.status // "unknown"')
+              CONCLUSION=$(echo "$DATA" | jq -r '.conclusion // ""')
+              echo "Generator status: $STATUS conclusion: ${CONCLUSION:-pending}"
+              if [ "$STATUS" = "completed" ]; then
+                break
+              fi
+            else
+              echo "Waiting for generator workflow to appear... attempt $i"
+            fi
+            sleep 10
+          done
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "run_url=$RUN_URL" >> "$GITHUB_OUTPUT"
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "conclusion=${CONCLUSION:-pending}" >> "$GITHUB_OUTPUT"
+
+      - name: Create generator visibility issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const name = '${{ steps.resolve.outputs.name }}';
+            const slug = '${{ steps.resolve.outputs.slug }}';
+            const status = '${{ steps.result.outputs.status }}';
+            const conclusion = '${{ steps.result.outputs.conclusion }}';
+            const runUrl = '${{ steps.result.outputs.run_url }}';
+            const success = conclusion === 'success';
+            const body = [
+              '# AI Invention Generator Dispatch Report',
+              '',
+              `System: ${name}`,
+              `Slug: ${slug}`,
+              `Generator status: ${status}`,
+              `Generator conclusion: ${conclusion}`,
+              runUrl ? `Generator run: ${runUrl}` : 'Generator run: unavailable',
+              '',
+              success
+                ? 'Generator completed. Check generated files, deploy bridge output, and generated validation next.'
+                : 'Generator needs review. Inspect the workflow logs for the failed step.',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: success ? `Generator completed: ${name}` : `Generator needs review: ${name}`,
+              body,
+              labels: success ? ['ai-in-action', 'invention-factory', 'generator'] : ['ai-in-action', 'invention-factory', 'needs-review']
+            });
