@@ -1,0 +1,167 @@
+name: AI Invention Intake
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.ai-ops/inventions/**.json'
+  workflow_dispatch:
+    inputs:
+      system_name:
+        description: 'Short name for the system idea'
+        required: true
+      build_prompt:
+        description: 'Plain-English description of the system to build'
+        required: true
+      target_mode:
+        description: 'sandbox, prototype, or review-only'
+        required: false
+        default: 'sandbox'
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+jobs:
+  intake:
+    name: Convert system idea into sandbox work package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Resolve invention request
+        id: request
+        shell: bash
+        run: |
+          set -euo pipefail
+          SYSTEM_NAME='${{ github.event.inputs.system_name || '' }}'
+          BUILD_PROMPT='${{ github.event.inputs.build_prompt || '' }}'
+          TARGET_MODE='${{ github.event.inputs.target_mode || 'sandbox' }}'
+
+          if [ -z "$SYSTEM_NAME" ] || [ -z "$BUILD_PROMPT" ]; then
+            FILE=$(git diff --name-only HEAD~1 HEAD -- '.ai-ops/inventions/**.json' | tail -n 1 || true)
+            if [ -z "$FILE" ]; then
+              echo "No invention request file found."
+              exit 1
+            fi
+            echo "Reading invention request from $FILE"
+            SYSTEM_NAME=$(jq -r '.system_name // .name // empty' "$FILE")
+            BUILD_PROMPT=$(jq -r '.build_prompt // .prompt // .description // empty' "$FILE")
+            TARGET_MODE=$(jq -r '.target_mode // "sandbox"' "$FILE")
+          fi
+
+          if [ -z "$SYSTEM_NAME" ] || [ -z "$BUILD_PROMPT" ]; then
+            echo "system_name and build_prompt are required."
+            exit 1
+          fi
+
+          SLUG=$(echo "$SYSTEM_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g' | cut -c1-80)
+          if [ -z "$SLUG" ]; then SLUG="sandbox-system"; fi
+
+          echo "system_name=$SYSTEM_NAME" >> "$GITHUB_OUTPUT"
+          echo "system_slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "target_mode=$TARGET_MODE" >> "$GITHUB_OUTPUT"
+          {
+            echo 'build_prompt<<EOF'
+            echo "$BUILD_PROMPT"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create sandbox issue
+        id: issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const systemName = `${{ steps.request.outputs.system_name }}`;
+            const systemSlug = `${{ steps.request.outputs.system_slug }}`;
+            const targetMode = `${{ steps.request.outputs.target_mode }}`;
+            const buildPrompt = `${{ steps.request.outputs.build_prompt }}`;
+            const title = `AI Invention Sandbox: ${systemName}`;
+            const body = [
+              '# AI Invention Sandbox Request',
+              '',
+              `System name: ${systemName}`,
+              `System slug: ${systemSlug}`,
+              `Target mode: ${targetMode}`,
+              '',
+              '## Plain-English build request',
+              '',
+              buildPrompt,
+              '',
+              '## Required delivery path',
+              '',
+              '- Create or update same-repo sandbox files first.',
+              '- Add or update Supabase schema only if needed.',
+              '- Add or update API routes only if needed.',
+              '- Add dashboard visibility/proof panel where useful.',
+              '- Run migrations if schema changed.',
+              '- Run build/health/cron validation where relevant.',
+              '- Email or log report to strategicmindsadvisory@gmail.com and j.xpsxpress@gmail.com.',
+              '',
+              '## Safety gates',
+              '',
+              '- No public publishing without approval.',
+              '- No paid API activation without approval.',
+              '- No real-money trading.',
+              '- No secret values in code, issues, logs, or frontend.',
+              '- New repo creation allowed only after same-repo proof is stable.',
+              '',
+              '## Proof checklist',
+              '',
+              '- [ ] Frontend proof exists or not applicable.',
+              '- [ ] Backend route proof exists or not applicable.',
+              '- [ ] Supabase proof exists or not applicable.',
+              '- [ ] Vercel deployment proof exists.',
+              '- [ ] Report logged or emailed.',
+              '- [ ] Human approval gate documented if promotion is requested.',
+              '',
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['ai-in-action', 'invention-factory', 'sandbox', 'needs-validation']
+            });
+            core.setOutput('issue_url', issue.data.html_url);
+
+      - name: Dispatch next pipeline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run ai-in-action-next-pipeline.yml --ref main -f mode=full-safe
+
+      - name: Create intake visibility issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const systemName = `${{ steps.request.outputs.system_name }}`;
+            const systemSlug = `${{ steps.request.outputs.system_slug }}`;
+            const issueUrl = `${{ steps.issue.outputs.issue_url }}`;
+            const body = [
+              '# AI Invention Intake Report',
+              '',
+              `System: ${systemName}`,
+              `Slug: ${systemSlug}`,
+              `Sandbox issue: ${issueUrl || 'unavailable'}`,
+              `Intake run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'The request has been converted into a structured sandbox work package. The next safe validation pipeline was dispatched.',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `AI invention intake completed: ${systemName}`,
+              body,
+              labels: ['ai-in-action', 'invention-factory', 'github-actions']
+            });
