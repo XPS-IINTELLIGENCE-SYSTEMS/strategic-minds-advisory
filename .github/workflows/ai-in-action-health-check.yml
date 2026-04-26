@@ -14,27 +14,37 @@ jobs:
     name: Check deployed AI in Action runtime
     runs-on: ubuntu-latest
     env:
-      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategicmindsadvisory.com' }}
+      AI_IN_ACTION_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app' }}
       CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
     steps:
       - name: Resolve proof URL
         run: |
           test -n "$AI_IN_ACTION_BASE_URL" || (echo "Missing AI_IN_ACTION_BASE_URL and no default proof URL was available" && exit 1)
           echo "Using proof URL: $AI_IN_ACTION_BASE_URL"
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then
+            echo "Vercel protection bypass is present and will be used."
+          else
+            echo "Vercel protection bypass is absent; public validation will be attempted."
+          fi
 
       - name: Check health endpoint
         run: |
           set -euo pipefail
-          curl -fsS "$AI_IN_ACTION_BASE_URL/api/health" | tee health.json
+          CURL_HEADERS=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then CURL_HEADERS=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS}"); fi
+          curl -fsS "${CURL_HEADERS[@]}" "$AI_IN_ACTION_BASE_URL/api/health" | tee health.json
           grep -E '"status"|"connectors"|"mode"' health.json || true
 
       - name: Trigger platform health cron
         run: |
           set -euo pipefail
+          CURL_HEADERS=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then CURL_HEADERS=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS}"); fi
           if [ -n "${CRON_SECRET:-}" ]; then
-            curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$AI_IN_ACTION_BASE_URL/api/cron/platform-health" | tee platform-health.json
+            curl -fsS "${CURL_HEADERS[@]}" -H "Authorization: Bearer $CRON_SECRET" "$AI_IN_ACTION_BASE_URL/api/cron/platform-health" | tee platform-health.json
           else
-            curl -fsS "$AI_IN_ACTION_BASE_URL/api/cron/platform-health" | tee platform-health.json
+            curl -fsS "${CURL_HEADERS[@]}" "$AI_IN_ACTION_BASE_URL/api/cron/platform-health" | tee platform-health.json
           fi
 
       - name: Create issue on failure
@@ -42,7 +52,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const baseUrl = process.env.AI_IN_ACTION_BASE_URL || 'https://strategicmindsadvisory.com';
+            const baseUrl = process.env.AI_IN_ACTION_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app';
             const title = 'AI in Action health check failed';
             const body = [
               '# AI in Action health check failed',
@@ -53,10 +63,11 @@ jobs:
               '',
               '## Required check',
               '',
-              '- Confirm the Strategic Minds Advisory domain points to the latest Vercel deployment.',
+              '- Confirm the Vercel branch alias or `AI_IN_ACTION_BASE_URL` points to the latest Vercel deployment.',
               '- Confirm `/api/health` is reachable.',
               '- Confirm `/api/cron/platform-health` is reachable.',
-              '- If using a different proof URL later, set `AI_IN_ACTION_BASE_URL` in GitHub Actions secrets.',
+              '- If using the custom domain later, set `AI_IN_ACTION_BASE_URL` after DNS/API routing is fixed.',
+              '- Confirm `VERCEL_PROTECTION_BYPASS` is valid if Vercel deployment protection is enabled.',
               '- Confirm `CRON_SECRET` matches Vercel if route protection is enabled.',
               '',
               'No secret values were printed by this workflow.'
