@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline'
+        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline, run-invention-autopilot'
         required: true
         default: 'run-health-check'
       route:
-        description: 'Optional route/mode: cron route or next-pipeline mode'
+        description: 'Optional route/mode/theme: cron route, next-pipeline mode, or invention theme'
         required: false
         default: 'platform-health'
 
@@ -40,6 +40,7 @@ jobs:
 
           COMMAND="${{ github.event.inputs.command || '' }}"
           ROUTE="${{ github.event.inputs.route || 'platform-health' }}"
+          COUNT="1"
 
           if [ -z "$COMMAND" ]; then
             FILE=$(git diff --name-only HEAD~1 HEAD -- '.ai-ops/commands/**.json' | tail -n 1 || true)
@@ -49,7 +50,8 @@ jobs:
             fi
             echo "Reading command from $FILE"
             COMMAND=$(jq -r '.command // empty' "$FILE")
-            ROUTE=$(jq -r '.route // .mode // "platform-health"' "$FILE")
+            ROUTE=$(jq -r '.route // .mode // .theme // "platform-health"' "$FILE")
+            COUNT=$(jq -r '.count // "1"' "$FILE")
           fi
 
           case "$COMMAND" in
@@ -69,6 +71,10 @@ jobs:
               WORKFLOW_FILE="ai-in-action-next-pipeline.yml"
               WORKFLOW_NAME="AI in Action Next Pipeline"
               ;;
+            run-invention-autopilot)
+              WORKFLOW_FILE="ai-invention-autopilot.yml"
+              WORKFLOW_NAME="AI Invention Autopilot"
+              ;;
             *)
               echo "Unsupported command: $COMMAND"
               exit 1
@@ -77,6 +83,7 @@ jobs:
 
           echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
           echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
           echo "workflow_file=$WORKFLOW_FILE" >> "$GITHUB_OUTPUT"
           echo "workflow_name=$WORKFLOW_NAME" >> "$GITHUB_OUTPUT"
           echo "Allowed command: $COMMAND"
@@ -89,6 +96,7 @@ jobs:
           WORKFLOW_FILE: ${{ steps.resolve.outputs.workflow_file }}
           COMMAND: ${{ steps.resolve.outputs.command }}
           ROUTE: ${{ steps.resolve.outputs.route }}
+          COUNT: ${{ steps.resolve.outputs.count }}
         shell: bash
         run: |
           set -euo pipefail
@@ -99,6 +107,8 @@ jobs:
             gh workflow run "$WORKFLOW_FILE" --ref main -f route="$ROUTE"
           elif [ "$COMMAND" = "run-next-pipeline" ]; then
             gh workflow run "$WORKFLOW_FILE" --ref main -f mode="$ROUTE"
+          elif [ "$COMMAND" = "run-invention-autopilot" ]; then
+            gh workflow run "$WORKFLOW_FILE" --ref main -f theme="$ROUTE" -f count="$COUNT"
           else
             gh workflow run "$WORKFLOW_FILE" --ref main
           fi
@@ -200,7 +210,7 @@ jobs:
               '# AI Ops Visibility Report',
               '',
               `Command: ${command || 'unknown'}`,
-              `Route/mode: ${route || 'not applicable'}`,
+              `Route/mode/theme: ${route || 'not applicable'}`,
               `Target workflow: ${workflowName || workflowFile}`,
               `Workflow file: ${workflowFile}`,
               `Dispatcher status: ${dispatcherStatus}`,
