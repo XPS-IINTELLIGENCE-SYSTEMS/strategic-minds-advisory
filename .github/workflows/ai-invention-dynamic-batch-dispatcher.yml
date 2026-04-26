@@ -1,0 +1,150 @@
+name: AI Invention Dynamic Batch Dispatcher
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.ai-ops/dynamic-batch-commands/**.json'
+  workflow_dispatch:
+    inputs:
+      queue_json:
+        description: 'Queue JSON for dynamic batch autopilot'
+        required: true
+
+permissions:
+  contents: read
+  actions: write
+  issues: write
+
+jobs:
+  dispatch:
+    name: Dispatch dynamic batch autopilot request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Resolve dynamic batch request
+        id: resolve
+        shell: bash
+        run: |
+          set -euo pipefail
+          QUEUE_JSON='${{ github.event.inputs.queue_json || '' }}'
+
+          if [ -z "$QUEUE_JSON" ]; then
+            FILE=$(git diff --name-only HEAD~1 HEAD -- '.ai-ops/dynamic-batch-commands/**.json' | tail -n 1 || true)
+            if [ -z "$FILE" ]; then
+              echo "No dynamic batch command file found."
+              exit 1
+            fi
+            echo "Reading dynamic batch command from $FILE"
+            QUEUE_JSON=$(jq -c '.queue_json // .queue // empty' "$FILE")
+          fi
+
+          if [ -z "$QUEUE_JSON" ] || [ "$QUEUE_JSON" = "null" ]; then
+            echo "Missing queue_json."
+            exit 1
+          fi
+
+          echo "$QUEUE_JSON" | jq . >/tmp/queue.json
+          BATCH=$(jq -r '.batch_name // "unnamed-dynamic-batch"' /tmp/queue.json)
+          COUNT=$(jq -r '.requests | length' /tmp/queue.json)
+          MAX=$(jq -r '.max_items // 3' /tmp/queue.json)
+          if [ "$COUNT" -gt "$MAX" ]; then
+            echo "Batch request count $COUNT exceeds max_items $MAX."
+            exit 1
+          fi
+          echo "batch=$BATCH" >> "$GITHUB_OUTPUT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          {
+            echo 'queue_json<<EOF'
+            cat /tmp/queue.json
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch dynamic batch autopilot workflow
+        id: dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QUEUE_JSON: ${{ steps.resolve.outputs.queue_json }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKFLOW_FILE="ai-invention-dynamic-batch-autopilot.yml"
+          BEFORE=$(gh run list --workflow "$WORKFLOW_FILE" --branch main --limit 1 --json databaseId --jq '.[0].databaseId // ""' || true)
+          echo "before=$BEFORE" >> "$GITHUB_OUTPUT"
+          gh workflow run "$WORKFLOW_FILE" --ref main -f queue_json="$QUEUE_JSON"
+
+      - name: Wait for dynamic batch completion
+        id: result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ steps.dispatch.outputs.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          WORKFLOW_FILE="ai-invention-dynamic-batch-autopilot.yml"
+          RUN_ID=""
+          RUN_URL=""
+          STATUS="unknown"
+          CONCLUSION="unknown"
+          for i in $(seq 1 90); do
+            LATEST=$(gh run list --workflow "$WORKFLOW_FILE" --branch main --limit 5 --json databaseId,url,status,conclusion --jq '.[0]')
+            ID=$(echo "$LATEST" | jq -r '.databaseId // empty')
+            URL=$(echo "$LATEST" | jq -r '.url // empty')
+            if [ -n "$ID" ] && [ "$ID" != "$BEFORE" ]; then
+              RUN_ID="$ID"
+              RUN_URL="$URL"
+              DATA=$(gh run view "$RUN_ID" --json status,conclusion,jobs,url)
+              STATUS=$(echo "$DATA" | jq -r '.status // "unknown"')
+              CONCLUSION=$(echo "$DATA" | jq -r '.conclusion // ""')
+              echo "Dynamic batch status: $STATUS conclusion: ${CONCLUSION:-pending}"
+              if [ "$STATUS" = "completed" ]; then
+                break
+              fi
+            else
+              echo "Waiting for dynamic batch workflow to appear... attempt $i"
+            fi
+            sleep 10
+          done
+          echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
+          echo "run_url=$RUN_URL" >> "$GITHUB_OUTPUT"
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          echo "conclusion=${CONCLUSION:-pending}" >> "$GITHUB_OUTPUT"
+
+      - name: Create dynamic batch dispatch visibility issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const batch = '${{ steps.resolve.outputs.batch }}';
+            const count = '${{ steps.resolve.outputs.count }}';
+            const status = '${{ steps.result.outputs.status }}';
+            const conclusion = '${{ steps.result.outputs.conclusion }}';
+            const runUrl = '${{ steps.result.outputs.run_url }}';
+            const success = conclusion === 'success';
+            const body = [
+              '# AI Invention Dynamic Batch Dispatch Report',
+              '',
+              `Batch: ${batch}`,
+              `Request count: ${count}`,
+              `Dynamic batch status: ${status}`,
+              `Dynamic batch conclusion: ${conclusion}`,
+              runUrl ? `Dynamic batch run: ${runUrl}` : 'Dynamic batch run: unavailable',
+              '',
+              success
+                ? 'Dynamic batch autopilot completed. Check the dynamic batch proof issue for generated systems and validation status.'
+                : 'Dynamic batch autopilot needs review. Inspect the workflow logs for the failed step.',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: success ? `Dynamic batch dispatcher completed: ${batch}` : `Dynamic batch dispatcher needs review: ${batch}`,
+              body,
+              labels: success ? ['ai-in-action', 'invention-factory', 'dynamic-batch-dispatcher'] : ['ai-in-action', 'invention-factory', 'dynamic-batch-dispatcher', 'needs-review']
+            });
