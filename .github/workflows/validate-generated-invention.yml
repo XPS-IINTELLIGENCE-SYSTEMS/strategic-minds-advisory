@@ -1,0 +1,89 @@
+name: Validate Generated Invention
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Generated invention slug'
+        required: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  validate:
+    name: Validate generated invention route
+    runs-on: ubuntu-latest
+    env:
+      PROOF_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app' }}
+      VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
+      SLUG: ${{ github.event.inputs.slug }}
+    steps:
+      - name: Validate GET route
+        run: |
+          set -euo pipefail
+          CURL_HEADERS=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then CURL_HEADERS=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS}"); fi
+          curl -fsS "${CURL_HEADERS[@]}" "$PROOF_BASE_URL/api/sandbox/generated/$SLUG" | tee generated-get.json
+          grep -q "\"system_slug\":\"$SLUG\"" generated-get.json
+
+      - name: Validate POST route
+        run: |
+          set -euo pipefail
+          CURL_HEADERS=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then CURL_HEADERS=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS}"); fi
+          curl -fsS -X POST "${CURL_HEADERS[@]}" "$PROOF_BASE_URL/api/sandbox/generated/$SLUG" | tee generated-post.json
+          grep -q '"report"' generated-post.json
+
+      - name: Create generated validation issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const read = (path) => {
+              try {
+                const raw = fs.readFileSync(path, 'utf8');
+                return raw.length > 3500 ? raw.slice(0, 3500) + '\n...[truncated]' : raw;
+              } catch (error) {
+                return `Unavailable: ${error.message}`;
+              }
+            };
+            const status = '${{ job.status }}';
+            const success = status === 'success';
+            const slug = process.env.SLUG;
+            const baseUrl = process.env.PROOF_BASE_URL;
+            const body = [
+              '# Generated Invention Validation Report',
+              '',
+              `Slug: ${slug}`,
+              `Status: ${status}`,
+              `Proof base URL: ${baseUrl}`,
+              `Protection bypass used: ${process.env.VERCEL_PROTECTION_BYPASS ? 'yes' : 'no'}`,
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## Checked surfaces',
+              '',
+              `- GET ${baseUrl}/api/sandbox/generated/${slug}`,
+              `- POST ${baseUrl}/api/sandbox/generated/${slug}`,
+              '',
+              '## GET evidence',
+              '```json',
+              read('generated-get.json'),
+              '```',
+              '',
+              '## POST evidence',
+              '```json',
+              read('generated-post.json'),
+              '```',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: success ? `Generated invention validation completed: ${slug}` : `Generated invention validation needs review: ${slug}`,
+              body,
+              labels: success ? ['ai-in-action', 'invention-factory', 'generated', 'validation'] : ['ai-in-action', 'invention-factory', 'generated', 'needs-review']
+            });
