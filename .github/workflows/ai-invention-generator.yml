@@ -1,0 +1,133 @@
+name: AI Invention Generator
+
+on:
+  workflow_dispatch:
+    inputs:
+      request_json:
+        description: 'JSON request with system_name, system_slug, description, objective, safety'
+        required: true
+        default: '{"system_name":"AI Sandbox Demo","system_slug":"ai-sandbox-demo","description":"A safe generated sandbox demo.","objective":"Prove the invention generator can create and validate a sandbox route."}'
+      deploy_after_generate:
+        description: 'Trigger Vercel deploy bridge after generation'
+        required: true
+        default: 'true'
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+jobs:
+  generate:
+    name: Generate sandbox invention package
+    runs-on: ubuntu-latest
+    outputs:
+      slug: ${{ steps.meta.outputs.slug }}
+      name: ${{ steps.meta.outputs.name }}
+      committed: ${{ steps.commit.outputs.committed }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ github.token }}
+
+      - name: Write request JSON
+        run: |
+          set -euo pipefail
+          mkdir -p .ai-ops/invention-requests
+          cat > .ai-ops/invention-requests/current.json <<'JSON'
+          ${{ github.event.inputs.request_json }}
+          JSON
+          node -e "JSON.parse(require('fs').readFileSync('.ai-ops/invention-requests/current.json','utf8')); console.log('request json valid')"
+
+      - name: Run generator
+        run: |
+          set -euo pipefail
+          node tools/invention-factory/generate-lite.mjs .ai-ops/invention-requests/current.json | tee generator-output.json
+
+      - name: Resolve generated metadata
+        id: meta
+        run: |
+          set -euo pipefail
+          SLUG=$(node -e "console.log(require('./generator-output.json').system_slug)")
+          NAME=$(node -e "console.log(require('./generator-output.json').system_name)")
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "Generated $NAME ($SLUG)"
+
+      - name: Commit generated files
+        id: commit
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add api/sandbox/generated supabase/migrations .ai-ops/inventions .ai-ops/invention-factory-last-output.json
+          if git diff --cached --quiet; then
+            echo "committed=false" >> "$GITHUB_OUTPUT"
+            echo "No generated changes to commit."
+          else
+            git commit -m "Generate sandbox invention: ${{ steps.meta.outputs.slug }}"
+            git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create generator proof issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = JSON.parse(fs.readFileSync('generator-output.json', 'utf8'));
+            const deploy = '${{ github.event.inputs.deploy_after_generate }}' === 'true';
+            const body = [
+              '# AI Invention Generator Proof',
+              '',
+              `System: ${output.system_name}`,
+              `Slug: ${output.system_slug}`,
+              `Committed changes: ${{ steps.commit.outputs.committed }}`,
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## Generated files',
+              '',
+              ...output.files.map((file) => `- \`${file}\``),
+              '',
+              '## Safety gates',
+              '',
+              '- Sandbox-only until promoted.',
+              '- No public publishing without approval.',
+              '- No paid API activation without approval.',
+              '- No real-money trading.',
+              '- No secret values in code, issues, logs, or frontend.',
+              '',
+              '## Next action',
+              '',
+              deploy
+                ? 'Deploy bridge requested. Validate the generated API after deployment.'
+                : 'Deploy bridge was not requested. Run deployment before validation.',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Generated sandbox invention: ${output.system_name}`,
+              body,
+              labels: ['ai-in-action', 'invention-factory', 'generated', 'sandbox']
+            });
+
+      - name: Trigger deploy bridge command
+        if: github.event.inputs.deploy_after_generate == 'true'
+        run: |
+          set -euo pipefail
+          TS=$(date -u +%Y%m%dT%H%M%SZ)
+          mkdir -p .ai-ops/commands
+          cat > ".ai-ops/commands/run-vercel-deploy-bridge-generated-${{ steps.meta.outputs.slug }}-$TS.json" <<JSON
+          {
+            "command": "run-vercel-deploy-bridge",
+            "reason": "Deploy generated sandbox invention ${{ steps.meta.outputs.slug }}.",
+            "requested_by": "ai-invention-generator",
+            "created_at": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          JSON
+          git add .ai-ops/commands
+          git commit -m "Command deploy bridge for generated invention: ${{ steps.meta.outputs.slug }}"
+          git push
