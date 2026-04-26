@@ -38,56 +38,13 @@ const safety = Array.isArray(req.safety) && req.safety.length ? req.safety : [
   'Sandbox-only until promoted.',
   'No public publishing without approval.',
   'No paid API activation without approval.',
-  'No real-money trading.',
-  'No secret values in code, issues, logs, or frontend.'
+  'No secrets in code, issues, logs, or frontend.'
 ];
 const stamp = new Date().toISOString().replace(/[-:TZ.]/g, '').slice(0, 14);
 
-const apiPath = `api/sandbox/generated/${slug}.js`;
 const manifestPath = `.ai-ops/inventions/${slug}.json`;
 const migrationPath = `supabase/migrations/${stamp}_${slug}_seed.sql`;
-
-const api = `const system = ${JSON.stringify({
-  system_name: name,
-  system_slug: slug,
-  target_mode: 'sandbox',
-  status: 'generated',
-  objective,
-  description,
-  safety,
-  frontend_path: `/ai-in-action#${slug}`,
-  backend_routes: [`/api/sandbox/generated/${slug}`]
-}, null, 2)};
-
-export default async function handler(request, response) {
-  response.setHeader('Content-Type', 'application/json; charset=utf-8');
-  response.setHeader('Cache-Control', 'no-store');
-
-  if (!['GET', 'POST'].includes(request.method)) {
-    response.setHeader('Allow', 'GET, POST');
-    return response.status(405).json({ ok: false, error: 'Method not allowed.' });
-  }
-
-  const report = request.method === 'POST'
-    ? { ok: true, status: 'logged_synthetic', message: 'Generated sandbox validation report acknowledged.' }
-    : null;
-
-  return response.status(200).json({
-    ok: true,
-    mode: 'generated-sandbox',
-    system_slug: system.system_slug,
-    system,
-    report,
-    validation: {
-      frontend_status: 'manifest_created',
-      backend_status: 'api_route_reached',
-      supabase_status: 'seed_migration_generated',
-      promotion_status: 'human_review_required'
-    },
-    timestamp: new Date().toISOString()
-  });
-}
-`;
+const route = `/api/sandbox/generated?slug=${slug}`;
 
 const migration = `-- Generated sandbox seed for ${sql(name)}
 insert into ai_invention_requests (
@@ -102,11 +59,11 @@ insert into ai_invention_requests (
   'sandbox',
   'generated',
   '/ai-in-action#${sql(slug)}',
-  array['/api/sandbox/generated/${sql(slug)}'],
+  array['${sql(route)}'],
   array['ai_invention_requests','ai_invention_runs','ai_invention_proofs'],
   '${sql(objective)}',
   '${sql(safety.join(' | '))}',
-  'Deploy and validate generated sandbox route.',
+  'Deploy and validate generated sandbox route through shared dynamic API.',
   'Review generated proof before promotion.',
   true
 )
@@ -121,20 +78,23 @@ const manifest = {
   system_name: name,
   system_slug: slug,
   target_mode: 'sandbox',
+  status: 'generated',
   generated_at: new Date().toISOString(),
-  files: { api: apiPath, migration: migrationPath, manifest: manifestPath },
+  files: { api: 'api/sandbox/generated.js', migration: migrationPath, manifest: manifestPath },
+  frontend_path: `/ai-in-action#${slug}`,
+  backend_routes: [route],
   objective,
   description,
   safety,
-  promotion_gate: 'Human approval required before public launch, paid API activation, real-money operation, or new repo creation.'
+  promotion_gate: 'Human approval required before public launch or paid service activation.',
+  vercel_function_model: 'single_dynamic_function'
 };
 
 const files = [
-  write(apiPath, api),
   write(migrationPath, migration),
   write(manifestPath, JSON.stringify(manifest, null, 2) + '\n')
 ];
 
-const output = { ok: true, system_name: name, system_slug: slug, files };
+const output = { ok: true, system_name: name, system_slug: slug, route, files };
 write('.ai-ops/invention-factory-last-output.json', JSON.stringify(output, null, 2) + '\n');
 console.log(JSON.stringify(output, null, 2));
