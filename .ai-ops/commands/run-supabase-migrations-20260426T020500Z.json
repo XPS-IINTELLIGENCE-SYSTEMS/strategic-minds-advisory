@@ -1,0 +1,6 @@
+{
+  "command": "run-supabase-migrations",
+  "reason": "Apply AI Skill Drill Coach sandbox seed migration and verify Supabase proof records.",
+  "requested_by": "ai-in-action",
+  "created_at": "2026-04-26T02:05:00Z"
+}
