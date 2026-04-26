@@ -47,6 +47,42 @@ jobs:
             --password "$SUPABASE_DB_PASSWORD" \
             --yes
 
+      - name: Repair migration history if schema is missing
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "Checking whether expected AI in Action schema exists before push."
+          supabase db dump --schema public > prepush_public_schema.sql
+
+          if grep -Eq 'CREATE TABLE (public\.)?"?ai_labs"?' prepush_public_schema.sql; then
+            echo "Expected schema is present. No migration-history repair needed."
+            exit 0
+          fi
+
+          echo "Expected AI in Action schema is missing while migration history may be marked applied."
+          echo "Running guarded repair for allowlisted local migration versions only."
+
+          MIGRATION_VERSIONS=(
+            202604240001
+            202604240002
+            202604250001
+            202604250002
+          )
+
+          for version in "${MIGRATION_VERSIONS[@]}"; do
+            if [ -f "supabase/migrations/${version}_"*.sql ]; then
+              echo "Marking migration $version as reverted in remote migration history if present."
+              supabase migration repair "$version" --status reverted --password "$SUPABASE_DB_PASSWORD" || true
+            else
+              echo "ERROR: Expected local migration version $version not found. Refusing repair."
+              exit 1
+            fi
+          done
+
+          echo "Guarded migration-history repair completed. Local migrations will be pushed next."
+
       - name: Preview pending migrations
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
