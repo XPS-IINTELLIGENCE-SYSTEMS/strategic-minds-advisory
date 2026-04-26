@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline, run-invention-autopilot, validate-skill-drill-coach'
+        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline, run-invention-autopilot, validate-skill-drill-coach, run-vercel-deploy-bridge'
         required: true
         default: 'run-health-check'
       route:
@@ -78,6 +78,10 @@ jobs:
             validate-skill-drill-coach)
               WORKFLOW_FILE="ai-skill-drill-coach-validate.yml"
               WORKFLOW_NAME="AI Skill Drill Coach Validation"
+              ;;
+            run-vercel-deploy-bridge)
+              WORKFLOW_FILE="vercel-production-deploy.yml"
+              WORKFLOW_NAME="Vercel Production Deploy Bridge"
               ;;
             *)
               echo "Unsupported command: $COMMAND"
