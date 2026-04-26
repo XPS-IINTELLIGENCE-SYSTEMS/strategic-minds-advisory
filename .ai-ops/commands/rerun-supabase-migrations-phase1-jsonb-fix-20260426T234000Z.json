@@ -1,0 +1,6 @@
+{
+  "command": "run-supabase-migrations",
+  "reason": "Rerun migrations after fixing generated seed migrations to use jsonb fields for backend_routes and supabase_tables.",
+  "requested_by": "ai-in-action-phase1-worker",
+  "created_at": "2026-04-26T23:40:00Z"
+}
