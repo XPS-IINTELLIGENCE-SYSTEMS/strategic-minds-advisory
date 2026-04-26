@@ -1,0 +1,26 @@
+{
+  "system_name": "AI Opportunity Radar",
+  "system_slug": "ai-opportunity-radar",
+  "target_mode": "sandbox",
+  "status": "generated",
+  "generated_at": "2026-04-26T22:41:40.498Z",
+  "files": {
+    "api": "api/sandbox/generated.js",
+    "migration": "supabase/migrations/20260426224140_ai-opportunity-radar_seed.sql",
+    "manifest": ".ai-ops/inventions/ai-opportunity-radar.json"
+  },
+  "frontend_path": "/ai-in-action#ai-opportunity-radar",
+  "backend_routes": [
+    "/api/sandbox/generated?slug=ai-opportunity-radar"
+  ],
+  "objective": "Prove the profit operating system can generate an opportunity-analysis invention through the shared dynamic generated route.",
+  "description": "A sandbox radar that explains how AI scans trends, pain points, and low-cost build paths to identify useful money-making opportunities.",
+  "safety": [
+    "Sandbox-only until promoted.",
+    "No public publishing without approval.",
+    "No paid API activation without approval.",
+    "No secrets in code, issues, logs, or frontend."
+  ],
+  "promotion_gate": "Human approval required before public launch or paid service activation.",
+  "vercel_function_model": "single_dynamic_function"
+}

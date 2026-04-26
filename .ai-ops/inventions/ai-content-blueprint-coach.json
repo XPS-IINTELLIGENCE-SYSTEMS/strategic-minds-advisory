@@ -1,0 +1,26 @@
+{
+  "system_name": "AI Content Blueprint Coach",
+  "system_slug": "ai-content-blueprint-coach",
+  "target_mode": "sandbox",
+  "status": "generated",
+  "generated_at": "2026-04-26T22:41:40.533Z",
+  "files": {
+    "api": "api/sandbox/generated.js",
+    "migration": "supabase/migrations/20260426224140_ai-content-blueprint-coach_seed.sql",
+    "manifest": ".ai-ops/inventions/ai-content-blueprint-coach.json"
+  },
+  "frontend_path": "/ai-in-action#ai-content-blueprint-coach",
+  "backend_routes": [
+    "/api/sandbox/generated?slug=ai-content-blueprint-coach"
+  ],
+  "objective": "Prove the profit operating system can generate content strategy inventions through the shared dynamic generated route.",
+  "description": "A sandbox coach that turns a validated system into a short video hook, lesson outline, thumbnail idea, and blueprint offer.",
+  "safety": [
+    "Sandbox-only until promoted.",
+    "No public publishing without approval.",
+    "No paid API activation without approval.",
+    "No secrets in code, issues, logs, or frontend."
+  ],
+  "promotion_gate": "Human approval required before public launch or paid service activation.",
+  "vercel_function_model": "single_dynamic_function"
+}

@@ -1,10 +1,10 @@
 {
   "ok": true,
-  "system_name": "AI Meeting Prep Coach",
-  "system_slug": "ai-meeting-prep-coach",
+  "system_name": "AI Content Blueprint Coach",
+  "system_slug": "ai-content-blueprint-coach",
+  "route": "/api/sandbox/generated?slug=ai-content-blueprint-coach",
   "files": [
-    "api/sandbox/generated/ai-meeting-prep-coach.js",
-    "supabase/migrations/20260426194659_ai-meeting-prep-coach_seed.sql",
-    ".ai-ops/inventions/ai-meeting-prep-coach.json"
+    "supabase/migrations/20260426224140_ai-content-blueprint-coach_seed.sql",
+    ".ai-ops/inventions/ai-content-blueprint-coach.json"
   ]
 }
