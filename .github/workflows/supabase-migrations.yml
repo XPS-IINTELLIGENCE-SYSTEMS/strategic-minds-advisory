@@ -69,6 +69,14 @@ jobs:
           PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
+          DB_HOST="db.${SUPABASE_PROJECT_ID}.supabase.co"
+          DB_IPV4=$(getent ahostsv4 "$DB_HOST" | awk '{ print $1; exit }')
+          if [ -z "$DB_IPV4" ]; then
+            echo "ERROR: Could not resolve IPv4 address for $DB_HOST"
+            exit 1
+          fi
+          echo "Resolved Supabase database host to IPv4 address for verification."
+
           REQUIRED_TABLES=(
             paper_portfolio_snapshots
             paper_trades
@@ -107,10 +115,7 @@ jobs:
           MISSING=()
           for table in "${REQUIRED_TABLES[@]}"; do
             EXISTS=$(psql \
-              --host "db.${SUPABASE_PROJECT_ID}.supabase.co" \
-              --port 5432 \
-              --username postgres \
-              --dbname postgres \
+              "host=$DB_HOST hostaddr=$DB_IPV4 port=5432 user=postgres dbname=postgres sslmode=require" \
               --tuples-only \
               --no-align \
               --command "select exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = '$table');")
