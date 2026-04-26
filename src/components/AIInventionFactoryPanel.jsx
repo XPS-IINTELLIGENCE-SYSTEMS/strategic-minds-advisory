@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Factory, FlaskConical, Mail, Rocket, ShieldCheck, TerminalSquare } from 'lucide-react';
 import { loadAIInventionFactoryData } from '@/lib/aiInventionFactoryData';
+import AISkillDrillCoachPanel from '@/components/AISkillDrillCoachPanel';
 
 function Badge({ children, tone = 'slate' }) {
   const tones = {
@@ -64,6 +65,8 @@ export default function AIInventionFactoryPanel() {
           <Badge tone="purple">factory mode</Badge>
         </div>
       </div>
+
+      <AISkillDrillCoachPanel />
 
       <div className="grid gap-6 xl:grid-cols-3">
         <Card icon={Factory} title="System Requests">
