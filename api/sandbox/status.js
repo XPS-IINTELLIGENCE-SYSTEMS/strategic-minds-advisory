@@ -1,4 +1,4 @@
-import { safeSelect } from '../../src/lib/supabaseClient.js';
+import { selectRows } from '../_lib/supabaseAdmin.js';
 
 const fallback = {
   request: {
@@ -15,21 +15,19 @@ const fallback = {
 export default async function handler(request, response) {
   const slug = String(request.query?.slug || 'ai-invention-factory-sandbox');
   const [requests, runs, proofs] = await Promise.all([
-    safeSelect('ai_invention_requests', [fallback.request]),
-    safeSelect('ai_invention_runs', []),
-    safeSelect('ai_invention_proofs', []),
+    selectRows('ai_invention_requests', [fallback.request], { order: { column: 'created_at', ascending: false }, limit: 25 }),
+    selectRows('ai_invention_runs', [], { eq: ['invention_slug', slug], order: { column: 'created_at', ascending: false }, limit: 10 }),
+    selectRows('ai_invention_proofs', [], { eq: ['invention_slug', slug], order: { column: 'created_at', ascending: false }, limit: 10 }),
   ]);
 
   const requestRow = (requests.data || []).find((item) => item.system_slug === slug) || requests.data?.[0] || fallback.request;
-  const filteredRuns = (runs.data || []).filter((item) => item.invention_slug === slug).slice(0, 10);
-  const filteredProofs = (proofs.data || []).filter((item) => item.invention_slug === slug).slice(0, 10);
 
   return response.status(200).json({
     ok: requests.mode === 'live',
     mode: requests.mode === 'live' ? 'live' : 'fallback',
     request: requestRow,
-    runs: filteredRuns,
-    proofs: filteredProofs,
+    runs: runs.data || [],
+    proofs: proofs.data || [],
     errors: [requests.error, runs.error, proofs.error].filter(Boolean),
     timestamp: new Date().toISOString(),
   });
