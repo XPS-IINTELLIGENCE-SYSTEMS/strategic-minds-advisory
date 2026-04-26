@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover'
+        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline'
         required: true
         default: 'run-health-check'
       route:
-        description: 'Optional route for cron failover: platform-health, market-check, daily-summary, content-package, all'
+        description: 'Optional route/mode: cron route or next-pipeline mode'
         required: false
         default: 'platform-health'
 
@@ -49,7 +49,7 @@ jobs:
             fi
             echo "Reading command from $FILE"
             COMMAND=$(jq -r '.command // empty' "$FILE")
-            ROUTE=$(jq -r '.route // "platform-health"' "$FILE")
+            ROUTE=$(jq -r '.route // .mode // "platform-health"' "$FILE")
           fi
 
           case "$COMMAND" in
@@ -64,6 +64,10 @@ jobs:
             run-cron-failover)
               WORKFLOW_FILE="ai-in-action-cron-failover.yml"
               WORKFLOW_NAME="AI in Action Cron Failover"
+              ;;
+            run-next-pipeline)
+              WORKFLOW_FILE="ai-in-action-next-pipeline.yml"
+              WORKFLOW_NAME="AI in Action Next Pipeline"
               ;;
             *)
               echo "Unsupported command: $COMMAND"
@@ -93,6 +97,8 @@ jobs:
 
           if [ "$COMMAND" = "run-cron-failover" ]; then
             gh workflow run "$WORKFLOW_FILE" --ref main -f route="$ROUTE"
+          elif [ "$COMMAND" = "run-next-pipeline" ]; then
+            gh workflow run "$WORKFLOW_FILE" --ref main -f mode="$ROUTE"
           else
             gh workflow run "$WORKFLOW_FILE" --ref main
           fi
@@ -194,7 +200,7 @@ jobs:
               '# AI Ops Visibility Report',
               '',
               `Command: ${command || 'unknown'}`,
-              `Route: ${route || 'not applicable'}`,
+              `Route/mode: ${route || 'not applicable'}`,
               `Target workflow: ${workflowName || workflowFile}`,
               `Workflow file: ${workflowFile}`,
               `Dispatcher status: ${dispatcherStatus}`,
