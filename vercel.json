@@ -4,12 +4,8 @@
   "framework": "vite",
   "crons": [
     {
-      "path": "/api/cron/market-check",
-      "schedule": "*/15 * * * *"
-    },
-    {
       "path": "/api/cron/platform-health",
-      "schedule": "*/30 * * * *"
+      "schedule": "0 8 * * *"
     },
     {
       "path": "/api/cron/daily-summary",
