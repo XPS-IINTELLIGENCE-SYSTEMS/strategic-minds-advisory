@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "batch_name": "starter-batch-autopilot-proof",
+  "generated_at": "2026-04-26T19:46:59.246Z",
+  "count": 2,
+  "deploy_after_batch": true,
+  "generated": [
+    {
+      "ok": true,
+      "system_name": "AI Focus Sprint Coach",
+      "system_slug": "ai-focus-sprint-coach",
+      "files": [
+        "api/sandbox/generated/ai-focus-sprint-coach.js",
+        "supabase/migrations/20260426194659_ai-focus-sprint-coach_seed.sql",
+        ".ai-ops/inventions/ai-focus-sprint-coach.json"
+      ]
+    },
+    {
+      "ok": true,
+      "system_name": "AI Meeting Prep Coach",
+      "system_slug": "ai-meeting-prep-coach",
+      "files": [
+        "api/sandbox/generated/ai-meeting-prep-coach.js",
+        "supabase/migrations/20260426194659_ai-meeting-prep-coach_seed.sql",
+        ".ai-ops/inventions/ai-meeting-prep-coach.json"
+      ]
+    }
+  ]
+}

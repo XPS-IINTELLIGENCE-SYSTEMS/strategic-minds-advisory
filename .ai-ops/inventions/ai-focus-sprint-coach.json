@@ -1,0 +1,20 @@
+{
+  "system_name": "AI Focus Sprint Coach",
+  "system_slug": "ai-focus-sprint-coach",
+  "target_mode": "sandbox",
+  "generated_at": "2026-04-26T19:46:59.204Z",
+  "files": {
+    "api": "api/sandbox/generated/ai-focus-sprint-coach.js",
+    "migration": "supabase/migrations/20260426194659_ai-focus-sprint-coach_seed.sql",
+    "manifest": ".ai-ops/inventions/ai-focus-sprint-coach.json"
+  },
+  "objective": "Prove batch autopilot can generate, deploy, and validate the first generated sandbox route in a batch.",
+  "description": "A sandbox coach that helps a user plan one focused work sprint with a clear goal, timer discipline, and completion checklist.",
+  "safety": [
+    "Sandbox-only until promoted.",
+    "No public publishing without approval.",
+    "No paid API activation without approval.",
+    "No secret values in code, issues, logs, or frontend."
+  ],
+  "promotion_gate": "Human approval required before public launch, paid API activation, real-money operation, or new repo creation."
+}

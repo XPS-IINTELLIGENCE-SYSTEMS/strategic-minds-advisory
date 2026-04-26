@@ -1,0 +1,21 @@
+{
+  "system_name": "AI Meeting Prep Coach",
+  "system_slug": "ai-meeting-prep-coach",
+  "target_mode": "sandbox",
+  "generated_at": "2026-04-26T19:46:59.239Z",
+  "files": {
+    "api": "api/sandbox/generated/ai-meeting-prep-coach.js",
+    "migration": "supabase/migrations/20260426194659_ai-meeting-prep-coach_seed.sql",
+    "manifest": ".ai-ops/inventions/ai-meeting-prep-coach.json"
+  },
+  "objective": "Prove batch autopilot can generate, deploy, and validate a second generated sandbox route in the same batch.",
+  "description": "A sandbox coach that helps a user prepare for a meeting by clarifying purpose, agenda, questions, and follow-up actions.",
+  "safety": [
+    "Sandbox-only until promoted.",
+    "No public publishing without approval.",
+    "No paid API activation without approval.",
+    "No confidential meeting details stored in generated public proof.",
+    "No secret values in code, issues, logs, or frontend."
+  ],
+  "promotion_gate": "Human approval required before public launch, paid API activation, real-money operation, or new repo creation."
+}

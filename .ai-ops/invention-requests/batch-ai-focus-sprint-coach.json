@@ -1,0 +1,12 @@
+{
+  "system_name": "AI Focus Sprint Coach",
+  "system_slug": "ai-focus-sprint-coach",
+  "description": "A sandbox coach that helps a user plan one focused work sprint with a clear goal, timer discipline, and completion checklist.",
+  "objective": "Prove batch autopilot can generate, deploy, and validate the first generated sandbox route in a batch.",
+  "safety": [
+    "Sandbox-only until promoted.",
+    "No public publishing without approval.",
+    "No paid API activation without approval.",
+    "No secret values in code, issues, logs, or frontend."
+  ]
+}

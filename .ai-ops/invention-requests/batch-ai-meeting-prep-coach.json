@@ -1,0 +1,13 @@
+{
+  "system_name": "AI Meeting Prep Coach",
+  "system_slug": "ai-meeting-prep-coach",
+  "description": "A sandbox coach that helps a user prepare for a meeting by clarifying purpose, agenda, questions, and follow-up actions.",
+  "objective": "Prove batch autopilot can generate, deploy, and validate a second generated sandbox route in the same batch.",
+  "safety": [
+    "Sandbox-only until promoted.",
+    "No public publishing without approval.",
+    "No paid API activation without approval.",
+    "No confidential meeting details stored in generated public proof.",
+    "No secret values in code, issues, logs, or frontend."
+  ]
+}
