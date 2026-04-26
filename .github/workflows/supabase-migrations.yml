@@ -29,11 +29,6 @@ jobs:
         with:
           version: latest
 
-      - name: Install PostgreSQL client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-
       - name: Validate required secrets
         run: |
           test -n "$SUPABASE_ACCESS_TOKEN" || (echo "Missing SUPABASE_ACCESS_TOKEN" && exit 1)
@@ -66,16 +61,11 @@ jobs:
 
       - name: Verify required tables exist
         env:
-          PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
-          DB_HOST="db.${SUPABASE_PROJECT_ID}.supabase.co"
-          DB_IPV4=$(getent ahostsv4 "$DB_HOST" | awk '{ print $1; exit }')
-          if [ -z "$DB_IPV4" ]; then
-            echo "ERROR: Could not resolve IPv4 address for $DB_HOST"
-            exit 1
-          fi
-          echo "Resolved Supabase database host to IPv4 address for verification."
+          echo "Dumping remote public schema through Supabase CLI for verification."
+          supabase db dump --schema public > remote_public_schema.sql
 
           REQUIRED_TABLES=(
             paper_portfolio_snapshots
@@ -114,12 +104,7 @@ jobs:
 
           MISSING=()
           for table in "${REQUIRED_TABLES[@]}"; do
-            EXISTS=$(psql \
-              "host=$DB_HOST hostaddr=$DB_IPV4 port=5432 user=postgres dbname=postgres sslmode=require" \
-              --tuples-only \
-              --no-align \
-              --command "select exists (select 1 from information_schema.tables where table_schema = 'public' and table_name = '$table');")
-            if [ "$EXISTS" = "t" ]; then
+            if grep -Eq "CREATE TABLE (public\.)?\"?$table\"?" remote_public_schema.sql; then
               echo "OK $table"
             else
               echo "MISSING $table"
