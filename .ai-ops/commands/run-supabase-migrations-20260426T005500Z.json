@@ -1,0 +1,6 @@
+{
+  "command": "run-supabase-migrations",
+  "reason": "Rerun Supabase migrations after making verification resilient with schema dump and generated TypeScript type checks.",
+  "requested_by": "ai-in-action",
+  "created_at": "2026-04-26T00:55:00Z"
+}
