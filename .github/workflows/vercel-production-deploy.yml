@@ -27,6 +27,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID || vars.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID || vars.VERCEL_PROJECT_ID }}
+      VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -48,6 +49,13 @@ jobs:
           fi
 
           echo "configured=true" >> "$GITHUB_OUTPUT"
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then
+            echo "protection_bypass=present" >> "$GITHUB_OUTPUT"
+            echo "Vercel protection bypass is present and will be used for route validation."
+          else
+            echo "protection_bypass=absent" >> "$GITHUB_OUTPUT"
+            echo "Vercel protection bypass is absent; validation will try public routes."
+          fi
           echo "Vercel deployment secrets/variables are present. Values are masked by GitHub."
 
       - name: Set up Node
@@ -90,8 +98,12 @@ jobs:
         run: |
           set -euo pipefail
           URL="${{ steps.deploy.outputs.deployment_url }}"
-          curl -fsS "$URL/api/health" | tee health.json
-          curl -fsS "$URL/api/sandbox/skill-drill-coach" | tee skill-drill.json
+          CURL_HEADERS=()
+          if [ -n "${VERCEL_PROTECTION_BYPASS:-}" ]; then
+            CURL_HEADERS=(-H "x-vercel-protection-bypass: ${VERCEL_PROTECTION_BYPASS}")
+          fi
+          curl -fsS "${CURL_HEADERS[@]}" "$URL/api/health" | tee health.json
+          curl -fsS "${CURL_HEADERS[@]}" "$URL/api/sandbox/skill-drill-coach" | tee skill-drill.json
           grep -q 'system_slug' skill-drill.json
 
       - name: Create success issue
@@ -100,12 +112,14 @@ jobs:
         with:
           script: |
             const url = '${{ steps.deploy.outputs.deployment_url }}';
+            const bypass = '${{ steps.config.outputs.protection_bypass }}';
             const body = [
               '# Vercel Production Deploy Bridge Succeeded',
               '',
               `Deployment URL: ${url}`,
               `Commit: ${context.sha}`,
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              `Protection bypass used: ${bypass === 'present' ? 'yes' : 'no'}`,
               '',
               'Validated routes:',
               '',
@@ -143,12 +157,14 @@ jobs:
               '- Vercel CLI could not pull project settings.',
               '- Build failed.',
               '- Deployed API routes did not return expected JSON.',
+              '- Deployment protection is enabled and `VERCEL_PROTECTION_BYPASS` is missing or invalid.',
               '',
               'Admin fix if secrets are missing:',
               '',
               '- Add `VERCEL_TOKEN` as a GitHub Actions secret.',
               '- Add `VERCEL_ORG_ID` as a GitHub Actions secret or variable.',
               '- Add `VERCEL_PROJECT_ID` as a GitHub Actions secret or variable.',
+              '- Add `VERCEL_PROTECTION_BYPASS` as a GitHub Actions secret if Vercel deployment protection is enabled.',
               '',
               'No secret values are included.'
             ].join('\n');
