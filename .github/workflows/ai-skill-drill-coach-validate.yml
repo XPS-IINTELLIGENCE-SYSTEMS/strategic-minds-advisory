@@ -1,0 +1,141 @@
+name: AI Skill Drill Coach Validation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 14 * * *'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  validate:
+    name: Validate AI Skill Drill Coach sandbox
+    runs-on: ubuntu-latest
+    env:
+      PROOF_BASE_URL: ${{ secrets.AI_IN_ACTION_BASE_URL || 'https://strategicmindsadvisory.com' }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+    steps:
+      - name: Resolve proof base URL
+        run: |
+          set -euo pipefail
+          test -n "$PROOF_BASE_URL" || (echo "Missing proof base URL" && exit 1)
+          echo "Proof base URL: $PROOF_BASE_URL"
+
+      - name: Check health endpoint
+        run: |
+          set -euo pipefail
+          curl -fsS "$PROOF_BASE_URL/api/health" | tee health.json
+          grep -E '"status"|"mode"|"connectors"' health.json || true
+
+      - name: Check AI in Action page
+        run: |
+          set -euo pipefail
+          curl -fsSL "$PROOF_BASE_URL/ai-in-action" | tee ai-in-action.html >/dev/null
+          test -s ai-in-action.html
+          echo "AI in Action page returned HTML bytes: $(wc -c < ai-in-action.html)"
+
+      - name: Check sandbox status route
+        run: |
+          set -euo pipefail
+          curl -fsS "$PROOF_BASE_URL/api/sandbox/status?slug=ai-skill-drill-coach" | tee sandbox-status.json
+          grep -E '"mode"|"request"|"timestamp"' sandbox-status.json || true
+
+      - name: Check Skill Drill Coach GET route
+        run: |
+          set -euo pipefail
+          curl -fsS "$PROOF_BASE_URL/api/sandbox/skill-drill-coach" | tee skill-drill-get.json
+          grep -E '"AI Skill Drill Coach"|"Practical Prompt Engineering|"lesson"|"system_slug"' skill-drill-get.json || true
+
+      - name: Trigger Skill Drill Coach POST validation report
+        run: |
+          set -euo pipefail
+          curl -fsS -X POST "$PROOF_BASE_URL/api/sandbox/skill-drill-coach" | tee skill-drill-post.json
+          grep -E '"report"|"ok"|"system_slug"|"timestamp"' skill-drill-post.json || true
+
+      - name: Trigger platform health cron for fresh runtime proof
+        run: |
+          set -euo pipefail
+          if [ -n "${CRON_SECRET:-}" ]; then
+            curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$PROOF_BASE_URL/api/cron/platform-health" | tee platform-health.json
+          else
+            curl -fsS "$PROOF_BASE_URL/api/cron/platform-health" | tee platform-health.json
+          fi
+          grep -E '"ok"|"status"|"timestamp"' platform-health.json || true
+
+      - name: Create validation proof issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const read = (path) => {
+              try {
+                const raw = fs.readFileSync(path, 'utf8');
+                return raw.length > 3500 ? raw.slice(0, 3500) + '\n...[truncated]' : raw;
+              } catch (error) {
+                return `Unavailable: ${error.message}`;
+              }
+            };
+            const status = '${{ job.status }}';
+            const success = status === 'success';
+            const baseUrl = process.env.PROOF_BASE_URL || 'https://strategicmindsadvisory.com';
+            const title = success
+              ? 'AI Skill Drill Coach validation completed'
+              : 'AI Skill Drill Coach validation needs review';
+            const body = [
+              '# AI Skill Drill Coach Validation Report',
+              '',
+              `Status: ${status}`,
+              `Proof base URL: ${baseUrl}`,
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              '## Checked surfaces',
+              '',
+              `- Health: ${baseUrl}/api/health`,
+              `- Page: ${baseUrl}/ai-in-action`,
+              `- Sandbox status: ${baseUrl}/api/sandbox/status?slug=ai-skill-drill-coach`,
+              `- Skill Drill Coach GET: ${baseUrl}/api/sandbox/skill-drill-coach`,
+              `- Skill Drill Coach POST validation: ${baseUrl}/api/sandbox/skill-drill-coach`,
+              `- Platform health cron: ${baseUrl}/api/cron/platform-health`,
+              '',
+              '## Evidence snippets',
+              '',
+              '### Health JSON',
+              '```json',
+              read('health.json'),
+              '```',
+              '',
+              '### Sandbox status JSON',
+              '```json',
+              read('sandbox-status.json'),
+              '```',
+              '',
+              '### Skill Drill GET JSON',
+              '```json',
+              read('skill-drill-get.json'),
+              '```',
+              '',
+              '### Skill Drill POST JSON',
+              '```json',
+              read('skill-drill-post.json'),
+              '```',
+              '',
+              '## Next action',
+              '',
+              success
+                ? 'Mark Issue #26 validation items complete after confirming Vercel has deployed the latest frontend panel.'
+                : 'Inspect the failed step logs. Common causes: latest deployment has not reached Vercel, route import error, Supabase env missing, or report provider not configured.',
+              '',
+              'No secret values are included.'
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: success
+                ? ['ai-in-action', 'invention-factory', 'validation', 'sandbox']
+                : ['ai-in-action', 'invention-factory', 'validation', 'needs-review']
+            });
