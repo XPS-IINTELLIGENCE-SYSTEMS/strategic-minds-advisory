@@ -54,9 +54,9 @@ export default function AIInventionFactoryPanel() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-cyan-300">Sandbox invention factory</p>
-          <h2 className="text-3xl font-black tracking-tight text-white md:text-4xl">Type “build X system” → prove it in sandbox</h2>
+          <h2 className="text-3xl font-black tracking-tight text-white md:text-4xl">Describe any system idea → build and prove it in sandbox</h2>
           <p className="mt-3 max-w-4xl text-slate-400">
-            This layer is designed for controlled invention loops: capture a build request, create sandbox frontend/backend/Supabase proof, validate it with GitHub/Vercel, and report results without exposing secrets or publishing automatically.
+            This layer is designed for plain-English invention loops. You describe the system you want, then the pipeline captures the request, creates sandbox frontend/backend/Supabase proof, validates it with GitHub/Vercel, and reports results without exposing secrets or publishing automatically.
           </p>
         </div>
         <div className="flex gap-2">
@@ -66,7 +66,7 @@ export default function AIInventionFactoryPanel() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-3">
-        <Card icon={Factory} title="Build Requests">
+        <Card icon={Factory} title="System Requests">
           <div className="space-y-3">
             {safe.requests.slice(0, 5).map((item) => (
               <Row key={item.system_slug || item.system_name} title={item.system_name} subtitle={item.proof_summary || item.build_prompt} badge={item.status} tone={item.status === 'active' ? 'green' : 'amber'} />
@@ -93,8 +93,8 @@ export default function AIInventionFactoryPanel() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-5">
-          <div className="mb-2 flex items-center gap-2 text-cyan-200"><TerminalSquare className="h-5 w-5" /><h4 className="font-black text-white">Command Pattern</h4></div>
-          <p className="text-sm leading-6 text-slate-400">User request becomes a sandbox record, API route, dashboard proof, GitHub Actions validation, and report artifact.</p>
+          <div className="mb-2 flex items-center gap-2 text-cyan-200"><TerminalSquare className="h-5 w-5" /><h4 className="font-black text-white">Plain-English Intake</h4></div>
+          <p className="text-sm leading-6 text-slate-400">Any system idea becomes a structured sandbox record, API route, dashboard proof, GitHub Actions validation, and report artifact.</p>
         </div>
         <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-5">
           <div className="mb-2 flex items-center gap-2 text-emerald-200"><Rocket className="h-5 w-5" /><h4 className="font-black text-white">Promotion Gate</h4></div>
