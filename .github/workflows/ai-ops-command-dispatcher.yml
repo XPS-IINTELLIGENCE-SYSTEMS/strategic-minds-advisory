@@ -9,11 +9,11 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline, run-invention-autopilot, validate-skill-drill-coach, run-vercel-deploy-bridge'
+        description: 'Allowed command: run-supabase-migrations, run-health-check, run-cron-failover, run-next-pipeline, run-invention-autopilot, validate-skill-drill-coach, run-vercel-deploy-bridge, validate-generated-invention'
         required: true
         default: 'run-health-check'
       route:
-        description: 'Optional route/mode/theme'
+        description: 'Optional route/mode/theme/slug'
         required: false
         default: 'platform-health'
 
@@ -41,6 +41,7 @@ jobs:
           COMMAND="${{ github.event.inputs.command || '' }}"
           ROUTE="${{ github.event.inputs.route || 'platform-health' }}"
           COUNT="1"
+          SLUG=""
 
           if [ -z "$COMMAND" ]; then
             FILE=$(git diff --name-only HEAD~1 HEAD -- '.ai-ops/commands/**.json' | tail -n 1 || true)
@@ -50,8 +51,9 @@ jobs:
             fi
             echo "Reading command from $FILE"
             COMMAND=$(jq -r '.command // empty' "$FILE")
-            ROUTE=$(jq -r '.route // .mode // .theme // "platform-health"' "$FILE")
+            ROUTE=$(jq -r '.route // .mode // .theme // .slug // "platform-health"' "$FILE")
             COUNT=$(jq -r '.count // "1"' "$FILE")
+            SLUG=$(jq -r '.slug // .system_slug // empty' "$FILE")
           fi
 
           case "$COMMAND" in
@@ -83,6 +85,15 @@ jobs:
               WORKFLOW_FILE="vercel-production-deploy.yml"
               WORKFLOW_NAME="Vercel Production Deploy Bridge"
               ;;
+            validate-generated-invention)
+              WORKFLOW_FILE="validate-generated-invention.yml"
+              WORKFLOW_NAME="Validate Generated Invention"
+              if [ -z "$SLUG" ]; then SLUG="$ROUTE"; fi
+              if [ -z "$SLUG" ] || [ "$SLUG" = "platform-health" ]; then
+                echo "validate-generated-invention requires slug or system_slug in command file."
+                exit 1
+              fi
+              ;;
             *)
               echo "Unsupported command: $COMMAND"
               exit 1
@@ -92,6 +103,7 @@ jobs:
           echo "command=$COMMAND" >> "$GITHUB_OUTPUT"
           echo "route=$ROUTE" >> "$GITHUB_OUTPUT"
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "slug=$SLUG" >> "$GITHUB_OUTPUT"
           echo "workflow_file=$WORKFLOW_FILE" >> "$GITHUB_OUTPUT"
           echo "workflow_name=$WORKFLOW_NAME" >> "$GITHUB_OUTPUT"
           echo "Allowed command: $COMMAND"
@@ -105,6 +117,7 @@ jobs:
           COMMAND: ${{ steps.resolve.outputs.command }}
           ROUTE: ${{ steps.resolve.outputs.route }}
           COUNT: ${{ steps.resolve.outputs.count }}
+          SLUG: ${{ steps.resolve.outputs.slug }}
         shell: bash
         run: |
           set -euo pipefail
@@ -117,6 +130,8 @@ jobs:
             gh workflow run "$WORKFLOW_FILE" --ref main -f mode="$ROUTE"
           elif [ "$COMMAND" = "run-invention-autopilot" ]; then
             gh workflow run "$WORKFLOW_FILE" --ref main -f theme="$ROUTE" -f count="$COUNT"
+          elif [ "$COMMAND" = "validate-generated-invention" ]; then
+            gh workflow run "$WORKFLOW_FILE" --ref main -f slug="$SLUG"
           else
             gh workflow run "$WORKFLOW_FILE" --ref main
           fi
