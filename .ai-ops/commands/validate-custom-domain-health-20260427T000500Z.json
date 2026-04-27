@@ -1,0 +1,9 @@
+{
+  "command": "run-health-check",
+  "route": "platform-health",
+  "base_url": "https://strategicmindsadvisory.com",
+  "fallback_base_url": "https://strategic-minds-advisory-git-main-strategic-minds-advisory.vercel.app",
+  "reason": "Validate strategicmindsadvisory.com after DNS/site fix while preserving Vercel branch alias fallback.",
+  "requested_by": "ai-in-action-master-loop",
+  "created_at": "2026-04-27T00:05:00Z"
+}
