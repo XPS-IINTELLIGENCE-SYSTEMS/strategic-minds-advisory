@@ -16,7 +16,6 @@
     { "src": "/api/task-dispatch", "dest": "/api-task-dispatch.js" }
   ],
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
