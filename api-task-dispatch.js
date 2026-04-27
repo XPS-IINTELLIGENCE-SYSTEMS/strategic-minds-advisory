@@ -6,14 +6,15 @@ export default async function handler(req, res) {
     const host = req.headers.host
     const base = `${protocol}://${host}`
 
-    await fetch(`${base}/api-log-writer`)
-    await fetch(`${base}/api-revenue`)
-    await fetch(`${base}/api-metrics`)
+    await fetch(`${base}/api/log-writer`)
+    await fetch(`${base}/api/revenue`)
+    await fetch(`${base}/api/metrics`)
 
     return res.status(200).json({
       status: "ok",
       execution: "sequential",
       chain: "log → revenue → metrics",
+      routes: ["/api/log-writer", "/api/revenue", "/api/metrics"],
       time: new Date().toISOString()
     })
   } catch (err) {
