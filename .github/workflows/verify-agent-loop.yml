@@ -1,0 +1,42 @@
+name: Verify AI in Action Agent Loop
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify-agent-loop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel deployment propagation
+        run: sleep 45
+
+      - name: Verify health endpoint
+        run: |
+          set -e
+          curl -fsS https://strategicmindsadvisory.com/api/health | tee health.json
+          grep -q '"status"' health.json
+
+      - name: Verify task dispatch endpoint
+        run: |
+          set -e
+          curl -fsS https://strategicmindsadvisory.com/api/task-dispatch | tee task-dispatch.json
+          grep -q '"execution"' task-dispatch.json
+
+      - name: Verify agent loop endpoint
+        run: |
+          set -e
+          curl -fsS https://strategicmindsadvisory.com/api/agent-loop | tee agent-loop.json
+          grep -q '"execution"' agent-loop.json
+          grep -q '"multi-step"' agent-loop.json
+
+      - name: Upload verification artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-in-action-endpoint-verification
+          path: |
+            health.json
+            task-dispatch.json
+            agent-loop.json
