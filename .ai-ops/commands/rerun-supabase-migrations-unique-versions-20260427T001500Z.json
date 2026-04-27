@@ -1,0 +1,6 @@
+{
+  "command": "run-supabase-migrations",
+  "reason": "Rerun migrations after removing duplicate-version migration files and preserving unique migration timestamps.",
+  "requested_by": "ai-in-action-master-loop",
+  "created_at": "2026-04-27T00:15:00Z"
+}
