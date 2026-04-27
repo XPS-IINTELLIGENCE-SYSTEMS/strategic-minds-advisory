@@ -10,7 +10,8 @@
   "routes": [
     { "src": "/api/health", "dest": "/api-health.js" },
     { "src": "/api/cron/platform-health", "dest": "/api-platform-health.js" },
-    { "src": "/api/cron/daily-summary", "dest": "/api-daily-summary.js" }
+    { "src": "/api/cron/daily-summary", "dest": "/api-daily-summary.js" },
+    { "src": "/api/cron/content-package", "dest": "/api-content-package.js" }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
