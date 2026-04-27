@@ -13,7 +13,10 @@
     { "src": "/api/cron/daily-summary", "dest": "/api-daily-summary.js" },
     { "src": "/api/cron/content-package", "dest": "/api-content-package.js" },
     { "src": "/api/agent-loop", "dest": "/api-agent-loop.js" },
-    { "src": "/api/task-dispatch", "dest": "/api-task-dispatch.js" }
+    { "src": "/api/task-dispatch", "dest": "/api-task-dispatch.js" },
+    { "src": "/api/log-writer", "dest": "/api-log-writer.js" },
+    { "src": "/api/revenue", "dest": "/api-revenue-engine.js" },
+    { "src": "/api/metrics", "dest": "/api-metrics.js" }
   ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
