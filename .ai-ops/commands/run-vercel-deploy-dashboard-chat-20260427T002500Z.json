@@ -1,0 +1,6 @@
+{
+  "command": "run-vercel-deploy-bridge",
+  "reason": "Deploy dashboard navigation repair and EnhancedChatPanel wiring to /api/agent/chat and /api/browser/task.",
+  "requested_by": "ai-in-action-master-loop",
+  "created_at": "2026-04-27T00:25:00Z"
+}
