@@ -12,7 +12,8 @@
     { "src": "/api/cron/platform-health", "dest": "/api-platform-health.js" },
     { "src": "/api/cron/daily-summary", "dest": "/api-daily-summary.js" },
     { "src": "/api/cron/content-package", "dest": "/api-content-package.js" },
-    { "src": "/api/agent-loop", "dest": "/api-agent-loop.js" }
+    { "src": "/api/agent-loop", "dest": "/api-agent-loop.js" },
+    { "src": "/api/task-dispatch", "dest": "/api-task-dispatch.js" }
   ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
