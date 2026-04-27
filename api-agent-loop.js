@@ -10,14 +10,15 @@ export default function handler(req, res) {
   waitUntil(
     Promise.all([
       fetch(`${base}/api/task-dispatch`),
-      fetch(`${base}/api-log-writer`)
+      fetch(`${base}/api-log-writer`),
+      fetch(`${base}/api-revenue`)
     ])
   )
 
   return res.status(200).json({
     status: "running",
     mode: "background",
-    chain: "task-dispatch + log",
+    chain: "task-dispatch + log + revenue",
     time: new Date().toISOString()
   })
 }
