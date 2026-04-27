@@ -1,15 +1,23 @@
-export default async function handler(req, res) {
-  console.log("AGENT LOOP + CHAIN RUNNING")
+import { waitUntil } from '@vercel/functions'
 
-  try {
-    await fetch(process.env.BASE_URL + "/api/task-dispatch")
+export default function handler(req, res) {
+  console.log("AGENT LOOP + BACKGROUND EXECUTION")
 
-    return res.status(200).json({
-      status: "running",
-      chain: "task-dispatch",
-      time: new Date().toISOString()
-    })
-  } catch (err) {
-    return res.status(500).json({ error: err.message })
-  }
+  const protocol = req.headers['x-forwarded-proto'] || 'https'
+  const host = req.headers.host
+  const base = `${protocol}://${host}`
+
+  waitUntil(
+    Promise.all([
+      fetch(`${base}/api/task-dispatch`),
+      fetch(`${base}/api-log-writer`)
+    ])
+  )
+
+  return res.status(200).json({
+    status: "running",
+    mode: "background",
+    chain: "task-dispatch + log",
+    time: new Date().toISOString()
+  })
 }
