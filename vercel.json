@@ -17,7 +17,8 @@
     { "src": "/api/log-writer", "dest": "/api-log-writer.js" },
     { "src": "/api/revenue", "dest": "/api-revenue-engine.js" },
     { "src": "/api/metrics", "dest": "/api-metrics.js" },
-    { "src": "/api/system-verify", "dest": "/api-system-verify.js" }
+    { "src": "/api/system-verify", "dest": "/api-system-verify.js" },
+    { "src": "/api/orchestrator", "dest": "/api-orchestrator.js" }
   ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
