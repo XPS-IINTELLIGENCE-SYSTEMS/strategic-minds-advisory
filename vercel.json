@@ -8,21 +8,6 @@
     { "path": "/api/cron/daily-summary", "schedule": "0 9 * * *" },
     { "path": "/api/cron/content-package", "schedule": "0 17 * * *" }
   ],
-  "routes": [
-    { "src": "/api/health", "dest": "/api-health.js" },
-    { "src": "/api/cron/platform-health", "dest": "/api-platform-health.js" },
-    { "src": "/api/cron/daily-summary", "dest": "/api-daily-summary.js" },
-    { "src": "/api/cron/content-package", "dest": "/api-content-package.js" },
-    { "src": "/api/agent-loop", "dest": "/api-agent-loop.js" },
-    { "src": "/api/task-dispatch", "dest": "/api-task-dispatch.js" },
-    { "src": "/api/log-writer", "dest": "/api-log-writer.js" },
-    { "src": "/api/revenue", "dest": "/api-revenue-engine.js" },
-    { "src": "/api/metrics", "dest": "/api-metrics.js" },
-    { "src": "/api/system-verify", "dest": "/api-system-verify.js" },
-    { "src": "/api/orchestrator", "dest": "/api-orchestrator-v2.js" },
-    { "src": "/api/model-router", "dest": "/api-model-router.js" },
-    { "src": "/api/self-heal", "dest": "/api-self-heal.js" }
-  ],
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
