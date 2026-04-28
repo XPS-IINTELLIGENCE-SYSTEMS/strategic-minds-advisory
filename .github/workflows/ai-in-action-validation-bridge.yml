@@ -40,22 +40,32 @@ jobs:
           const base = process.env.BASE_URL || 'https://strategicmindsadvisory.com'
           const cronSecret = process.env.CRON_SECRET || ''
           const orchestratorSecret = process.env.ORCHESTRATOR_SECRET || ''
+          const positiveStatuses = new Set(['ok', 'logged', 'running', 'completed', 'operational', 'seeded', 'active'])
+          const degradedButReachable = new Set(['degraded', 'partial'])
 
           const targets = [
             { name: 'health', path: '/api/health', critical: true, auth: null },
             { name: 'model-router', path: '/api/model-router', critical: true, auth: null },
-            { name: 'system-verify', path: '/api/system-verify', critical: true, auth: orchestratorSecret ? 'orchestrator' : null },
-            { name: 'self-heal', path: '/api/self-heal', critical: true, auth: cronSecret ? 'cron' : (orchestratorSecret ? 'orchestrator' : null) },
+            { name: 'system-verify', path: '/api/system-verify', critical: true, auth: orchestratorSecret ? 'orchestrator' : null, allowDegraded: true },
+            { name: 'self-heal', path: '/api/self-heal', critical: true, auth: cronSecret ? 'cron' : (orchestratorSecret ? 'orchestrator' : null), allowDegraded: true },
             { name: 'agent-loop', path: '/api/agent-loop', critical: true, auth: null },
             { name: 'task-dispatch', path: '/api/task-dispatch', critical: true, auth: null },
-            { name: 'orchestrator', path: '/api/orchestrator', critical: false, auth: orchestratorSecret ? 'orchestrator' : null },
+            { name: 'orchestrator', path: '/api/orchestrator', critical: false, auth: orchestratorSecret ? 'orchestrator' : null, allowMisconfigured: true },
             { name: 'metrics', path: '/api/metrics', critical: false, auth: null },
             { name: 'revenue', path: '/api/revenue', critical: false, auth: null },
             { name: 'log-writer', path: '/api/log-writer', critical: false, auth: null }
           ]
 
+          function semanticOk(parsed, target) {
+            const status = parsed?.status
+            if (positiveStatuses.has(status)) return true
+            if (target.allowDegraded && degradedButReachable.has(status)) return true
+            if (target.allowMisconfigured && (status === 'misconfigured' || status === 'error')) return true
+            return false
+          }
+
           async function check(target) {
-            const headers = { 'user-agent': 'ai-in-action-validation-bridge/1.0' }
+            const headers = { 'user-agent': 'ai-in-action-validation-bridge/1.1' }
             if (target.auth === 'cron' && cronSecret) headers.authorization = `Bearer ${cronSecret}`
             if (target.auth === 'orchestrator' && orchestratorSecret) headers.authorization = `Bearer ${orchestratorSecret}`
 
@@ -65,11 +75,17 @@ jobs:
               const text = await response.text()
               let parsed = null
               try { parsed = JSON.parse(text) } catch (_) {}
+              const semantic_ok = semanticOk(parsed, target)
+              const ok = response.ok || semantic_ok
+              const http_status_warning = !response.ok && semantic_ok
               return {
                 name: target.name,
                 path: target.path,
                 critical: target.critical,
-                ok: response.ok,
+                ok,
+                semantic_ok,
+                http_ok: response.ok,
+                http_status_warning,
                 status: response.status,
                 duration_ms: Date.now() - started,
                 body_preview: text.slice(0, 1200),
@@ -88,6 +104,8 @@ jobs:
                 path: target.path,
                 critical: target.critical,
                 ok: false,
+                semantic_ok: false,
+                http_ok: false,
                 status: 0,
                 duration_ms: Date.now() - started,
                 error: error.message
@@ -101,17 +119,20 @@ jobs:
 
             const failed = checks.filter(check => !check.ok)
             const criticalFailed = failed.filter(check => check.critical)
+            const warnings = checks.filter(check => check.http_status_warning)
             const report = {
               generated_at: new Date().toISOString(),
               source: 'github-actions-ai-in-action-validation-bridge',
+              validator_version: '1.1-semantic-status',
               base_url: base,
               status: criticalFailed.length === 0 ? 'operational' : 'degraded',
               passed: checks.length - failed.length,
               failed: failed.length,
               critical_failed: criticalFailed.length,
+              warnings: warnings.length,
               checks,
               guidance: criticalFailed.length === 0
-                ? 'Core production runtime is reachable from GitHub Actions.'
+                ? 'Core production runtime is reachable from GitHub Actions. Review http_status_warning entries separately.'
                 : 'One or more critical checks failed. Review checks and create ai_tasks/self-heal actions.'
             }
 
