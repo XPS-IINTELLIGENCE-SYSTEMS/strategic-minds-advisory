@@ -1,0 +1,113 @@
+name: Supabase Migration Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run supabase db push as dry-run only'
+        required: true
+        type: choice
+        default: 'true'
+        options:
+          - 'true'
+          - 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-migrations:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v2
+        with:
+          version: latest
+
+      - name: Prepare ops output
+        run: mkdir -p ops
+
+      - name: Validate migration secrets
+        id: secrets
+        shell: bash
+        run: |
+          set +e
+          MODE="none"
+          if [ -n "$SUPABASE_DB_URL" ]; then
+            MODE="db-url"
+          elif [ -n "$SUPABASE_ACCESS_TOKEN" ] && [ -n "$SUPABASE_PROJECT_ID" ] && [ -n "$SUPABASE_DB_PASSWORD" ]; then
+            MODE="linked-project"
+          fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          node <<'NODE'
+          const fs = require('fs')
+          const mode = process.env.SUPABASE_DB_URL ? 'db-url' : ((process.env.SUPABASE_ACCESS_TOKEN && process.env.SUPABASE_PROJECT_ID && process.env.SUPABASE_DB_PASSWORD) ? 'linked-project' : 'none')
+          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({
+            generated_at: new Date().toISOString(),
+            status: mode === 'none' ? 'blocked' : 'ready',
+            mode,
+            required_secrets: ['SUPABASE_DB_URL or SUPABASE_ACCESS_TOKEN + SUPABASE_PROJECT_ID + SUPABASE_DB_PASSWORD'],
+            migration_file: 'supabase/migrations/0001_ai_in_action_core.sql'
+          }, null, 2) + '\n')
+          NODE
+          if [ "$MODE" = "none" ]; then
+            echo "Supabase migration secrets are not configured."
+            exit 1
+          fi
+
+      - name: Link Supabase project
+        if: steps.secrets.outputs.mode == 'linked-project'
+        shell: bash
+        run: |
+          supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Dry run migrations with DB URL
+        if: steps.secrets.outputs.mode == 'db-url' && inputs.dry_run == 'true'
+        run: supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
+
+      - name: Dry run migrations with linked project
+        if: steps.secrets.outputs.mode == 'linked-project' && inputs.dry_run == 'true'
+        run: supabase db push --dry-run
+
+      - name: Apply migrations with DB URL
+        if: steps.secrets.outputs.mode == 'db-url' && inputs.dry_run == 'false'
+        run: supabase db push --db-url "$SUPABASE_DB_URL"
+
+      - name: Apply migrations with linked project
+        if: steps.secrets.outputs.mode == 'linked-project' && inputs.dry_run == 'false'
+        run: supabase db push
+
+      - name: Write migration result
+        if: always()
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs')
+          let prior = {}
+          try { prior = JSON.parse(fs.readFileSync('ops/supabase-migration-status.json', 'utf8')) } catch (_) {}
+          const status = process.env.GITHUB_JOB_STATUS || 'completed'
+          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({
+            ...prior,
+            completed_at: new Date().toISOString(),
+            workflow_result: status,
+            dry_run: '${{ inputs.dry_run }}'
+          }, null, 2) + '\n')
+          NODE
+
+      - name: Commit migration status
+        if: always()
+        run: |
+          git config user.name "ai-in-action-migration-bot"
+          git config user.email "actions@github.com"
+          git add ops/supabase-migration-status.json || true
+          git diff --cached --quiet && exit 0
+          git commit -m "ops: update supabase migration status"
+          git push
