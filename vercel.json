@@ -19,7 +19,7 @@
     { "src": "/api/revenue", "dest": "/api-revenue-engine.js" },
     { "src": "/api/metrics", "dest": "/api-metrics.js" },
     { "src": "/api/system-verify", "dest": "/api-system-verify.js" },
-    { "src": "/api/orchestrator", "dest": "/api-orchestrator.js" },
+    { "src": "/api/orchestrator", "dest": "/api-orchestrator-v2.js" },
     { "src": "/api/model-router", "dest": "/api-model-router.js" },
     { "src": "/api/self-heal", "dest": "/api-self-heal.js" }
   ],
