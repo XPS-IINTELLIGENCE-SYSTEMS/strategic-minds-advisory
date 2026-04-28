@@ -1,0 +1,128 @@
+{
+  "generated_at": "2026-04-28T02:55:25.624Z",
+  "source": "github-actions-ai-in-action-validation-bridge",
+  "base_url": "https://strategicmindsadvisory.com",
+  "status": "degraded",
+  "passed": 0,
+  "failed": 10,
+  "critical_failed": 6,
+  "checks": [
+    {
+      "name": "health",
+      "path": "/api/health",
+      "critical": true,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 666,
+      "body_preview": "{\"app\":\"AI in Action Labs\",\"service\":\"ai-in-action-runtime\",\"status\":\"ok\",\"mode\":\"synthetic-fallback\",\"timestamp\":\"2026-04-28T02:55:25.225Z\",\"connectors\":{\"vercel\":\"live\",\"github\":\"live\",\"supabase_public\":\"missing-env\",\"supabase_admin\":\"configured\",\"groq\":\"configured\",\"finnhub\":\"configured\",\"cron_secret\":\"missing-env\",\"base44\":\"disabled\"},\"runtime_env\":{\"supabase_public\":false,\"supabase_url\":true,\"supabase_service_role\":true,\"groq\":true,\"finnhub\":true,\"cron_secret\":false},\"missing_required_for_cron_writes\":[],\"data_state\":\"migration-supported\",\"notes\":{\"groq\":\"Groq runtime key is visible to Vercel.\",\"finnhub\":\"Equity and ETF quote checks can use Finnhub.\",\"cron_secret\":\"CRON_SECRET missing. Vercel scheduled calls may still run, but manual endpoint protection is weaker.\",\"supabase_admin\":\"Server-side Supabase writes are available.\"}}",
+      "parsed_status": "ok",
+      "parsed_summary": {
+        "status": "ok",
+        "passed": null,
+        "failed": null,
+        "criticalFailed": null,
+        "missing_env": null
+      }
+    },
+    {
+      "name": "model-router",
+      "path": "/api/model-router",
+      "critical": true,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 129,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::qfjl6-1777344925285-2953a581805f\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "system-verify",
+      "path": "/api/system-verify",
+      "critical": true,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 17,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::qfjl6-1777344925410-2d569effe4dd\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "self-heal",
+      "path": "/api/self-heal",
+      "critical": true,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 26,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::xgvs6-1777344925433-2dafe1f2dd51\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "agent-loop",
+      "path": "/api/agent-loop",
+      "critical": true,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 28,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::64lbw-1777344925456-f2a7ca7cdb42\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "task-dispatch",
+      "path": "/api/task-dispatch",
+      "critical": true,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 107,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::qfjl6-1777344925571-147fba721d96\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "orchestrator",
+      "path": "/api/orchestrator",
+      "critical": false,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 13,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::qfjl6-1777344925583-97a3a9c1f2af\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "metrics",
+      "path": "/api/metrics",
+      "critical": false,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 13,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::qfjl6-1777344925597-052a0b598f69\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "revenue",
+      "path": "/api/revenue",
+      "critical": false,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 12,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::qfjl6-1777344925608-610a9798e7ed\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    },
+    {
+      "name": "log-writer",
+      "path": "/api/log-writer",
+      "critical": false,
+      "ok": false,
+      "status": 404,
+      "duration_ms": 12,
+      "body_preview": "The page could not be found\n\nNOT_FOUND\n\nsfo1::mrlbc-1777344925620-aaabea48844d\n",
+      "parsed_status": null,
+      "parsed_summary": null
+    }
+  ],
+  "guidance": "One or more critical checks failed. Review checks and create ai_tasks/self-heal actions."
+}
