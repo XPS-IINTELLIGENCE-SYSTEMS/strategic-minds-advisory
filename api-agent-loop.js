@@ -15,8 +15,17 @@ export default function handler(req, res) {
       const MAX = 3
 
       while (iterations < MAX) {
-        await fetch(`${base}/api/task-dispatch`)
+        await fetch(`${base}/api/task-dispatch`, {
+          method: 'GET',
+          headers: { 'x-ai-action-source': 'agent-loop' }
+        })
         iterations++
+      }
+
+      if (process.env.ENABLE_ORCHESTRATOR_FROM_AGENT_LOOP === 'true') {
+        const headers = { 'x-ai-action-source': 'agent-loop' }
+        if (process.env.ORCHESTRATOR_SECRET) headers.authorization = `Bearer ${process.env.ORCHESTRATOR_SECRET}`
+        await fetch(`${base}/api/orchestrator`, { method: 'GET', headers })
       }
     })()
   )
@@ -26,6 +35,7 @@ export default function handler(req, res) {
     mode: "background",
     execution: "multi-step",
     steps: 3,
+    orchestratorEnabled: process.env.ENABLE_ORCHESTRATOR_FROM_AGENT_LOOP === 'true',
     time: new Date().toISOString()
   })
 }
