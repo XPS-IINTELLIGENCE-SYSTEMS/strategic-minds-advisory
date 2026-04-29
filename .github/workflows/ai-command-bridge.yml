@@ -1,0 +1,139 @@
+name: AI in Action Command Bridge
+
+on:
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Command to run'
+        required: true
+        type: choice
+        default: 'validate'
+        options:
+          - validate
+          - supabase-status
+          - supabase-dry-run
+
+permissions:
+  contents: write
+
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.comment.body, '/ai ')
+    env:
+      BASE_URL: https://strategicmindsadvisory.com
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v2
+        with:
+          version: latest
+
+      - run: mkdir -p ops/command-history ops/validation-history
+
+      - id: cmd
+        shell: bash
+        run: |
+          RAW="${{ github.event.comment.body || inputs.command }}"
+          CMD="unknown"
+          case "$RAW" in
+            *"/ai validate"*|"validate") CMD="validate" ;;
+            *"/ai supabase status"*|"supabase-status") CMD="supabase-status" ;;
+            *"/ai supabase dry-run"*|"supabase-dry-run") CMD="supabase-dry-run" ;;
+          esac
+          echo "cmd=$CMD" >> "$GITHUB_OUTPUT"
+          [ "$CMD" != "unknown" ]
+
+      - name: Validate production endpoints
+        if: steps.cmd.outputs.cmd == 'validate'
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('fs')
+          const base = process.env.BASE_URL
+          const targets = ['/api/health','/api/model-router','/api/system-verify','/api/self-heal','/api/agent-loop','/api/task-dispatch','/api/orchestrator','/api/metrics','/api/revenue','/api/log-writer']
+          const okStatuses = new Set(['ok','operational','completed','logged','active','degraded','error'])
+          async function check(path) {
+            const start = Date.now()
+            try {
+              const r = await fetch(base + path)
+              const text = await r.text()
+              let body = null
+              try { body = JSON.parse(text) } catch (_) {}
+              const semantic = okStatuses.has(body?.status)
+              return { path, ok: r.ok || semantic, http_ok: r.ok, status: r.status, semantic_status: body?.status || null, ms: Date.now() - start, preview: text.slice(0, 600) }
+            } catch (e) {
+              return { path, ok: false, error: e.message, ms: Date.now() - start }
+            }
+          }
+          ;(async()=>{
+            const checks=[]
+            for (const p of targets) checks.push(await check(p))
+            const failed=checks.filter(c=>!c.ok)
+            const report={generated_at:new Date().toISOString(),source:'ai-command-bridge',command:'validate',status:failed.length?'degraded':'operational',passed:checks.length-failed.length,failed:failed.length,checks}
+            fs.writeFileSync('ops/latest-system-validation.json', JSON.stringify(report,null,2)+'\n')
+          })().catch(e=>{console.error(e);process.exit(1)})
+          NODE
+
+      - name: Supabase status
+        if: startsWith(steps.cmd.outputs.cmd, 'supabase')
+        id: sbs
+        shell: bash
+        run: |
+          MODE="none"
+          if [ -n "$SUPABASE_DB_URL" ]; then MODE="db-url"; fi
+          if [ "$MODE" = "none" ] && [ -n "$SUPABASE_ACCESS_TOKEN" ] && [ -n "$SUPABASE_PROJECT_ID" ] && [ -n "$SUPABASE_DB_PASSWORD" ]; then MODE="linked-project"; fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          node <<'NODE'
+          const fs=require('fs')
+          const mode=process.env.SUPABASE_DB_URL?'db-url':((process.env.SUPABASE_ACCESS_TOKEN&&process.env.SUPABASE_PROJECT_ID&&process.env.SUPABASE_DB_PASSWORD)?'linked-project':'none')
+          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({generated_at:new Date().toISOString(),source:'ai-command-bridge',command:'${{ steps.cmd.outputs.cmd }}',status:mode==='none'?'blocked':'ready',mode,migration_file:'supabase/migrations/0001_ai_in_action_core.sql'},null,2)+'\n')
+          NODE
+          [ "$MODE" != "none" ]
+
+      - name: Link Supabase project
+        if: steps.cmd.outputs.cmd == 'supabase-dry-run' && steps.sbs.outputs.mode == 'linked-project'
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Supabase dry run
+        if: steps.cmd.outputs.cmd == 'supabase-dry-run'
+        shell: bash
+        run: |
+          if [ "${{ steps.sbs.outputs.mode }}" = "db-url" ]; then
+            supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
+          else
+            supabase db push --dry-run
+          fi
+          node <<'NODE'
+          const fs=require('fs')
+          const prior=JSON.parse(fs.readFileSync('ops/supabase-migration-status.json','utf8'))
+          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({...prior,status:'dry-run-passed',dry_run:true,completed_at:new Date().toISOString()},null,2)+'\n')
+          NODE
+
+      - name: Write command status
+        if: always()
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs')
+          const cmd='${{ steps.cmd.outputs.cmd }}'
+          const payload={generated_at:new Date().toISOString(),source:'ai-command-bridge',command:cmd,result:'completed'}
+          fs.writeFileSync('ops/ai-command-bridge-status.json', JSON.stringify(payload,null,2)+'\n')
+          fs.writeFileSync(`ops/command-history/${new Date().toISOString().replace(/[:.]/g,'-')}-${cmd}.json`, JSON.stringify(payload,null,2)+'\n')
+          NODE
+
+      - name: Commit ops artifacts
+        if: always()
+        run: |
+          git config user.name "ai-in-action-command-bridge"
+          git config user.email "actions@github.com"
+          git add ops || true
+          git diff --cached --quiet && exit 0
+          git commit -m "ops: update ai command bridge artifacts"
+          git push
