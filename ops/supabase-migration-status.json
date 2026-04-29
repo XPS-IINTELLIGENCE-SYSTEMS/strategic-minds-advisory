@@ -1,8 +1,12 @@
 {
-  "generated_at": "2026-04-29T02:56:16.438Z",
+  "generated_at": "2026-04-29T03:28:16.894Z",
   "source": "ai-command-bridge",
   "command": "supabase-dry-run",
-  "status": "ready",
+  "status": "dry-run-failed",
   "mode": "linked-project",
-  "migration_file": "supabase/migrations/0001_ai_in_action_core.sql"
+  "migration_file": "supabase/migrations/0001_ai_in_action_core.sql",
+  "dry_run": true,
+  "exit_code": 1,
+  "output_preview": "DRY RUN: migrations will *not* be pushed to the database.\nConnecting to remote database...\nFound local migration files to be inserted before the last migration on remote database.\n\nRerun the command with --include-all flag to apply these migrations:\nsupabase/migrations/0001_ai_in_action_core.sql\n\n",
+  "completed_at": "2026-04-29T03:28:21.920Z"
 }
