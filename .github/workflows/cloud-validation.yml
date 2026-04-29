@@ -1,0 +1,48 @@
+name: Cloud Validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate build and migration readiness
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Check active Base44 frontend imports
+        run: |
+          echo "Checking active Base44 imports..."
+          if grep -R "from '@/api/base44Client'" src; then
+            echo "Active Base44 import found. Convert this file to nativeData/nativeFunctions."
+            exit 1
+          fi
+
+      - name: Check active Base44 function calls
+        run: |
+          echo "Checking active Base44 dot calls..."
+          if grep -R "base44\." src; then
+            echo "Active base44.* usage found. Convert this file to nativeData/nativeFunctions."
+            exit 1
+          fi
+
+      - name: Confirm XPS Apex migration file exists
+        run: test -f supabase/migrations/20260428_xps_apex_phase_1.sql
