@@ -1,214 +1,100 @@
 {
-  "generated_at": "2026-04-29T02:45:31.168Z",
-  "source": "github-actions-ai-in-action-validation-bridge",
-  "validator_version": "1.1-semantic-status",
-  "base_url": "https://strategicmindsadvisory.com",
+  "generated_at": "2026-04-29T02:53:17.268Z",
+  "source": "ai-command-bridge",
+  "command": "validate",
   "status": "operational",
   "passed": 10,
   "failed": 0,
-  "critical_failed": 0,
-  "warnings": 1,
   "checks": [
     {
-      "name": "health",
       "path": "/api/health",
-      "critical": true,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 705,
-      "body_preview": "{\"app\":\"AI in Action Labs\",\"service\":\"ai-in-action-runtime\",\"status\":\"ok\",\"mode\":\"synthetic-fallback\",\"timestamp\":\"2026-04-29T02:45:24.226Z\",\"connectors\":{\"vercel\":\"live\",\"github\":\"live\",\"supabase_public\":\"missing-env\",\"supabase_admin\":\"configured\",\"groq\":\"configured\",\"finnhub\":\"configured\",\"cron_secret\":\"missing-env\",\"base44\":\"disabled\"},\"runtime_env\":{\"supabase_public\":false,\"supabase_url\":true,\"supabase_service_role\":true,\"groq\":true,\"finnhub\":true,\"cron_secret\":false},\"missing_required_for_cron_writes\":[],\"data_state\":\"migration-supported\",\"notes\":{\"groq\":\"Groq runtime key is visible to Vercel.\",\"finnhub\":\"Equity and ETF quote checks can use Finnhub.\",\"cron_secret\":\"CRON_SECRET missing. Vercel scheduled calls may still run, but manual endpoint protection is weaker.\",\"supabase_admin\":\"Server-side Supabase writes are available.\"}}",
-      "parsed_status": "ok",
-      "parsed_summary": {
-        "status": "ok",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "ok",
+      "ms": 852,
+      "preview": "{\"app\":\"AI in Action Labs\",\"service\":\"ai-in-action-runtime\",\"status\":\"ok\",\"mode\":\"synthetic-fallback\",\"timestamp\":\"2026-04-29T02:53:09.589Z\",\"connectors\":{\"vercel\":\"live\",\"github\":\"live\",\"supabase_public\":\"missing-env\",\"supabase_admin\":\"configured\",\"groq\":\"configured\",\"finnhub\":\"configured\",\"cron_secret\":\"missing-env\",\"base44\":\"disabled\"},\"runtime_env\":{\"supabase_public\":false,\"supabase_url\":true,\"supabase_service_role\":true,\"groq\":true,\"finnhub\":true,\"cron_secret\":false},\"missing_required_for_cron_writes\":[],\"data_state\":\"migration-supported\",\"notes\":{\"groq\":\"Groq runtime key is visible to Ve"
     },
     {
-      "name": "model-router",
       "path": "/api/model-router",
-      "critical": true,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 277,
-      "body_preview": "{\"status\":\"ok\",\"providers\":[{\"name\":\"vercel_gateway\",\"configured\":false,\"model\":\"openai/gpt-4.1-mini\",\"baseUrl\":\"https://ai-gateway.vercel.sh/v1\"},{\"name\":\"groq\",\"configured\":true,\"model\":\"llama-3.3-70b-versatile\",\"baseUrl\":\"https://api.groq.com/openai/v1\"},{\"name\":\"openai\",\"configured\":false,\"model\":\"gpt-4.1-mini\",\"baseUrl\":\"https://api.openai.com/v1\"}],\"time\":\"2026-04-29T02:45:24.513Z\"}",
-      "parsed_status": "ok",
-      "parsed_summary": {
-        "status": "ok",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "ok",
+      "ms": 335,
+      "preview": "{\"status\":\"ok\",\"providers\":[{\"name\":\"vercel_gateway\",\"configured\":false,\"model\":\"openai/gpt-4.1-mini\",\"baseUrl\":\"https://ai-gateway.vercel.sh/v1\"},{\"name\":\"groq\",\"configured\":true,\"model\":\"llama-3.3-70b-versatile\",\"baseUrl\":\"https://api.groq.com/openai/v1\"},{\"name\":\"openai\",\"configured\":false,\"model\":\"gpt-4.1-mini\",\"baseUrl\":\"https://api.openai.com/v1\"}],\"time\":\"2026-04-29T02:53:09.926Z\"}"
     },
     {
-      "name": "system-verify",
       "path": "/api/system-verify",
-      "critical": true,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 3409,
-      "body_preview": "{\"status\":\"operational\",\"passed\":7,\"failed\":1,\"criticalFailed\":0,\"checks\":[{\"name\":\"health\",\"path\":\"/api/health\",\"critical\":true,\"ok\":true,\"status\":200,\"bodyPreview\":\"{\\\"app\\\":\\\"AI in Action Labs\\\",\\\"service\\\":\\\"ai-in-action-runtime\\\",\\\"status\\\":\\\"ok\\\",\\\"mode\\\":\\\"synthetic-fallback\\\",\\\"timestamp\\\":\\\"2026-04-29T02:45:24.922Z\\\",\\\"connectors\\\":{\\\"vercel\\\":\\\"live\\\",\\\"github\\\":\\\"live\\\",\\\"supabase_public\\\":\\\"missing-env\\\",\\\"supabase_admin\\\":\\\"configured\\\",\\\"groq\\\":\\\"configured\\\",\\\"finnhub\\\":\\\"configured\\\",\\\"cron_secret\\\":\\\"missing-env\\\",\\\"base44\\\":\\\"disabled\\\"},\\\"runtime_env\\\":{\\\"supabase_public\\\":false,\\\"supabase_url\\\":true,\\\"supabase_service_role\\\":true,\\\"groq\\\":true,\\\"finnhub\\\":true,\\\"cron_secret\\\":false},\\\"missing_required_for_c\"},{\"name\":\"platform-health-cron\",\"path\":\"/api/cron/platform-health\",\"critical\":true,\"ok\":true,\"status\":200,\"bodyPreview\":\"{\\\"ok\\\":true,\\\"status\\\":\\\"completed\\\",\\\"health\\\":{\\\"env\\\":{\\\"supabase_public\\\":false,\\\"supabase_url\\\":true,\\\"supabase_service_role\\\":true,\\\"groq\\\":true,\\\"finnhub\\\":true,\\\"cron_secret\\\":false,\\\"heygen\\\":false},\\\"mode\\\":\\\"write-capable\\\",\\\"missingForAutonomousWrites\\\":[],\\\"missingForAiGeneration\\\":[]},\\\"errors\\\":{\\\"schedule_run\\\":null,\\\"ai_r",
-      "parsed_status": "operational",
-      "parsed_summary": {
-        "status": "operational",
-        "passed": 7,
-        "failed": 1,
-        "criticalFailed": 0,
-        "missing_env": null
-      }
+      "semantic_status": "operational",
+      "ms": 3841,
+      "preview": "{\"status\":\"operational\",\"passed\":7,\"failed\":1,\"criticalFailed\":0,\"checks\":[{\"name\":\"health\",\"path\":\"/api/health\",\"critical\":true,\"ok\":true,\"status\":200,\"bodyPreview\":\"{\\\"app\\\":\\\"AI in Action Labs\\\",\\\"service\\\":\\\"ai-in-action-runtime\\\",\\\"status\\\":\\\"ok\\\",\\\"mode\\\":\\\"synthetic-fallback\\\",\\\"timestamp\\\":\\\"2026-04-29T02:53:10.613Z\\\",\\\"connectors\\\":{\\\"vercel\\\":\\\"live\\\",\\\"github\\\":\\\"live\\\",\\\"supabase_public\\\":\\\"missing-env\\\",\\\"supabase_admin\\\":\\\"configured\\\",\\\"groq\\\":\\\"configured\\\",\\\"finnhub\\\":\\\"configured\\\",\\\"cron_secret\\\":\\\"missing-env\\\",\\\"base44\\\":\\\"disabled\\\"},\\\"runtime_env\\\":{\\\"supabase_public\\\":f"
     },
     {
-      "name": "self-heal",
       "path": "/api/self-heal",
-      "critical": true,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 1660,
-      "body_preview": "{\"status\":\"operational\",\"verificationStatus\":200,\"diagnosis\":{\"failedCount\":1,\"criticalFailedCount\":0,\"failed\":[{\"name\":\"orchestrator\",\"path\":\"/api/orchestrator\",\"critical\":false,\"ok\":false,\"status\":500,\"bodyPreview\":\"{\\\"status\\\":\\\"error\\\",\\\"error\\\":\\\"Could not find the table 'public.ai_tasks' in the schema cache\\\",\\\"time\\\":\\\"2026-04-29T02:45:29.190Z\\\"}\"}],\"critical\":[],\"state\":\"operational\"},\"createdTasks\":[{\"ok\":false,\"error\":\"Could not find the table 'public.ai_tasks' in the schema cache\"}],\"orchestrator\":null,\"supabaseLogging\":true,\"time\":\"2026-04-29T02:45:29.585Z\"}",
-      "parsed_status": "operational",
-      "parsed_summary": {
-        "status": "operational",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "operational",
+      "ms": 1744,
+      "preview": "{\"status\":\"operational\",\"verificationStatus\":200,\"diagnosis\":{\"failedCount\":1,\"criticalFailedCount\":0,\"failed\":[{\"name\":\"orchestrator\",\"path\":\"/api/orchestrator\",\"critical\":false,\"ok\":false,\"status\":500,\"bodyPreview\":\"{\\\"status\\\":\\\"error\\\",\\\"error\\\":\\\"Could not find the table 'public.ai_tasks' in the schema cache\\\",\\\"time\\\":\\\"2026-04-29T02:53:15.132Z\\\"}\"}],\"critical\":[],\"state\":\"operational\"},\"createdTasks\":[{\"ok\":false,\"error\":\"Could not find the table 'public.ai_tasks' in the schema cache\"}],\"orchestrator\":null,\"supabaseLogging\":true,\"time\":\"2026-04-29T02:53:15.515Z\"}"
     },
     {
-      "name": "agent-loop",
       "path": "/api/agent-loop",
-      "critical": true,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 533,
-      "body_preview": "{\"status\":\"completed\",\"mode\":\"native-safe-inline\",\"execution\":\"multi-step\",\"stepsRequested\":3,\"stepsSucceeded\":3,\"stepsFailed\":0,\"orchestratorEnabled\":false,\"orchestrator\":null,\"steps\":[{\"step\":1,\"ok\":true,\"status\":200,\"body\":{\"status\":\"ok\",\"execution\":\"sequential\",\"chain\":\"log → revenue → metrics\",\"routes\":[\"/api/log-writer\",\"/api/revenue\",\"/api/metrics\"],\"time\":\"2026-04-29T02:45:29.904Z\"}},{\"step\":2,\"ok\":true,\"status\":200,\"body\":{\"status\":\"ok\",\"execution\":\"sequential\",\"chain\":\"log → revenue → metrics\",\"routes\":[\"/api/log-writer\",\"/api/revenue\",\"/api/metrics\"],\"time\":\"2026-04-29T02:45:30.010Z\"}},{\"step\":3,\"ok\":true,\"status\":200,\"body\":{\"status\":\"ok\",\"execution\":\"sequential\",\"chain\":\"log → revenue → metrics\",\"routes\":[\"/api/log-writer\",\"/api/revenue\",\"/api/metrics\"],\"time\":\"2026-04-29T02:45:30.117Z\"}}],\"time\":\"2026-04-29T02:45:30.122Z\"}",
-      "parsed_status": "completed",
-      "parsed_summary": {
-        "status": "completed",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "completed",
+      "ms": 596,
+      "preview": "{\"status\":\"completed\",\"mode\":\"native-safe-inline\",\"execution\":\"multi-step\",\"stepsRequested\":3,\"stepsSucceeded\":3,\"stepsFailed\":0,\"orchestratorEnabled\":false,\"orchestrator\":null,\"steps\":[{\"step\":1,\"ok\":true,\"status\":200,\"body\":{\"status\":\"ok\",\"execution\":\"sequential\",\"chain\":\"log → revenue → metrics\",\"routes\":[\"/api/log-writer\",\"/api/revenue\",\"/api/metrics\"],\"time\":\"2026-04-29T02:53:15.778Z\"}},{\"step\":2,\"ok\":true,\"status\":200,\"body\":{\"status\":\"ok\",\"execution\":\"sequential\",\"chain\":\"log → revenue → metrics\",\"routes\":[\"/api/log-writer\",\"/api/revenue\",\"/api/metrics\"],\"time\":\"2026-04-29T02:53:15.914Z"
     },
     {
-      "name": "task-dispatch",
       "path": "/api/task-dispatch",
-      "critical": true,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 304,
-      "body_preview": "{\"status\":\"ok\",\"execution\":\"sequential\",\"chain\":\"log → revenue → metrics\",\"routes\":[\"/api/log-writer\",\"/api/revenue\",\"/api/metrics\"],\"time\":\"2026-04-29T02:45:30.426Z\"}",
-      "parsed_status": "ok",
-      "parsed_summary": {
-        "status": "ok",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "ok",
+      "ms": 469,
+      "preview": "{\"status\":\"ok\",\"execution\":\"sequential\",\"chain\":\"log → revenue → metrics\",\"routes\":[\"/api/log-writer\",\"/api/revenue\",\"/api/metrics\"],\"time\":\"2026-04-29T02:53:16.584Z\"}"
     },
     {
-      "name": "orchestrator",
       "path": "/api/orchestrator",
-      "critical": false,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": false,
-      "http_status_warning": true,
       "status": 500,
-      "duration_ms": 236,
-      "body_preview": "{\"status\":\"error\",\"error\":\"Could not find the table 'public.ai_tasks' in the schema cache\",\"time\":\"2026-04-29T02:45:30.660Z\"}",
-      "parsed_status": "error",
-      "parsed_summary": {
-        "status": "error",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "error",
+      "ms": 229,
+      "preview": "{\"status\":\"error\",\"error\":\"Could not find the table 'public.ai_tasks' in the schema cache\",\"time\":\"2026-04-29T02:53:16.812Z\"}"
     },
     {
-      "name": "metrics",
       "path": "/api/metrics",
-      "critical": false,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 139,
-      "body_preview": "{\"status\":\"ok\",\"metrics\":{\"uptime\":932.702439764,\"timestamp\":\"2026-04-29T02:45:30.800Z\",\"status\":\"active\"}}",
-      "parsed_status": "ok",
-      "parsed_summary": {
-        "status": "ok",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "ok",
+      "ms": 124,
+      "preview": "{\"status\":\"ok\",\"metrics\":{\"uptime\":437.117011109,\"timestamp\":\"2026-04-29T02:53:16.936Z\",\"status\":\"active\"}}"
     },
     {
-      "name": "revenue",
       "path": "/api/revenue",
-      "critical": false,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 148,
-      "body_preview": "{\"status\":\"ok\",\"revenue\":{\"stream\":\"ai-service\",\"action\":\"simulate-monetization\",\"value\":1,\"time\":\"2026-04-29T02:45:30.946Z\"}}",
-      "parsed_status": "ok",
-      "parsed_summary": {
-        "status": "ok",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "ok",
+      "ms": 165,
+      "preview": "{\"status\":\"ok\",\"revenue\":{\"stream\":\"ai-service\",\"action\":\"simulate-monetization\",\"value\":92,\"time\":\"2026-04-29T02:53:17.099Z\"}}"
     },
     {
-      "name": "log-writer",
       "path": "/api/log-writer",
-      "critical": false,
       "ok": true,
-      "semantic_ok": true,
       "http_ok": true,
-      "http_status_warning": false,
       "status": 200,
-      "duration_ms": 201,
-      "body_preview": "{\"status\":\"logged\",\"log\":{\"event\":\"system-execution\",\"time\":\"2026-04-29T02:45:31.145Z\"}}",
-      "parsed_status": "logged",
-      "parsed_summary": {
-        "status": "logged",
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "semantic_status": "logged",
+      "ms": 146,
+      "preview": "{\"status\":\"logged\",\"log\":{\"event\":\"system-execution\",\"time\":\"2026-04-29T02:53:17.246Z\"}}"
     }
-  ],
-  "guidance": "Core production runtime is reachable from GitHub Actions. Review http_status_warning entries separately."
+  ]
 }
