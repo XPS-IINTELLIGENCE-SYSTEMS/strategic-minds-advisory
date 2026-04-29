@@ -7,7 +7,7 @@ on:
 
 jobs:
   validate:
-    name: Validate build and migration readiness
+    name: Validate native Strategic Minds build readiness
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,19 +28,15 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Check active Base44 frontend imports
+      - name: Enforce Strategic Minds native naming
         run: |
-          echo "Checking active Base44 imports..."
-          if grep -R "from '@/api/base44Client'" src; then
-            echo "Active Base44 import found. Convert this file to nativeData/nativeFunctions."
-            exit 1
-          fi
-
-      - name: Check active Base44 function calls
-        run: |
-          echo "Checking active Base44 dot calls..."
-          if grep -R "base44\." src; then
-            echo "Active base44.* usage found. Convert this file to nativeData/nativeFunctions."
+          echo "Checking repository for legacy external-platform naming..."
+          if grep -R -i "base44" . \
+            --exclude-dir=.git \
+            --exclude-dir=node_modules \
+            --exclude-dir=dist \
+            --exclude-dir=.vercel; then
+            echo "Legacy external-platform naming found. Rename/remove it and use Strategic Minds native systems only."
             exit 1
           fi
 
