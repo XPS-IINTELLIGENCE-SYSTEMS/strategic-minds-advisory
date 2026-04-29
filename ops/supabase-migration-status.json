@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-04-29T04:33:08.929Z",
+  "generated_at": "2026-04-29T18:14:28.067Z",
   "source": "ai-command-bridge",
-  "command": "supabase-dry-run",
-  "status": "dry-run-passed",
+  "command": "supabase-apply",
+  "status": "apply-failed",
   "mode": "linked-project",
   "migration_file": "supabase/migrations/0001_ai_in_action_core.sql",
-  "dry_run": true,
+  "dry_run": false,
   "include_all": true,
-  "exit_code": 0,
-  "output_preview": "DRY RUN: migrations will *not* be pushed to the database.\nConnecting to remote database...\nWould push these migrations:\n • 0001_ai_in_action_core.sql\nFinished supabase db push.\n",
-  "completed_at": "2026-04-29T04:33:15.107Z"
+  "exit_code": 1,
+  "output_preview": "Refusing apply. Latest ops/supabase-migration-status.json must be dry-run-passed. Got ready\n",
+  "completed_at": "2026-04-29T18:14:32.351Z"
 }

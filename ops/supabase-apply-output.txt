@@ -1,0 +1,1 @@
+Refusing apply. Latest ops/supabase-migration-status.json must be dry-run-passed. Got ready
