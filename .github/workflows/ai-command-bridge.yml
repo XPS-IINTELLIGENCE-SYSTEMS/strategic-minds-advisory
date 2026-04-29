@@ -14,6 +14,7 @@ on:
           - validate
           - supabase-status
           - supabase-dry-run
+          - supabase-apply
 
 permissions:
   contents: write
@@ -46,6 +47,7 @@ jobs:
             *"/ai validate"*|"validate") CMD="validate" ;;
             *"/ai supabase status"*|"supabase-status") CMD="supabase-status" ;;
             *"/ai supabase dry-run"*|"supabase-dry-run") CMD="supabase-dry-run" ;;
+            *"/ai supabase apply"*|"supabase-apply") CMD="supabase-apply" ;;
           esac
           echo "cmd=$CMD" >> "$GITHUB_OUTPUT"
           [ "$CMD" != "unknown" ]
@@ -58,7 +60,7 @@ jobs:
           const fs = require('fs')
           const base = process.env.BASE_URL
           const targets = ['/api/health','/api/model-router','/api/system-verify','/api/self-heal','/api/agent-loop','/api/task-dispatch','/api/orchestrator','/api/metrics','/api/revenue','/api/log-writer']
-          const okStatuses = new Set(['ok','operational','completed','logged','active','degraded','error'])
+          const okStatuses = new Set(['ok','operational','completed','logged','active','degraded','error','seeded'])
           async function check(path) {
             const start = Date.now()
             try {
@@ -67,7 +69,7 @@ jobs:
               let body = null
               try { body = JSON.parse(text) } catch (_) {}
               const semantic = okStatuses.has(body?.status)
-              return { path, ok: r.ok || semantic, http_ok: r.ok, status: r.status, semantic_status: body?.status || null, ms: Date.now() - start, preview: text.slice(0, 600) }
+              return { path, ok: r.ok || semantic, http_ok: r.ok, status: r.status, semantic_status: body?.status || null, ms: Date.now() - start, preview: text.slice(0, 700) }
             } catch (e) {
               return { path, ok: false, error: e.message, ms: Date.now() - start }
             }
@@ -98,7 +100,7 @@ jobs:
           [ "$MODE" != "none" ]
 
       - name: Link Supabase project
-        if: steps.cmd.outputs.cmd == 'supabase-dry-run' && steps.sbs.outputs.mode == 'linked-project'
+        if: (steps.cmd.outputs.cmd == 'supabase-dry-run' || steps.cmd.outputs.cmd == 'supabase-apply') && steps.sbs.outputs.mode == 'linked-project'
         run: supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD"
 
       - name: Supabase dry run
@@ -118,6 +120,35 @@ jobs:
           const output=fs.existsSync('ops/supabase-dry-run-output.txt') ? fs.readFileSync('ops/supabase-dry-run-output.txt','utf8').slice(-4000) : ''
           const code=Number(process.env.EXIT_CODE || 0)
           fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({...prior,status:code===0?'dry-run-passed':'dry-run-failed',dry_run:true,include_all:true,exit_code:code,output_preview:output,completed_at:new Date().toISOString()},null,2)+'\n')
+          NODE
+          exit $CODE
+
+      - name: Supabase apply
+        if: steps.cmd.outputs.cmd == 'supabase-apply'
+        shell: bash
+        run: |
+          set +e
+          STATUS="none"
+          if [ -f ops/supabase-migration-status.json ]; then
+            STATUS=$(node -e "const fs=require('fs'); const j=JSON.parse(fs.readFileSync('ops/supabase-migration-status.json','utf8')); console.log(j.status || 'none')")
+          fi
+          if [ "$STATUS" != "dry-run-passed" ]; then
+            echo "Refusing apply. Latest ops/supabase-migration-status.json must be dry-run-passed. Got $STATUS" > ops/supabase-apply-output.txt
+            CODE=1
+          elif [ "${{ steps.sbs.outputs.mode }}" = "db-url" ]; then
+            supabase db push --db-url "$SUPABASE_DB_URL" --include-all > ops/supabase-apply-output.txt 2>&1
+            CODE=$?
+          else
+            supabase db push --include-all > ops/supabase-apply-output.txt 2>&1
+            CODE=$?
+          fi
+          EXIT_CODE=$CODE node <<'NODE'
+          const fs=require('fs')
+          let prior={}
+          try { prior=JSON.parse(fs.readFileSync('ops/supabase-migration-status.json','utf8')) } catch (_) {}
+          const output=fs.existsSync('ops/supabase-apply-output.txt') ? fs.readFileSync('ops/supabase-apply-output.txt','utf8').slice(-4000) : ''
+          const code=Number(process.env.EXIT_CODE || 0)
+          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({...prior,source:'ai-command-bridge',command:'supabase-apply',status:code===0?'applied':'apply-failed',dry_run:false,include_all:true,exit_code:code,output_preview:output,completed_at:new Date().toISOString()},null,2)+'\n')
           NODE
           exit $CODE
 
