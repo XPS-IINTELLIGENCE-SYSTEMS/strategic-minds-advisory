@@ -11,6 +11,12 @@ on:
         options:
           - 'true'
           - 'false'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/supabase-migration-deploy.yml'
+      - 'supabase/migrations/**'
 
 permissions:
   contents: write
@@ -23,6 +29,7 @@ jobs:
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      REQUESTED_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'status-only' }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -50,39 +57,45 @@ jobs:
           node <<'NODE'
           const fs = require('fs')
           const mode = process.env.SUPABASE_DB_URL ? 'db-url' : ((process.env.SUPABASE_ACCESS_TOKEN && process.env.SUPABASE_PROJECT_ID && process.env.SUPABASE_DB_PASSWORD) ? 'linked-project' : 'none')
+          const requestedDryRun = process.env.REQUESTED_DRY_RUN || 'status-only'
           fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({
             generated_at: new Date().toISOString(),
             status: mode === 'none' ? 'blocked' : 'ready',
             mode,
+            requested_dry_run: requestedDryRun,
+            auto_apply_allowed: requestedDryRun === 'false',
             required_secrets: ['SUPABASE_DB_URL or SUPABASE_ACCESS_TOKEN + SUPABASE_PROJECT_ID + SUPABASE_DB_PASSWORD'],
-            migration_file: 'supabase/migrations/0001_ai_in_action_core.sql'
+            migration_file: 'supabase/migrations/0001_ai_in_action_core.sql',
+            note: requestedDryRun === 'status-only'
+              ? 'Push-triggered status check only. Manual workflow_dispatch dry_run=true/false is required to run db push.'
+              : 'Manual workflow_dispatch requested.'
           }, null, 2) + '\n')
           NODE
           if [ "$MODE" = "none" ]; then
             echo "Supabase migration secrets are not configured."
-            exit 1
+            exit 0
           fi
 
       - name: Link Supabase project
-        if: steps.secrets.outputs.mode == 'linked-project'
+        if: github.event_name == 'workflow_dispatch' && steps.secrets.outputs.mode == 'linked-project'
         shell: bash
         run: |
           supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD"
 
       - name: Dry run migrations with DB URL
-        if: steps.secrets.outputs.mode == 'db-url' && inputs.dry_run == 'true'
+        if: github.event_name == 'workflow_dispatch' && steps.secrets.outputs.mode == 'db-url' && inputs.dry_run == 'true'
         run: supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
 
       - name: Dry run migrations with linked project
-        if: steps.secrets.outputs.mode == 'linked-project' && inputs.dry_run == 'true'
+        if: github.event_name == 'workflow_dispatch' && steps.secrets.outputs.mode == 'linked-project' && inputs.dry_run == 'true'
         run: supabase db push --dry-run
 
       - name: Apply migrations with DB URL
-        if: steps.secrets.outputs.mode == 'db-url' && inputs.dry_run == 'false'
+        if: github.event_name == 'workflow_dispatch' && steps.secrets.outputs.mode == 'db-url' && inputs.dry_run == 'false'
         run: supabase db push --db-url "$SUPABASE_DB_URL"
 
       - name: Apply migrations with linked project
-        if: steps.secrets.outputs.mode == 'linked-project' && inputs.dry_run == 'false'
+        if: github.event_name == 'workflow_dispatch' && steps.secrets.outputs.mode == 'linked-project' && inputs.dry_run == 'false'
         run: supabase db push
 
       - name: Write migration result
@@ -93,12 +106,12 @@ jobs:
           const fs = require('fs')
           let prior = {}
           try { prior = JSON.parse(fs.readFileSync('ops/supabase-migration-status.json', 'utf8')) } catch (_) {}
-          const status = process.env.GITHUB_JOB_STATUS || 'completed'
           fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({
             ...prior,
             completed_at: new Date().toISOString(),
-            workflow_result: status,
-            dry_run: '${{ inputs.dry_run }}'
+            event_name: process.env.GITHUB_EVENT_NAME,
+            workflow_result: 'completed',
+            dry_run: process.env.REQUESTED_DRY_RUN || 'status-only'
           }, null, 2) + '\n')
           NODE
 
