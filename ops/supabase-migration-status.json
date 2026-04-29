@@ -1,16 +1,8 @@
 {
-  "generated_at": "2026-04-29T00:02:26.045Z",
+  "generated_at": "2026-04-29T02:56:16.438Z",
+  "source": "ai-command-bridge",
+  "command": "supabase-dry-run",
   "status": "ready",
   "mode": "linked-project",
-  "requested_dry_run": "status-only",
-  "auto_apply_allowed": false,
-  "required_secrets": [
-    "SUPABASE_DB_URL or SUPABASE_ACCESS_TOKEN + SUPABASE_PROJECT_ID + SUPABASE_DB_PASSWORD"
-  ],
-  "migration_file": "supabase/migrations/0001_ai_in_action_core.sql",
-  "note": "Push-triggered status check only. Manual workflow_dispatch dry_run=true/false is required to run db push.",
-  "completed_at": "2026-04-29T00:02:26.177Z",
-  "event_name": "push",
-  "workflow_result": "completed",
-  "dry_run": "status-only"
+  "migration_file": "supabase/migrations/0001_ai_in_action_core.sql"
 }
