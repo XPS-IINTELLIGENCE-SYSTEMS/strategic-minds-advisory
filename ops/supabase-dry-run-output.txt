@@ -1,7 +1,5 @@
 DRY RUN: migrations will *not* be pushed to the database.
 Connecting to remote database...
-Found local migration files to be inserted before the last migration on remote database.
-
-Rerun the command with --include-all flag to apply these migrations:
-supabase/migrations/0001_ai_in_action_core.sql
-
+Would push these migrations:
+ • 0001_ai_in_action_core.sql
+Finished supabase db push.
