@@ -1,0 +1,88 @@
+name: AI in Action Supabase Apply Bridge
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type APPLY_AFTER_DRY_RUN to apply migrations'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v2
+        with:
+          version: latest
+
+      - run: mkdir -p ops
+
+      - name: Guard apply
+        shell: bash
+        run: |
+          if [ "${{ inputs.confirm }}" != "APPLY_AFTER_DRY_RUN" ]; then
+            echo "Confirmation text does not match."
+            exit 1
+          fi
+          if [ ! -f ops/supabase-migration-status.json ]; then
+            echo "Missing ops/supabase-migration-status.json"
+            exit 1
+          fi
+          STATUS=$(node -e "const fs=require('fs'); const j=JSON.parse(fs.readFileSync('ops/supabase-migration-status.json','utf8')); console.log(j.status || 'none')")
+          if [ "$STATUS" != "dry-run-passed" ]; then
+            echo "Refusing apply. Latest migration status must be dry-run-passed. Got $STATUS"
+            exit 1
+          fi
+
+      - name: Detect Supabase mode
+        id: mode
+        shell: bash
+        run: |
+          MODE="none"
+          if [ -n "$SUPABASE_DB_URL" ]; then MODE="db-url"; fi
+          if [ "$MODE" = "none" ] && [ -n "$SUPABASE_ACCESS_TOKEN" ] && [ -n "$SUPABASE_PROJECT_ID" ] && [ -n "$SUPABASE_DB_PASSWORD" ]; then MODE="linked-project"; fi
+          echo "mode=$MODE" >> "$GITHUB_OUTPUT"
+          [ "$MODE" != "none" ]
+
+      - name: Link Supabase project
+        if: steps.mode.outputs.mode == 'linked-project'
+        run: supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Apply migrations
+        shell: bash
+        run: |
+          if [ "${{ steps.mode.outputs.mode }}" = "db-url" ]; then
+            supabase db push --db-url "$SUPABASE_DB_URL"
+          else
+            supabase db push
+          fi
+
+      - name: Write apply status
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require('fs')
+          const prior=JSON.parse(fs.readFileSync('ops/supabase-migration-status.json','utf8'))
+          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({...prior,status:'applied',dry_run:false,applied_at:new Date().toISOString(),source:'ai-supabase-apply-bridge'},null,2)+'\n')
+          NODE
+
+      - name: Commit apply status
+        if: always()
+        run: |
+          git config user.name "ai-in-action-supabase-apply"
+          git config user.email "actions@github.com"
+          git add ops/supabase-migration-status.json || true
+          git diff --cached --quiet && exit 0
+          git commit -m "ops: update supabase apply status"
+          git push
