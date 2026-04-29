@@ -107,21 +107,19 @@ jobs:
         run: |
           set +e
           if [ "${{ steps.sbs.outputs.mode }}" = "db-url" ]; then
-            supabase db push --db-url "$SUPABASE_DB_URL" --dry-run > ops/supabase-dry-run-output.txt 2>&1
+            supabase db push --db-url "$SUPABASE_DB_URL" --dry-run --include-all > ops/supabase-dry-run-output.txt 2>&1
           else
-            supabase db push --dry-run > ops/supabase-dry-run-output.txt 2>&1
+            supabase db push --dry-run --include-all > ops/supabase-dry-run-output.txt 2>&1
           fi
           CODE=$?
-          node <<'NODE'
+          EXIT_CODE=$CODE node <<'NODE'
           const fs=require('fs')
           const prior=JSON.parse(fs.readFileSync('ops/supabase-migration-status.json','utf8'))
           const output=fs.existsSync('ops/supabase-dry-run-output.txt') ? fs.readFileSync('ops/supabase-dry-run-output.txt','utf8').slice(-4000) : ''
-          const code=Number(process.env.CODE || 0)
-          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({...prior,status:code===0?'dry-run-passed':'dry-run-failed',dry_run:true,exit_code:code,output_preview:output,completed_at:new Date().toISOString()},null,2)+'\n')
+          const code=Number(process.env.EXIT_CODE || 0)
+          fs.writeFileSync('ops/supabase-migration-status.json', JSON.stringify({...prior,status:code===0?'dry-run-passed':'dry-run-failed',dry_run:true,include_all:true,exit_code:code,output_preview:output,completed_at:new Date().toISOString()},null,2)+'\n')
           NODE
           exit $CODE
-        env:
-          CODE: ${{ env.CODE }}
 
       - name: Write command status
         if: always()
