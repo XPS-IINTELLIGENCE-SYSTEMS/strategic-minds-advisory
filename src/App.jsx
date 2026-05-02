@@ -19,6 +19,7 @@ import ProjectDashboard from '@/pages/ProjectDashboard';
 import AutoInventionSystemGuide from '@/pages/AutoInventionSystemGuide';
 import EliteIntelligenceSystemGuide from '@/pages/EliteIntelligenceSystemGuide';
 import AIInActionLabs from '@/pages/AIInActionLabs';
+import XPSContractorSuccessFlooringPlanner from '@/pages/XPSContractorSuccessFlooringPlanner';
 import PageTransition from '@/components/common/PageTransition';
 
 const AuthenticatedApp = () => {
@@ -57,6 +58,7 @@ const AuthenticatedApp = () => {
           <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
           <Route path="/auto-invention" element={<PageTransition><AutoInventionSystemGuide /></PageTransition>} />
           <Route path="/elite-intelligence" element={<PageTransition><EliteIntelligenceSystemGuide /></PageTransition>} />
+          <Route path="/xps-contractor-success-flooring-planner" element={<PageTransition><XPSContractorSuccessFlooringPlanner /></PageTransition>} />
         </Route>
         <Route path="/dashboard" element={<PageTransition><Dashboard /></PageTransition>} />
         <Route path="/projects" element={<PageTransition><ProjectDashboard /></PageTransition>} />
