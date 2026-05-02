@@ -1,21 +1,13 @@
 import React from 'react';
 import XPSPlannerLeadForm from '@/components/xps-contractor-success/XPSPlannerLeadForm';
+import XPSPlannerBoardPreview from '@/components/xps-contractor-success/XPSPlannerBoardPreview';
 import XPSEcosystemLinks from '@/components/xps-contractor-success/XPSEcosystemLinks';
 import XPSQualificationDisclaimer from '@/components/xps-contractor-success/XPSQualificationDisclaimer';
 
 const boards = [
-  {
-    title: 'XPS Interactive Flooring Planner',
-    src: '/assets/xps-contractor-success/xps-interactive-flooring-planner-mockup.svg',
-  },
-  {
-    title: 'XPS Floor System Selector',
-    src: '/assets/xps-contractor-success/xps-floor-system-selector-overview.svg',
-  },
-  {
-    title: 'XPS Color Charts + Finish Selector',
-    src: '/assets/xps-contractor-success/xps-color-charts-finish-selector.svg',
-  },
+  { type: 'planner', title: 'XPS Interactive Flooring Planner' },
+  { type: 'selector', title: 'XPS Floor System Selector' },
+  { type: 'colors', title: 'XPS Color Charts + Finish Selector' },
 ];
 
 const customerWorkflow = [
@@ -66,8 +58,8 @@ export default function XPSContractorSuccessFlooringPlanner() {
 
       <section className="max-w-7xl mx-auto px-5 py-10 grid gap-8">
         {boards.map((board) => (
-          <article key={board.title} className="bg-white rounded-2xl border-2 border-[#d8d8d8] shadow-xl overflow-hidden">
-            <img src={board.src} alt={board.title} className="w-full" />
+          <article key={board.title} aria-label={board.title}>
+            <XPSPlannerBoardPreview type={board.type} />
           </article>
         ))}
       </section>
