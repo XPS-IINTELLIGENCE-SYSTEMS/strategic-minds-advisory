@@ -1,0 +1,62 @@
+{
+  "command_id": "xps-epoxy-floor-planner-launch",
+  "product_name": "XPS Epoxy Floor Planner",
+  "route": "/xps-epoxy-floor-planner",
+  "status": "draft_pr_ready_for_preview_validation",
+  "created_by": "XPS Contractor Success Meta Agent",
+  "system": "Strategic Minds Advisory / AI in Action",
+  "files_created": {
+    "frontend": [
+      "src/pages/XPSEpoxyFloorPlanner.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyPlannerHero.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyPhoneBoard.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyFloorVisualizer.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxySystemSelector.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyColorSelector.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyCustomerWorksheet.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyTroubleshootingIntake.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyAssistantChat.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxySuggestedPrompts.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyLeadCapture.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxySafetyNotice.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyEcosystemLinks.jsx",
+      "src/components/xps-contractor-success/epoxy/XPSEpoxyVisualQA.jsx"
+    ],
+    "backend": [
+      "api/xps-contractor-success/epoxy-floor-planner.js",
+      "api/xps-contractor-success/epoxy-assistant.js",
+      "api/xps-contractor-success/epoxy-leads.js",
+      "api/xps-contractor-success/epoxy-visualizer.js"
+    ],
+    "database": [
+      "src/supabase/migrations/006_xps_epoxy_floor_planner.sql"
+    ],
+    "docs": [
+      "docs/xps-epoxy-floor-planner-mvp.md",
+      ".ai-ops/reports/xps-epoxy-floor-planner-validation.md"
+    ]
+  },
+  "api_routes": [
+    "/api/xps-contractor-success/epoxy-floor-planner",
+    "/api/xps-contractor-success/epoxy-assistant",
+    "/api/xps-contractor-success/epoxy-leads",
+    "/api/xps-contractor-success/epoxy-visualizer"
+  ],
+  "supabase_migration": "src/supabase/migrations/006_xps_epoxy_floor_planner.sql",
+  "build_test_status": "not_run_in_connector_environment",
+  "vercel_preview_status": "not_verified",
+  "qa_blockers": [
+    "Local npm validation not available through the GitHub connector path.",
+    "Vercel preview URL must be verified before launch-ready status.",
+    "Supabase migration requires human approval before production application."
+  ],
+  "human_approvals_required": [
+    "Add or confirm secrets",
+    "Apply production Supabase migration",
+    "Verify Vercel preview",
+    "Merge PR",
+    "Deploy production",
+    "Approve public claims and certification wording"
+  ],
+  "launch_readiness_status": "blocked_until_preview_build_and_visual_qa_pass"
+}
