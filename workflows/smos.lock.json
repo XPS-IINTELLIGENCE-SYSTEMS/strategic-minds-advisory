@@ -1,6 +1,6 @@
 {
   "system": "Strategic Minds OS",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "mode": "architecture_lock_planning",
   "principle": "one_clean_repeatable_workflow",
   "mission": "universal repeatable invention-to-income operating system for any industry, idea, goal, or refactor",
@@ -22,6 +22,7 @@
     "Universal_Refactor_Intelligence_Module_Workbook",
     "SMA_Max_Ceiling_AI_Social_Growth_Engine_Workbook",
     "XPS_AI_CONSULTANT",
+    "XPS_AUTO_BUILDER",
     "XPS-COMMAND",
     "SANDBOX"
   ],
@@ -56,6 +57,7 @@
   },
   "internal_modules": {
     "ai_consultant": "discovery_and_scoping_inside_pipeline",
+    "auto_builder": "autonomous_builder_reference_inside_pipeline_not_separate_architecture",
     "benchmark_system": "source_inhalation_and_reverse_engineering_inside_pipeline",
     "vizual_x": "frontend_uiux_spec_inside_pipeline",
     "social_engine": "growth_content_distribution_and_engagement_inside_pipeline",
@@ -66,6 +68,13 @@
     "local_runner": "queue_triggered_execution_inside_pipeline",
     "appsheet": "operator_dashboard_inside_pipeline",
     "tool_registry": "future_reference_to_xps_command_ai_tools_not_imported_now"
+  },
+  "auto_builder": {
+    "source_repo": "XPS-IINTELLIGENCE-SYSTEMS/XPS_AUTO_BUILDER",
+    "verified_description": "Autonomous System Builder",
+    "verified_docs": ["README.md"],
+    "current_status": "repo_verified_but_deeper_docs_not_yet_accessible_through_connector",
+    "default_rule": "Use as an auto-builder reference source inside the same Strategic Minds OS workflow. Do not create a second competing workflow. Do not import unverified documents until fetched and reviewed."
   },
   "lead_generation_engine": {
     "purpose": "make every client system capable of capturing, qualifying, routing, following up with, and converting leads",
