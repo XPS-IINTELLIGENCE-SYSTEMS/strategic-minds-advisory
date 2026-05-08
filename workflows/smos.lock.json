@@ -1,0 +1,33 @@
+{
+  "system": "Strategic Minds OS",
+  "version": "0.1.0",
+  "mode": "architecture_lock_planning",
+  "sources": [
+    "00 - SHOPIFY WORKFLOW Command Center",
+    "Strategic_Minds_Programmatic_Workflow_Final_Completion_Workbook",
+    "Universal_Refactor_Intelligence_Module_Workbook",
+    "XPS_AI_CONSULTANT",
+    "SANDBOX"
+  ],
+  "pipeline": [
+    { "stage": 0, "key": "source_truth_intake", "name": "Source Truth Intake", "output": "asset_map" },
+    { "stage": 1, "key": "discovery", "name": "Discovery", "output": "normalized_intake" },
+    { "stage": 2, "key": "goal_engine", "name": "Goal Engine", "output": "targets" },
+    { "stage": 3, "key": "market_discovery", "name": "Market Discovery", "output": "market_report" },
+    { "stage": 4, "key": "benchmark_system", "name": "Benchmark System", "output": "benchmark_package" },
+    { "stage": 5, "key": "vizual_x", "name": "Vizual X", "output": "frontend_spec" },
+    { "stage": 6, "key": "build_blueprint", "name": "Build Blueprint", "output": "zero_document" },
+    { "stage": 7, "key": "sandbox_build", "name": "Sandbox Build", "output": "stage_preview" },
+    { "stage": 8, "key": "qa_validation", "name": "QA Validation", "output": "test_report" },
+    { "stage": 9, "key": "release_gate", "name": "Production Release Gate", "output": "release_decision" }
+  ],
+  "stage_preview": {
+    "github_pages": "automatic",
+    "vercel_preview": "automatic",
+    "sandbox_repo": "automatic"
+  },
+  "production_release": {
+    "status": "gated",
+    "requires": ["qa_pass", "release_decision"]
+  }
+}
