@@ -1,7 +1,20 @@
 {
   "system": "Strategic Minds OS",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "mode": "architecture_lock_planning",
+  "principle": "one_clean_repeatable_workflow",
+  "entry_paths": [
+    {
+      "key": "new_concept_to_reality",
+      "name": "New Concept to Reality",
+      "description": "Client has a concept, goal, industry, budget, and desired outcome. The system discovers, models, builds, tests, and delivers."
+    },
+    {
+      "key": "existing_system_refactor",
+      "name": "Existing System Refactor and Enhancement",
+      "description": "Client has an existing website, app, workflow, business, or system. The system ingests, benchmarks, diagnoses, refactors, enhances, tests, and delivers."
+    }
+  ],
   "sources": [
     "00 - SHOPIFY WORKFLOW Command Center",
     "Strategic_Minds_Programmatic_Workflow_Final_Completion_Workbook",
@@ -14,20 +27,51 @@
     { "stage": 1, "key": "discovery", "name": "Discovery", "output": "normalized_intake" },
     { "stage": 2, "key": "goal_engine", "name": "Goal Engine", "output": "targets" },
     { "stage": 3, "key": "market_discovery", "name": "Market Discovery", "output": "market_report" },
-    { "stage": 4, "key": "benchmark_system", "name": "Benchmark System", "output": "benchmark_package" },
-    { "stage": 5, "key": "vizual_x", "name": "Vizual X", "output": "frontend_spec" },
-    { "stage": 6, "key": "build_blueprint", "name": "Build Blueprint", "output": "zero_document" },
-    { "stage": 7, "key": "sandbox_build", "name": "Sandbox Build", "output": "stage_preview" },
-    { "stage": 8, "key": "qa_validation", "name": "QA Validation", "output": "test_report" },
-    { "stage": 9, "key": "release_gate", "name": "Production Release Gate", "output": "release_decision" }
+    { "stage": 4, "key": "benchmark_or_source_inhalation", "name": "Benchmark / Source Inhalation", "output": "benchmark_package" },
+    { "stage": 5, "key": "audit_gap_detection", "name": "Audit / Gap Detection", "output": "gap_map" },
+    { "stage": 6, "key": "vizual_x_frontend_spec", "name": "Vizual X Frontend Spec", "output": "frontend_spec" },
+    { "stage": 7, "key": "strategy_channels", "name": "Strategy / Channels", "output": "channel_plan" },
+    { "stage": 8, "key": "build_blueprint", "name": "Build Blueprint", "output": "zero_document" },
+    { "stage": 9, "key": "implementation", "name": "Implementation", "output": "sandbox_or_stage_build" },
+    { "stage": 10, "key": "qa_validation", "name": "QA / Validation", "output": "test_report" },
+    { "stage": 11, "key": "release_or_operate", "name": "Release / Operate", "output": "release_or_operations_plan" },
+    { "stage": 12, "key": "lock_clone", "name": "Lock / Clone", "output": "reusable_client_system" }
   ],
+  "internal_modules": {
+    "ai_consultant": "discovery_and_scoping_inside_pipeline",
+    "benchmark_system": "source_inhalation_and_reverse_engineering_inside_pipeline",
+    "vizual_x": "frontend_uiux_spec_inside_pipeline",
+    "gpt_bridge": "work_order_execution_inside_pipeline",
+    "codex": "controlled_local_execution_inside_pipeline",
+    "local_runner": "queue_triggered_execution_inside_pipeline",
+    "appsheet": "operator_dashboard_inside_pipeline"
+  },
+  "execution_layers": {
+    "gpt_bridge": "work_order_operator",
+    "codex": "controlled_local_execution_operator",
+    "local_runner": "queue_triggered_execution_operator",
+    "appsheet": "operator_dashboard",
+    "google_workspace": "source_of_truth_and_scheduler"
+  },
+  "codex": {
+    "allowed_modes": ["queue_trigger", "manual_operator_command", "scheduled_runner_job", "sandbox_build_task", "scraper_task", "repo_refactor_task"],
+    "allowed_targets": ["local_files", "local_scrapers", "tests", "sandbox_repo", "stage_preview_artifacts", "repo_branch_files"],
+    "default_rule": "read commands from rows, job files, work orders, or explicit operator instructions"
+  },
   "stage_preview": {
     "github_pages": "automatic",
     "vercel_preview": "automatic",
-    "sandbox_repo": "automatic"
+    "sandbox_repo": "automatic",
+    "local_scraper": "automatic_if_queued"
+  },
+  "operator_override": {
+    "enabled": true,
+    "rule": "If Jeremy explicitly commands an override, AI may proceed according to that command and must log the override when possible.",
+    "default_without_override": "follow_locked_workflow"
   },
   "production_release": {
-    "status": "gated",
-    "requires": ["qa_pass", "release_decision"]
+    "status": "programmatic_gate",
+    "requires": ["qa_pass", "release_decision"],
+    "operator_override_allowed": true
   }
 }
