@@ -1,6 +1,6 @@
 {
   "system": "Strategic Minds OS",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "mode": "architecture_lock_planning",
   "principle": "one_clean_repeatable_workflow",
   "mission": "universal repeatable invention-to-income operating system for any industry, idea, goal, or refactor",
@@ -8,12 +8,12 @@
     {
       "key": "new_concept_to_reality",
       "name": "New Concept to Reality",
-      "description": "Client has a concept, goal, industry, budget, and desired outcome. The system discovers, models, builds, tests, markets, operates, and delivers."
+      "description": "Client has a concept, goal, industry, budget, and desired outcome. The system discovers, models, builds, tests, markets, captures leads, operates, and delivers."
     },
     {
       "key": "existing_system_refactor",
       "name": "Existing System Refactor and Enhancement",
-      "description": "Client has an existing website, app, workflow, business, or system. The system ingests, benchmarks, diagnoses, refactors, enhances, markets, operates, tests, and delivers."
+      "description": "Client has an existing website, app, workflow, business, or system. The system ingests, benchmarks, diagnoses, refactors, enhances, markets, captures leads, operates, tests, and delivers."
     }
   ],
   "sources": [
@@ -33,7 +33,7 @@
     { "stage": 4, "key": "benchmark_or_source_inhalation", "name": "Benchmark / Source Inhalation", "output": "benchmark_package" },
     { "stage": 5, "key": "audit_gap_detection", "name": "Audit / Gap Detection", "output": "gap_map" },
     { "stage": 6, "key": "vizual_x_frontend_spec", "name": "Vizual X Frontend Spec", "output": "frontend_spec" },
-    { "stage": 7, "key": "strategy_channels_social_engine", "name": "Strategy / Channels / Social Engine", "output": "channel_and_social_growth_plan" },
+    { "stage": 7, "key": "strategy_channels_social_lead_gen", "name": "Strategy / Channels / Social Engine / Lead Gen", "output": "growth_and_lead_generation_plan" },
     { "stage": 8, "key": "build_blueprint", "name": "Build Blueprint", "output": "zero_document" },
     { "stage": 9, "key": "implementation", "name": "Implementation", "output": "sandbox_or_stage_build" },
     { "stage": 10, "key": "qa_validation", "name": "QA / Validation", "output": "test_report" },
@@ -41,12 +41,16 @@
     { "stage": 12, "key": "lock_clone", "name": "Lock / Clone", "output": "reusable_client_system" }
   ],
   "required_every_system": {
+    "lead_generation_engine": true,
     "social_engine": true,
     "ai_email_option": true,
     "ai_call_option": true,
     "content_calendar": true,
     "analytics_scorecard": true,
     "lead_or_conversion_path": true,
+    "crm_or_lead_tracker": true,
+    "offer_and_cta": true,
+    "follow_up_sequence": true,
     "revenue_path": true,
     "operations_plan": true
   },
@@ -55,12 +59,34 @@
     "benchmark_system": "source_inhalation_and_reverse_engineering_inside_pipeline",
     "vizual_x": "frontend_uiux_spec_inside_pipeline",
     "social_engine": "growth_content_distribution_and_engagement_inside_pipeline",
+    "lead_generation_engine": "lead_capture_qualification_routing_followup_and_conversion_inside_pipeline",
     "ai_communication": "optional_ai_email_and_ai_call_inside_pipeline",
     "gpt_bridge": "work_order_execution_inside_pipeline",
     "codex": "controlled_local_execution_inside_pipeline",
     "local_runner": "queue_triggered_execution_inside_pipeline",
     "appsheet": "operator_dashboard_inside_pipeline",
     "tool_registry": "future_reference_to_xps_command_ai_tools_not_imported_now"
+  },
+  "lead_generation_engine": {
+    "purpose": "make every client system capable of capturing, qualifying, routing, following up with, and converting leads",
+    "required_outputs": [
+      "lead_magnet_or_offer",
+      "primary_call_to_action",
+      "lead_capture_form_or_booking_path",
+      "crm_or_sheet_tracker_schema",
+      "qualification_questions",
+      "lead_score_model",
+      "routing_rules",
+      "ai_email_follow_up_sequence",
+      "ai_call_script_option",
+      "sales_or_booking_pipeline",
+      "conversion_tracking_plan",
+      "daily_weekly_lead_targets",
+      "cost_per_lead_assumptions",
+      "lead_source_attribution",
+      "missed_lead_recovery_process"
+    ],
+    "default_rule": "Every project must define how leads are captured, qualified, followed up, tracked, and converted. If the client does not want leads, mark lead generation disabled with reason, but still define the conversion path."
   },
   "social_engine": {
     "source_workbook": "SMA_Max_Ceiling_AI_Social_Growth_Engine_Workbook",
