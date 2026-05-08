@@ -1,25 +1,28 @@
 {
   "system": "Strategic Minds OS",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "mode": "architecture_lock_planning",
   "principle": "one_clean_repeatable_workflow",
+  "mission": "universal repeatable invention-to-income operating system for any industry, idea, goal, or refactor",
   "entry_paths": [
     {
       "key": "new_concept_to_reality",
       "name": "New Concept to Reality",
-      "description": "Client has a concept, goal, industry, budget, and desired outcome. The system discovers, models, builds, tests, and delivers."
+      "description": "Client has a concept, goal, industry, budget, and desired outcome. The system discovers, models, builds, tests, markets, operates, and delivers."
     },
     {
       "key": "existing_system_refactor",
       "name": "Existing System Refactor and Enhancement",
-      "description": "Client has an existing website, app, workflow, business, or system. The system ingests, benchmarks, diagnoses, refactors, enhances, tests, and delivers."
+      "description": "Client has an existing website, app, workflow, business, or system. The system ingests, benchmarks, diagnoses, refactors, enhances, markets, operates, tests, and delivers."
     }
   ],
   "sources": [
     "00 - SHOPIFY WORKFLOW Command Center",
     "Strategic_Minds_Programmatic_Workflow_Final_Completion_Workbook",
     "Universal_Refactor_Intelligence_Module_Workbook",
+    "SMA_Max_Ceiling_AI_Social_Growth_Engine_Workbook",
     "XPS_AI_CONSULTANT",
+    "XPS-COMMAND",
     "SANDBOX"
   ],
   "pipeline": [
@@ -30,21 +33,56 @@
     { "stage": 4, "key": "benchmark_or_source_inhalation", "name": "Benchmark / Source Inhalation", "output": "benchmark_package" },
     { "stage": 5, "key": "audit_gap_detection", "name": "Audit / Gap Detection", "output": "gap_map" },
     { "stage": 6, "key": "vizual_x_frontend_spec", "name": "Vizual X Frontend Spec", "output": "frontend_spec" },
-    { "stage": 7, "key": "strategy_channels", "name": "Strategy / Channels", "output": "channel_plan" },
+    { "stage": 7, "key": "strategy_channels_social_engine", "name": "Strategy / Channels / Social Engine", "output": "channel_and_social_growth_plan" },
     { "stage": 8, "key": "build_blueprint", "name": "Build Blueprint", "output": "zero_document" },
     { "stage": 9, "key": "implementation", "name": "Implementation", "output": "sandbox_or_stage_build" },
     { "stage": 10, "key": "qa_validation", "name": "QA / Validation", "output": "test_report" },
     { "stage": 11, "key": "release_or_operate", "name": "Release / Operate", "output": "release_or_operations_plan" },
     { "stage": 12, "key": "lock_clone", "name": "Lock / Clone", "output": "reusable_client_system" }
   ],
+  "required_every_system": {
+    "social_engine": true,
+    "ai_email_option": true,
+    "ai_call_option": true,
+    "content_calendar": true,
+    "analytics_scorecard": true,
+    "lead_or_conversion_path": true,
+    "revenue_path": true,
+    "operations_plan": true
+  },
   "internal_modules": {
     "ai_consultant": "discovery_and_scoping_inside_pipeline",
     "benchmark_system": "source_inhalation_and_reverse_engineering_inside_pipeline",
     "vizual_x": "frontend_uiux_spec_inside_pipeline",
+    "social_engine": "growth_content_distribution_and_engagement_inside_pipeline",
+    "ai_communication": "optional_ai_email_and_ai_call_inside_pipeline",
     "gpt_bridge": "work_order_execution_inside_pipeline",
     "codex": "controlled_local_execution_inside_pipeline",
     "local_runner": "queue_triggered_execution_inside_pipeline",
-    "appsheet": "operator_dashboard_inside_pipeline"
+    "appsheet": "operator_dashboard_inside_pipeline",
+    "tool_registry": "future_reference_to_xps_command_ai_tools_not_imported_now"
+  },
+  "social_engine": {
+    "source_workbook": "SMA_Max_Ceiling_AI_Social_Growth_Engine_Workbook",
+    "purpose": "make every system marketable, distributable, trackable, and income-capable if client chooses monetization",
+    "required_outputs": [
+      "growth_simulation",
+      "benchmark_matrix",
+      "psychology_engine_summary",
+      "hook_library",
+      "content_factory_plan",
+      "schedule_engine_plan",
+      "engagement_triage_rules",
+      "shopify_or_funnel_map",
+      "ai_action_queue",
+      "analytics_scorecard"
+    ],
+    "default_rule": "Every project must include a social/content/distribution plan even if publishing is disabled. Publishing requires the relevant platform/account gate."
+  },
+  "ai_communication": {
+    "ai_email": "optional_module_for_outreach_followup_client_comms_and_sales_sequences",
+    "ai_call": "optional_module_for_call_scripts_qualification_booking_and_followup",
+    "default_rule": "Create drafts/scripts by default. Actual sending/calling depends on account connection, permission, and configured gate."
   },
   "execution_layers": {
     "gpt_bridge": "work_order_operator",
