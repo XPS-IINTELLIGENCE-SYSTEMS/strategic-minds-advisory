@@ -156,6 +156,30 @@ function extractResponseText(response) {
 }
 
 async function askOpenAI(task, state) {
+  // APEX CIRCUIT BREAKER v1.0 — 2026-06-26
+  // Blocks OpenAI calls for routine/low-value tasks to prevent quota drain.
+  // OpenAI is ONLY called when task.type requires genuine AI reasoning.
+  const AI_REQUIRED_TYPES = ['build_site', 'generate_content', 'create_strategy', 'design_component'];
+  const taskType = (task?.type || '').toLowerCase();
+  const taskTitle = (task?.title || '').toLowerCase();
+  
+  // If task is routine (health check, noop, log, status) — use rule engine, no OpenAI
+  const isRoutine = ['health', 'noop', 'log', 'status', 'ping', 'sync', 'retry', 'validate', 'audit'].some(
+    k => taskType.includes(k) || taskTitle.includes(k)
+  );
+  
+  if (isRoutine || !AI_REQUIRED_TYPES.some(t => taskType.includes(t))) {
+    console.log('[APEX-GATE] Routine task — skipping OpenAI call. Task:', taskType || taskTitle);
+    return {
+      action: { type: 'complete_task', args: { note: 'Handled by APEX rule engine — no LLM needed' } },
+      reason: 'Routine task resolved without OpenAI. Quota preserved.',
+      next_task: { create: false, title: '', type: '', priority: 0, payload: {} }
+    };
+  }
+  
+  // Only reach here for genuine AI tasks
+  console.log('[APEX-GATE] AI task detected — calling OpenAI. Task:', taskType);
+  /* ORIGINAL OPENAI CALL BELOW */
   const schema = {
     type: 'object',
     additionalProperties: false,
