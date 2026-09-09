@@ -1,0 +1,44 @@
+{
+  "name": "Intelligence Library \u2014 Daily Refresh (11pm EST)",
+  "description": "Scrapes top 50 elite intelligence sources (Pitchbook, McKinsey, Y Combinator, etc.) for rare, high-value strategic insights. Extracts and scores by rarity + value for premium tier clients.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 3 * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "intelligence_library_daily_refresh_11pm_est",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_function": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "intelligenceIngestPipeline",
+            "args": {}
+          },
+          "then": "end"
+        }
+      }
+    ]
+  },
+  "x-base44-migrated-from-automation": {
+    "legacy_payload_function": "intelligenceIngestPipeline"
+  }
+}
