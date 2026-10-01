@@ -1,0 +1,5 @@
+import React from 'react';
+
+export default function XPSEpoxySafetyNotice(){
+  return <section className="border-t border-[#d8d8d8] bg-white"><div className="max-w-7xl mx-auto px-5 py-10"><div className="rounded-2xl border-2 border-[#d8d8d8] bg-[#f7f5ef] p-6"><p className="text-sm text-[#555] leading-relaxed">The XPS Epoxy Floor Planner and Epoxy AI Assistant are contractor support and customer education tools. They do not replace current product technical data sheets, safety data sheets, manufacturer instructions, XPS technical support, jobsite testing, local code requirements, or professional onsite judgment. Always verify product-specific recommendations with current XPS product documentation and technical support.</p><p className="mt-3 text-sm text-[#555] leading-relaxed">Approved contractors may qualify for contractor discounts, discounted training, lead opportunities, marketing support, product education, and additional XPS ecosystem resources. Availability is not guaranteed and may vary based on location, program status, account approval, product category, training completion, and business fit.</p></div></div></section>
+}
