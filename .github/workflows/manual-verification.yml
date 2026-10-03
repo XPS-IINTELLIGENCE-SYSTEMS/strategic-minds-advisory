@@ -5,6 +5,8 @@ on:
 
 jobs:
   verify:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - name: Verify health endpoint

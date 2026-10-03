@@ -1,8 +1,6 @@
 name: AI in Action Cron Failover
 
 on:
-  schedule:
-    - cron: '*/30 * * * *'
   workflow_dispatch:
     inputs:
       route:
@@ -15,6 +13,8 @@ permissions:
 
 jobs:
   trigger:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     name: Trigger AI in Action cron endpoints
     runs-on: ubuntu-latest
     env:
