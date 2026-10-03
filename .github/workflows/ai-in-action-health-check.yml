@@ -2,8 +2,6 @@ name: AI in Action Health Check
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '17 */6 * * *'
 
 permissions:
   contents: read
@@ -11,6 +9,8 @@ permissions:
 
 jobs:
   health:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     name: Check deployed AI in Action runtime
     runs-on: ubuntu-latest
     env:

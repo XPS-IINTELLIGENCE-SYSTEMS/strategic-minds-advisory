@@ -8,6 +8,8 @@ on:
 
 jobs:
   verify-agent-loop:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     steps:
       - name: Wait for Vercel deployment propagation

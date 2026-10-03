@@ -2,13 +2,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "crons": [
-    { "path": "/api/self-heal", "schedule": "0 */6 * * *" },
-    { "path": "/api/cron/platform-health", "schedule": "0 8 * * *" },
-    { "path": "/api/cron/daily-summary", "schedule": "0 9 * * *" },
-    { "path": "/api/cron/content-package", "schedule": "0 17 * * *" }
-  ],
+  "crons": [],
   "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
