@@ -1,0 +1,151 @@
+{
+  "system": "Strategic Minds OS",
+  "version": "0.1.6",
+  "mode": "architecture_lock_planning",
+  "principle": "one_clean_repeatable_workflow",
+  "mission": "universal repeatable invention-to-income operating system for any industry, idea, goal, or refactor",
+  "sources": [
+    "00 - SHOPIFY WORKFLOW Command Center",
+    "Strategic_Minds_Programmatic_Workflow_Final_Completion_Workbook",
+    "Universal_Refactor_Intelligence_Module_Workbook",
+    "SMA_Max_Ceiling_AI_Social_Growth_Engine_Workbook",
+    "SMA Shopify AutoBuild OS - Master Admin Bridge Code.gs v1.1 PASTE SAFE",
+    "XPS_AI_CONSULTANT",
+    "XPS_AUTO_BUILDER",
+    "XPS-COMMAND",
+    "SANDBOX"
+  ],
+  "entry_paths": [
+    {
+      "key": "new_concept_to_reality",
+      "name": "New Concept to Reality",
+      "description": "Client has a concept, goal, industry, budget, and desired outcome. The system discovers, models, builds, tests, markets, captures leads, operates, and delivers."
+    },
+    {
+      "key": "existing_system_refactor",
+      "name": "Existing System Refactor and Enhancement",
+      "description": "Client has an existing website, app, workflow, business, or system. The system ingests, benchmarks, diagnoses, refactors, enhances, markets, captures leads, operates, tests, and delivers."
+    }
+  ],
+  "pipeline": [
+    { "stage": 0, "key": "source_truth_intake", "name": "Source Truth Intake", "output": "asset_map" },
+    { "stage": 1, "key": "discovery", "name": "Discovery", "output": "normalized_intake" },
+    { "stage": 2, "key": "goal_engine", "name": "Goal Engine", "output": "targets" },
+    { "stage": 3, "key": "market_discovery", "name": "Market Discovery", "output": "market_report" },
+    { "stage": 4, "key": "benchmark_or_source_inhalation", "name": "Benchmark / Source Inhalation", "output": "benchmark_package" },
+    { "stage": 5, "key": "audit_gap_detection", "name": "Audit / Gap Detection", "output": "gap_map" },
+    { "stage": 6, "key": "vizual_x_frontend_spec", "name": "Vizual X Frontend Spec", "output": "frontend_spec" },
+    { "stage": 7, "key": "strategy_channels_social_lead_gen", "name": "Strategy / Channels / Social Engine / Lead Gen", "output": "growth_and_lead_generation_plan" },
+    { "stage": 8, "key": "build_blueprint", "name": "Build Blueprint", "output": "zero_document" },
+    { "stage": 9, "key": "implementation", "name": "Implementation", "output": "sandbox_or_stage_build" },
+    { "stage": 10, "key": "qa_validation", "name": "QA / Validation", "output": "test_report" },
+    { "stage": 11, "key": "release_or_operate", "name": "Release / Operate", "output": "release_or_operations_plan" },
+    { "stage": 12, "key": "lock_clone", "name": "Lock / Clone", "output": "reusable_client_system" }
+  ],
+  "required_every_system": {
+    "lead_generation_engine": true,
+    "social_engine": true,
+    "ai_email_option": true,
+    "ai_call_option": true,
+    "content_calendar": true,
+    "analytics_scorecard": true,
+    "lead_or_conversion_path": true,
+    "crm_or_lead_tracker": true,
+    "offer_and_cta": true,
+    "follow_up_sequence": true,
+    "revenue_path": true,
+    "operations_plan": true
+  },
+  "internal_modules": {
+    "ai_consultant": "discovery_and_scoping_inside_pipeline",
+    "auto_builder": "project_system_generator_inside_pipeline_not_separate_architecture",
+    "benchmark_system": "source_inhalation_and_reverse_engineering_inside_pipeline",
+    "vizual_x": "frontend_uiux_spec_inside_pipeline",
+    "social_engine": "growth_content_distribution_and_engagement_inside_pipeline",
+    "lead_generation_engine": "lead_capture_qualification_routing_followup_and_conversion_inside_pipeline",
+    "ai_communication": "optional_ai_email_and_ai_call_inside_pipeline",
+    "gpt_bridge": "work_order_execution_inside_pipeline",
+    "codex": "controlled_local_execution_inside_pipeline",
+    "local_runner": "queue_triggered_execution_inside_pipeline",
+    "appsheet": "operator_dashboard_inside_pipeline",
+    "tool_registry": "future_reference_to_xps_command_ai_tools_not_imported_now"
+  },
+  "auto_builder": {
+    "source_repo": "XPS-IINTELLIGENCE-SYSTEMS/XPS_AUTO_BUILDER",
+    "verified_repo_description": "Autonomous System Builder",
+    "verified_drive_doc": "SMA Shopify AutoBuild OS - Master Admin Bridge Code.gs v1.1 PASTE SAFE",
+    "verified_drive_doc_url": "https://docs.google.com/document/d/1Yc4E9xUYNgjLaodRjt6rnam0_LcZFHeYyXtsCIFAiSo",
+    "verified_capabilities": [
+      "create_project_folder_system",
+      "create_command_center_workbook",
+      "seed_48_command_tabs",
+      "create_client_discovery_form",
+      "sync_discovery_response",
+      "partner_site_ingestion",
+      "shopify_template_data_mapping",
+      "lead_intake_and_callback_queue",
+      "social_platform_setup",
+      "github_vercel_supabase_mapping",
+      "gmail_drafts",
+      "calendar_launch_schedule",
+      "qa_scorecard",
+      "client_approval_gates",
+      "reporting_dashboard",
+      "optimization_log",
+      "auto_fix_evolve_prompts",
+      "client_handoff_package"
+    ],
+    "verified_safety_rules": [
+      "does_not_publish_shopify_themes",
+      "does_not_modify_live_shopify_themes",
+      "does_not_store_secrets_in_docs_sheets_or_github",
+      "uses_env_placeholders_only",
+      "requires_permission_confirmed_and_robots_terms_reviewed_before_crawling"
+    ],
+    "default_rule": "Use AutoBuild OS as the project-system generation layer inside the single Strategic Minds OS workflow. It may create folders, command centers, docs, forms, logs, drafts, calendars, staging maps, and QA structures. It must not become a second competing workflow."
+  },
+  "lead_generation_engine": {
+    "purpose": "make every client system capable of capturing, qualifying, routing, following up with, and converting leads",
+    "required_outputs": ["lead_magnet_or_offer", "primary_call_to_action", "lead_capture_form_or_booking_path", "crm_or_sheet_tracker_schema", "qualification_questions", "lead_score_model", "routing_rules", "ai_email_follow_up_sequence", "ai_call_script_option", "sales_or_booking_pipeline", "conversion_tracking_plan", "daily_weekly_lead_targets", "cost_per_lead_assumptions", "lead_source_attribution", "missed_lead_recovery_process"],
+    "default_rule": "Every project must define how leads are captured, qualified, followed up, tracked, and converted. If the client does not want leads, mark lead generation disabled with reason, but still define the conversion path."
+  },
+  "social_engine": {
+    "source_workbook": "SMA_Max_Ceiling_AI_Social_Growth_Engine_Workbook",
+    "purpose": "make every system marketable, distributable, trackable, and income-capable if client chooses monetization",
+    "required_outputs": ["growth_simulation", "benchmark_matrix", "psychology_engine_summary", "hook_library", "content_factory_plan", "schedule_engine_plan", "engagement_triage_rules", "shopify_or_funnel_map", "ai_action_queue", "analytics_scorecard"],
+    "default_rule": "Every project must include a social/content/distribution plan even if publishing is disabled. Publishing requires the relevant platform/account gate."
+  },
+  "ai_communication": {
+    "ai_email": "optional_module_for_outreach_followup_client_comms_and_sales_sequences",
+    "ai_call": "optional_module_for_call_scripts_qualification_booking_and_followup",
+    "default_rule": "Create drafts/scripts by default. Actual sending/calling depends on account connection, permission, and configured gate."
+  },
+  "execution_layers": {
+    "gpt_bridge": "work_order_operator",
+    "codex": "controlled_local_execution_operator",
+    "local_runner": "queue_triggered_execution_operator",
+    "appsheet": "operator_dashboard",
+    "google_workspace": "source_of_truth_and_scheduler"
+  },
+  "codex": {
+    "allowed_modes": ["queue_trigger", "manual_operator_command", "scheduled_runner_job", "sandbox_build_task", "scraper_task", "repo_refactor_task"],
+    "allowed_targets": ["local_files", "local_scrapers", "tests", "sandbox_repo", "stage_preview_artifacts", "repo_branch_files"],
+    "default_rule": "read commands from rows, job files, work orders, or explicit operator instructions"
+  },
+  "stage_preview": {
+    "github_pages": "automatic",
+    "vercel_preview": "automatic",
+    "sandbox_repo": "automatic",
+    "local_scraper": "automatic_if_queued"
+  },
+  "operator_override": {
+    "enabled": true,
+    "rule": "If Jeremy explicitly commands an override, AI may proceed according to that command and must log the override when possible.",
+    "default_without_override": "follow_locked_workflow"
+  },
+  "production_release": {
+    "status": "programmatic_gate",
+    "requires": ["qa_pass", "release_decision"],
+    "operator_override_allowed": true
+  }
+}
