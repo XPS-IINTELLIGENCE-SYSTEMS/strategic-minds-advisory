@@ -19,12 +19,12 @@ import ProjectDashboard from '@/pages/ProjectDashboard';
 import AutoInventionSystemGuide from '@/pages/AutoInventionSystemGuide';
 import EliteIntelligenceSystemGuide from '@/pages/EliteIntelligenceSystemGuide';
 import AIInActionLabs from '@/pages/AIInActionLabs';
+import XPSApexStandard from '@/pages/XPSApexStandard';
 import PageTransition from '@/components/common/PageTransition';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
-  // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -33,18 +33,15 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
       navigateToLogin();
       return null;
     }
   }
 
-  // Render the main app
   return (
     <AnimatePresence mode="wait">
       <Routes>
@@ -54,6 +51,7 @@ const AuthenticatedApp = () => {
           <Route path="/about" element={<PageTransition><About /></PageTransition>} />
           <Route path="/portfolio" element={<PageTransition><Portfolio /></PageTransition>} />
           <Route path="/ai-in-action" element={<PageTransition><AIInActionLabs /></PageTransition>} />
+          <Route path="/xps-apex" element={<PageTransition><XPSApexStandard /></PageTransition>} />
           <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
           <Route path="/auto-invention" element={<PageTransition><AutoInventionSystemGuide /></PageTransition>} />
           <Route path="/elite-intelligence" element={<PageTransition><EliteIntelligenceSystemGuide /></PageTransition>} />
@@ -66,9 +64,7 @@ const AuthenticatedApp = () => {
   );
 };
 
-
 function App() {
-
   return (
     <ThemeProvider>
       <AuthProvider>

@@ -1,0 +1,44 @@
+name: Cloud Validation
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate native Strategic Minds build readiness
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Enforce Strategic Minds native naming
+        run: |
+          echo "Checking repository for legacy external-platform naming..."
+          if grep -R -i "base44" . \
+            --exclude-dir=.git \
+            --exclude-dir=node_modules \
+            --exclude-dir=dist \
+            --exclude-dir=.vercel; then
+            echo "Legacy external-platform naming found. Rename/remove it and use Strategic Minds native systems only."
+            exit 1
+          fi
+
+      - name: Confirm XPS Apex migration file exists
+        run: test -f supabase/migrations/20260428_xps_apex_phase_1.sql
