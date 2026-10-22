@@ -2,8 +2,6 @@ name: AI In Action Scheduled Worker
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '17 * * * *'
 
 permissions:
   contents: write
@@ -11,6 +9,8 @@ permissions:
 
 jobs:
   worker:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     name: Process one AI In Action queue task
     runs-on: ubuntu-latest
     env:

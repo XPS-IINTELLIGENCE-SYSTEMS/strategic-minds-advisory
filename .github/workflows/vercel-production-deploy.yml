@@ -21,6 +21,8 @@ permissions:
 
 jobs:
   deploy:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     name: Build and deploy latest main to Vercel production
     runs-on: ubuntu-latest
     env:

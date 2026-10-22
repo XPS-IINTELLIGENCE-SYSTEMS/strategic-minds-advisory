@@ -2,8 +2,6 @@ name: AI Skill Drill Coach Validation
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '37 14 * * *'
 
 permissions:
   contents: read
@@ -11,6 +9,8 @@ permissions:
 
 jobs:
   validate:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     name: Validate AI Skill Drill Coach sandbox
     runs-on: ubuntu-latest
     env:
