@@ -1,33 +1,27 @@
 {
-  "generated_at": "2026-10-26T13:52:26.046Z",
+  "generated_at": "2026-10-26T19:43:45.041Z",
   "source": "github-actions-ai-in-action-validation-bridge",
   "validator_version": "1.1-semantic-status",
   "base_url": "https://strategicmindsadvisory.com",
   "status": "degraded",
-  "passed": 1,
-  "failed": 9,
-  "critical_failed": 5,
+  "passed": 0,
+  "failed": 10,
+  "critical_failed": 6,
   "warnings": 0,
   "checks": [
     {
       "name": "health",
       "path": "/api/health",
       "critical": true,
-      "ok": true,
+      "ok": false,
       "semantic_ok": false,
-      "http_ok": true,
+      "http_ok": false,
       "http_status_warning": false,
-      "status": 200,
-      "duration_ms": 849,
-      "body_preview": "{\"ok\":true,\"system\":\"strategicminds-client-os\",\"environment\":\"production\",\"safety\":{\"payments\":\"disabled\",\"sms\":\"disabled\",\"secrets\":\"not_exposed\"},\"routes\":{\"home\":\"/\",\"dashboard\":\"/dashboard\",\"health\":\"/api/health\"},\"timestamp\":\"2026-10-26T13:52:25.443Z\"}",
+      "status": 404,
+      "duration_ms": 290,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::m88zn-1793043824823-a3af365652ff\n",
       "parsed_status": null,
-      "parsed_summary": {
-        "status": null,
-        "passed": null,
-        "failed": null,
-        "criticalFailed": null,
-        "missing_env": null
-      }
+      "parsed_summary": null
     },
     {
       "name": "model-router",
@@ -38,8 +32,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 137,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 124,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::f57fl-1793043824954-cf261a76bed8\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -52,8 +46,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 55,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 10,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::m88zn-1793043824966-8b8bc31d52c5\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -66,8 +60,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 49,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 19,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::t5tzf-1793043824983-791a351e72ed\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -80,8 +74,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 50,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 5,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::9qqxn-1793043824994-b71fe4775dc8\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -94,8 +88,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 63,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 6,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::jsfpj-1793043824999-57009e5123be\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -108,8 +102,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 64,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 7,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::29x9f-1793043825006-e2b6cce0ff8f\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -122,8 +116,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 59,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 5,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::jsfpj-1793043825013-ec13a64813e1\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -136,8 +130,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 48,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 6,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::29x9f-1793043825018-2bafdfcaf6a3\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -150,8 +144,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 47,
-      "body_preview": "<!DOCTYPE html><!--gALyHqbmEF9Xag2mrAM3I--><html lang=\"en\"><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/static/css/e9683db2720d3f26.css?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" data-precedence=\"next\"/><link rel=\"preload\" as=\"script\" fetchPriority=\"low\" href=\"/_next/static/chunks/webpack-4a462cecab786e93.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\"/><script src=\"/_next/static/chunks/4bd1b696-c023c6e3521b1417.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/255-066d07a75ba31814.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><script src=\"/_next/static/chunks/main-app-f9b5d20365cb8be2.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" async=\"\"></script><meta name=\"robots\" content=\"noindex\"/><title>404: This page could not be found.</title><title>Strategic Minds Advisory</title><meta name=\"description\" content=\"Client operating system powered by AUTO_BUILDER.\"/><script src=\"/_next/static/chunks/polyfills-42372ed130431b0a.js?dpl=dpl_BwCwgFqLh381s7C9swamXoQWWzuV\" noModule=\"\"></script></head><body><div hidden=\"\"><!--$--><!--/$--></div><div style=\"font-family:syste",
+      "duration_ms": 21,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\niad1::qznmj-1793043825038-74177d4a4c3e\n",
       "parsed_status": null,
       "parsed_summary": null
     }
