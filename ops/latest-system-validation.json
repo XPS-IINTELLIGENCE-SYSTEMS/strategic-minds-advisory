@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-05T17:10:16.523Z",
+  "generated_at": "2026-11-05T22:45:03.399Z",
   "source": "github-actions-ai-in-action-validation-bridge",
   "validator_version": "1.1-semantic-status",
   "base_url": "https://strategicmindsadvisory.com",
@@ -18,8 +18,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 418,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::jk8zr-1793898616087-c495cb4b73ca\n",
+      "duration_ms": 462,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::qvqks-1793918703107-b1ab2a0d2880\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -32,8 +32,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 172,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::sv7r9-1793898616274-ceacb2189932\n",
+      "duration_ms": 126,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::bc9df-1793918703244-a53d0581d101\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -46,8 +46,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 27,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::9s7ts-1793898616306-b808309d5b6e\n",
+      "duration_ms": 19,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::fcpgt-1793918703265-d61ce55c9af0\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -60,8 +60,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 27,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::sv7r9-1793898616333-82c7227e08a7\n",
+      "duration_ms": 22,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::2d26f-1793918703284-e3b73bd9acb5\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -74,8 +74,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 27,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::9s7ts-1793898616360-05c1954603ec\n",
+      "duration_ms": 14,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::2z5sl-1793918703304-8c339289afef\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -88,8 +88,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 27,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::l76hq-1793898616387-5586a476303d\n",
+      "duration_ms": 16,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::rkmxx-1793918703321-775517814988\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -102,8 +102,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 33,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::9hj8h-1793898616414-1271f4bb4b0f\n",
+      "duration_ms": 27,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::2z5sl-1793918703347-f638953866d0\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -116,8 +116,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 27,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::v4sm8-1793898616448-d80ca65982ca\n",
+      "duration_ms": 14,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::6cst8-1793918703362-c2adfe70486f\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -130,8 +130,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 36,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::4cm5q-1793898616474-06e07a4c4a41\n",
+      "duration_ms": 15,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::2z5sl-1793918703376-9779166f8415\n",
       "parsed_status": null,
       "parsed_summary": null
     },
@@ -144,8 +144,8 @@
       "http_ok": false,
       "http_status_warning": false,
       "status": 404,
-      "duration_ms": 26,
-      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\nsfo1::l76hq-1793898616510-570c41c0654f\n",
+      "duration_ms": 14,
+      "body_preview": "The deployment could not be found on Vercel.\n\nDEPLOYMENT_NOT_FOUND\n\ncle1::6cst8-1793918703392-db60192f68c6\n",
       "parsed_status": null,
       "parsed_summary": null
     }
