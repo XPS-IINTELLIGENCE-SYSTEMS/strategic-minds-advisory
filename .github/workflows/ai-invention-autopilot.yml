@@ -11,8 +11,6 @@ on:
         description: 'Number of safe sandbox ideas to generate, max 3'
         required: false
         default: '1'
-  schedule:
-    - cron: '41 13 * * *'
 
 permissions:
   contents: write
@@ -21,6 +19,8 @@ permissions:
 
 jobs:
   autopilot:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     name: Generate safe invention ideas and queue sandbox intake
     runs-on: ubuntu-latest
     env:

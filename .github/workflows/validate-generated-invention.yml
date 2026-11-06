@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   validate:
+    # Quarantined legacy runtime; see docs/LEGACY_RUNTIME_RETIREMENT_20261003.md.
+    if: ${{ false }}
     name: Validate generated invention route
     runs-on: ubuntu-latest
     env:
